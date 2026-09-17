@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mystic — A Fantasy Strategy Game of Conquest</title>
+  <meta name="description" content="Mystic is a fantasy strategy board game for 2–6 players. Summon creatures, claim land, harness biome synergies and hold seven tiles to win.">
+  <link rel="icon" type="image/png" href="assets/hex-symbol.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Scroll progress -->
+  <div class="progress" aria-hidden="true"><span class="progress__bar"></span></div>
+
+  <!-- ============ HERO ============ -->
+  <header class="hero" id="top">
+    <div class="hero__content">
+      <img src="assets/hex-symbol.png" alt="" class="hero__hex" data-hero-hex>
+      <p class="hero__eyebrow" data-hero-fade>A fantasy strategy game of conquest</p>
+      <h1 class="hero__title" data-split>Mystic</h1>
+      <ul class="hero__chips" data-hero-fade>
+        <li>2–6 Players</li>
+        <li>3 Actions per Turn</li>
+        <li>Roll Dice to Battle</li>
+      </ul>
+    </div>
+    <a class="hero__cue" href="#stats" data-scroll-to aria-label="Scroll to explore">
+      <span class="hero__cue-line"></span>
+      <span class="hero__cue-text">Begin the journey</span>
+    </a>
+  </header>
+
+  <main>
+
+    <!-- ============ STATS ============ -->
+    <section class="stats" id="stats">
+      <ul class="stats__list">
+        <li class="stat"><span class="stat__num" data-count="6" data-prefix="2–">2–6</span><span class="stat__label">Players</span></li>
+        <li class="stat"><span class="stat__num" data-count="3">3</span><span class="stat__label">Actions per turn</span></li>
+        <li class="stat"><span class="stat__num" data-count="9">9</span><span class="stat__label">Biomes</span></li>
+        <li class="stat"><span class="stat__num" data-count="10">10</span><span class="stat__label">Creature types</span></li>
+        <li class="stat"><span class="stat__num" data-count="7" data-prefix="3–">3–7</span><span class="stat__label">Tiles to win</span></li>
+      </ul>
+    </section>
+
+    <!-- ============ HOW TO PLAY ============ -->
+    <section class="section how" id="how-to-play">
+      <div class="section__head">
+        <p class="section__eyebrow">The journey begins</p>
+        <h2 class="section__title" data-split>How to Play</h2>
+        <p class="section__lede">Build the map, summon your creatures, and carve out a realm — before your rivals carve out yours.</p>
+      </div>
+
+      <div class="how__grid">
+        <article class="panel" data-reveal>
+          <h3 class="panel__title">Setting up</h3>
+          <ol class="panel__list">
+            <li>Place one land tile down randomly, then take turns placing tiles in any configuration — the map must remain a single connected continent.</li>
+            <li>Divide the cards into two decks: the <strong>Creature deck</strong> and the <strong>Lands &amp; Spells deck</strong>.</li>
+            <li>Roll the die to decide who starts.</li>
+            <li>Draw your opening hand: <strong>1 creature card</strong> and <strong>2 land/spell cards</strong>, plus <strong>4 gold</strong>.</li>
+            <li>Choose your card orientation — it marks everything you own on the board.</li>
+          </ol>
+          <p class="panel__note">Safety net: end a turn with no creature on the board and you receive 1 gold.</p>
+        </article>
+
+        <article class="panel" data-reveal>
+          <h3 class="panel__title">Your turn</h3>
+          <p>Each turn grants <strong>3 actions</strong>. Spells and abilities are free — they cost neither gold nor actions — though abilities activate only once unless stated. When your actions are spent, announce the end of your turn.</p>
+        </article>
+      </div>
+
+      <div class="orient" data-reveal>
+        <div class="orient__visual" aria-hidden="true">
+          <svg viewBox="-100 -130 200 255">
+            <!-- hex tiles -->
+            <polygon class="orient-hex" points="34,0 17,29.4 -17,29.4 -34,0 -17,-29.4 17,-29.4"/>
+            <polygon class="orient-hex orient-hex--empty" points="85,29.4 68,58.9 34,58.9 17,29.4 34,0 68,0"/>
+            <polygon class="orient-hex" points="85,-29.4 68,0 34,0 17,-29.4 34,-58.9 68,-58.9"/>
+            <polygon class="orient-hex" points="34,-58.9 17,-29.4 -17,-29.4 -34,-58.9 -17,-88.3 17,-88.3"/>
+            <polygon class="orient-hex" points="-17,-29.4 -34,0 -68,0 -85,-29.4 -68,-58.9 -34,-58.9"/>
+            <polygon class="orient-hex" points="-17,29.4 -34,58.9 -68,58.9 -85,29.4 -68,0 -34,0"/>
+            <polygon class="orient-hex" points="34,58.9 17,88.3 -17,88.3 -34,58.9 -17,29.4 17,29.4"/>
+            <!-- your creature stack (centre) -->
+            <g transform="translate(0,0)">
+              <rect class="orient-card-land" x="-14" y="-19" width="28" height="38" rx="3"/>
+              <rect class="orient-card-creature" x="-11" y="-16" width="22" height="32" rx="2.5"/>
+              <polygon class="orient-mark" points="0,-9 5.5,-6 5.5,0 0,3 -5.5,0 -5.5,-6"/>
+              <path class="orient-mark" d="M-6,9 H6 M-6,12.5 H3"/>
+            </g>
+            <!-- your creature stack (bottom) -->
+            <g transform="translate(0,58.9)">
+              <rect class="orient-card-land" x="-14" y="-19" width="28" height="38" rx="3"/>
+              <rect class="orient-card-creature" x="-11" y="-16" width="22" height="32" rx="2.5"/>
+              <polygon class="orient-mark" points="0,-9 5.5,-6 5.5,0 0,3 -5.5,0 -5.5,-6"/>
+              <path class="orient-mark" d="M-6,9 H6 M-6,12.5 H3"/>
+            </g>
+            <!-- your claimed land -->
+            <g transform="translate(-51,29.4)">
+              <rect class="orient-card-land" x="-14" y="-19" width="28" height="38" rx="3"/>
+              <path class="orient-mark" d="M-8,-13 H8"/>
+            </g>
+            <!-- opponent creature stack (top) -->
+            <g transform="translate(0,-58.9) rotate(180)">
+              <rect class="orient-card-land" x="-14" y="-19" width="28" height="38" rx="3"/>
+              <rect class="orient-card-creature" x="-11" y="-16" width="22" height="32" rx="2.5"/>
+              <polygon class="orient-mark" points="0,-9 5.5,-6 5.5,0 0,3 -5.5,0 -5.5,-6"/>
+              <path class="orient-mark" d="M-6,9 H6 M-6,12.5 H3"/>
+            </g>
+            <!-- opponent creature stack (upper right) -->
+            <g transform="translate(51,-29.4) rotate(180)">
+              <rect class="orient-card-land" x="-14" y="-19" width="28" height="38" rx="3"/>
+              <rect class="orient-card-creature" x="-11" y="-16" width="22" height="32" rx="2.5"/>
+              <polygon class="orient-mark" points="0,-9 5.5,-6 5.5,0 0,3 -5.5,0 -5.5,-6"/>
+              <path class="orient-mark" d="M-6,9 H6 M-6,12.5 H3"/>
+            </g>
+            <!-- opponent claimed land -->
+            <g transform="translate(-51,-29.4) rotate(180)">
+              <rect class="orient-card-land" x="-14" y="-19" width="28" height="38" rx="3"/>
+              <path class="orient-mark" d="M-8,-13 H8"/>
+            </g>
+            <!-- side labels -->
+            <text class="orient-label" x="0" y="-100">OPPONENT</text>
+            <text class="orient-label" x="0" y="118">YOU</text>
+          </svg>
+        </div>
+        <div class="orient__copy">
+          <p class="orient__eyebrow">Reading the board</p>
+          <h3 class="orient__title">Cards face their owner</h3>
+          <p>Your seat decides your orientation &mdash; every card you play is turned to face where you sit. Your creatures and claimed lands are readable from your side of the table, your rival&rsquo;s from theirs, so positions and allegiance are discerned at a glance.</p>
+          <p>Take a tile and its land card turns to face you. Lose it, and it turns away.</p>
+          <p class="orient__note">Up to six players &mdash; one per side of the hexagon. Introduced at setup, step 5.</p>
+        </div>
+      </div>
+
+      <h3 class="how__actions-title" data-reveal>The five actions</h3>
+      <ul class="actions">
+        <li class="action-card" data-reveal>
+          <span class="action-card__icon"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="24,5 40.5,14.5 40.5,33.5 24,43 7.5,33.5 7.5,14.5"/><path d="M24 17 L26 22 L31 24 L26 26 L24 31 L22 26 L17 24 L22 22 Z" fill="currentColor" stroke="none"/></svg></span>
+          <h4>Summon</h4>
+          <p>Play a creature card with its matching land card, pay its gold cost, and place it on that land tile.</p>
+        </li>
+        <li class="action-card" data-reveal>
+          <span class="action-card__icon"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12,18 17,21 17,27 12,30 7,27 7,21"/><path d="M22 24 H38"/><path d="M32 18 L38 24 L32 30"/></svg></span>
+          <h4>Move</h4>
+          <p>Move one of your creatures to an adjacent tile. Land cards stay behind — territory endures.</p>
+        </li>
+        <li class="action-card" data-reveal>
+          <span class="action-card__icon"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 10 L30 28"/><path d="M30 28 L34 32"/><path d="M24 30 L32 22"/><path d="M36 10 L18 28"/><path d="M18 28 L14 32"/><path d="M16 22 L24 30"/></svg></span>
+          <h4>Battle</h4>
+          <p>Attack an enemy creature on an adjacent tile. Strength modifier plus a die roll decides the day.</p>
+        </li>
+        <li class="action-card" data-reveal>
+          <span class="action-card__icon"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="24" cy="24" r="14"/><path d="M24 16 L26.2 21.4 L32 21.8 L27.6 25.6 L29 31.2 L24 28 L19 31.2 L20.4 25.6 L16 21.8 L21.8 21.4 Z" fill="currentColor" stroke="none"/></svg></span>
+          <h4>Harvest</h4>
+          <p>Collect gold equal to the value of a land tile your creature occupies. Each tile harvests once per turn.</p>
+        </li>
+        <li class="action-card" data-reveal>
+          <span class="action-card__icon"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="14" width="18" height="24" rx="2.5"/><rect x="22" y="10" width="18" height="24" rx="2.5"/></svg></span>
+          <h4>Draw</h4>
+          <p>Draw a card and ready your next manoeuvre.</p>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ============ CORE MECHANICS ============ -->
+    <section class="section mechanics" id="mechanics">
+      <div class="section__head">
+        <p class="section__eyebrow">The art of conquest</p>
+        <h2 class="section__title" data-split>Core Mechanics</h2>
+      </div>
+
+      <div class="mechanics__grid">
+        <article class="mech" data-reveal>
+          <h3>Summoning</h3>
+          <p>Summoning requires both a creature card and its matching land card. Pay the creature's gold cost, place your land card on its tile in your orientation, and set the creature on top. Each land card summons only once — afterwards it marks your control of the tile.</p>
+        </article>
+        <article class="mech" data-reveal>
+          <h3>Claiming land</h3>
+          <p>Move onto a tile holding another player's land card and turn it to your orientation — it is yours. Unoccupied land is there for the taking, so defend what you claim.</p>
+        </article>
+        <article class="mech" data-reveal>
+          <h3>Harvesting</h3>
+          <p>Spend an action to harvest gold equal to the value on a land tile your creature occupies. A creature may harvest several tiles in a turn, but each tile yields only once per turn.</p>
+        </article>
+        <article class="mech" data-reveal>
+          <h3>Battle</h3>
+          <p>Both sides roll a six-sided die and add their strength modifier. Win by 4 or more and the enemy is destroyed. Win by less and the defender must retreat to an adjacent unoccupied tile beyond the attacker's reach — with nowhere to run, they fall, and the attacker claims the vacated tile.</p>
+        </article>
+      </div>
+
+      <aside class="example" data-reveal>
+        <p class="example__tag">From the rulebook</p>
+        <h3 class="example__title">Troll vs Giant Spider</h3>
+        <div class="example__versus">
+          <div class="example__side">
+            <span class="example__name">Troll</span>
+            <span class="example__math">+2 &times; roll 4</span>
+            <span class="example__total">6</span>
+          </div>
+          <div class="example__vs">vs</div>
+          <div class="example__side example__side--winner">
+            <span class="example__name">Giant Spider</span>
+            <span class="example__math">+3 &times; roll 5</span>
+            <span class="example__total">8</span>
+          </div>
+        </div>
+        <p class="example__outcome">A margin of 2 — less than 4. The Troll survives but must retreat to an adjacent unoccupied tile not adjacent to the Giant Spider, and the Giant Spider advances into the vacated tile.</p>
+      </aside>
+    </section>
+
+    <!-- ============ BIOMES ============ -->
+    <section class="section biomes" id="biomes">
+      <div class="section__head">
+        <p class="section__eyebrow">Nine realms</p>
+        <h2 class="section__title" data-split>Biome Synergies</h2>
+        <p class="section__lede">Every creature and every land belongs to a biome. Match the land and be buffed; mismatch it and be debuffed. Consult the chart whenever a creature interacts with a new land tile.</p>
+      </div>
+
+      <ul class="biome-grid">
+        <li class="biome-card" data-reveal>
+          <div class="biome-card__media"><img src="assets/biome-desert.jpg" alt="Desert biome" loading="lazy"></div>
+          <div class="biome-card__body">
+            <span class="medallion"><img src="assets/icon-desert.png" alt=""></span>
+            <h3>Desert</h3>
+            <div class="biome-card__effects">
+              <p class="fx fx--match"><span>Match — Conditioned</span>Gain one gold when your creature enters or leaves.</p>
+              <p class="fx fx--mismatch"><span>Mismatch — Scortched</span>Lose one gold when your creature enters or leaves.</p>
+            </div>
+          </div>
+        </li>
+        <li class="biome-card" data-reveal>
+          <div class="biome-card__media"><img src="assets/biome-forest.jpg" alt="Forest biome" loading="lazy"></div>
+          <div class="biome-card__body">
+            <span class="medallion"><img src="assets/icon-forest.png" alt=""></span>
+            <h3>Forest</h3>
+            <div class="biome-card__effects">
+              <p class="fx fx--match"><span>Match — Hidden</span>Gain +2 strength when defending.</p>
+              <p class="fx fx--mismatch"><span>Mismatch — Tangled</span>Your creature can not enter and leave this biome on the same turn.</p>
+            </div>
+          </div>
+        </li>
+        <li class="biome-card" data-reveal>
+          <div class="biome-card__media"><img src="assets/biome-tundra.jpg" alt="Tundra biome" loading="lazy"></div>
+          <div class="biome-card__body">
+            <span class="medallion"><img src="assets/icon-tundra.png" alt=""></span>
+            <h3>Tundra</h3>
+            <div class="biome-card__effects">
+              <p class="fx fx--match"><span>Match — Acclimatized</span>+2 strength.</p>
+              <p class="fx fx--mismatch"><span>Mismatch — Frostbitten</span>&minus;2 strength.</p>
+            </div>
+          </div>
+        </li>
+        <li class="biome-card" data-reveal>
+          <div class="biome-card__media"><img src="assets/biome-plains.jpg" alt="Plains biome" loading="lazy"></div>
+          <div class="biome-card__body">
+            <span class="medallion"><img src="assets/icon-plains.png" alt=""></span>
+            <h3>Plains</h3>
+            <div class="biome-card__effects">
+              <p class="fx fx--match"><span>Match — Ranged</span>Attack creatures from an additional tile away; on success, move into the new tile without changing ownership of the skipped tile.</p>
+              <p class="fx fx--mismatch"><span>Mismatch — Exposed</span>&minus;1 to all rolls.</p>
+            </div>
+          </div>
+        </li>
+        <li class="biome-card" data-reveal>
+          <div class="biome-card__media"><img src="assets/biome-mountains.jpg" alt="Mountains biome" loading="lazy"></div>
+          <div class="biome-card__body">
+            <span class="medallion"><img src="assets/icon-mountains.png" alt=""></span>
+            <h3>Mountains</h3>
+            <div class="biome-card__effects">
+              <p class="fx fx--match"><span>Match — Resourceful</span>+2 gold when harvested.</p>
+              <p class="fx fx--mismatch"><span>Mismatch — Isolated</span>Spells and abilities that directly affect this creature do not work.</p>
+            </div>
+          </div>
+        </li>
+        <li class="biome-card" data-reveal>
+          <div class="biome-card__media"><img src="assets/biome-town.jpg" alt="Town biome" loading="lazy"></div>
+          <div class="biome-card__body">
+            <span class="medallion"><img src="assets/icon-town.png" alt=""></span>
+            <h3>Town</h3>
+            <div class="biome-card__effects">
+              <p class="fx fx--match"><span>Match — Negotiator</span>+2 gold for each adjacent allied creature, &minus;1 gold for each adjacent enemy creature when harvested.</p>
+              <p class="fx fx--mismatch"><span>Mismatch — Haggled</span>+1 gold for each adjacent allied creature and &minus;2 gold for each adjacent enemy creature when harvested.</p>
+            </div>
+          </div>
+        </li>
+        <li class="biome-card" data-reveal>
+          <div class="biome-card__media"><img src="assets/biome-swamp.jpg" alt="Swamp biome" loading="lazy"></div>
+          <div class="biome-card__body">
+            <span class="medallion"><img src="assets/icon-swamp.png" alt=""></span>
+            <h3>Swamp</h3>
+            <div class="biome-card__effects">
+              <p class="fx fx--match"><span>Match — Evolved</span>Completely skip swamp tiles for 1 action; only costs 1 action to move into or out of.</p>
+              <p class="fx fx--mismatch"><span>Mismatch — Stuck</span>Costs 2 actions to move into or out of.</p>
+            </div>
+          </div>
+        </li>
+        <li class="biome-card" data-reveal>
+          <div class="biome-card__media"><img src="assets/biome-ocean.jpg" alt="Ocean biome" loading="lazy"></div>
+          <div class="biome-card__body">
+            <span class="medallion"><img src="assets/icon-ocean.png" alt=""></span>
+            <h3>Ocean</h3>
+            <div class="biome-card__effects">
+              <p class="fx fx--match"><span>Match — Lucky</span>When you enter, roll a die — on a 6, gain 4 gold.</p>
+              <p class="fx fx--mismatch"><span>Mismatch — Unlucky</span>When you enter, roll a die — on a 1, discard two non-land cards from your hand.</p>
+            </div>
+          </div>
+        </li>
+        <li class="biome-card" data-reveal>
+          <div class="biome-card__media"><img src="assets/biome-cave.jpg" alt="Cave biome" loading="lazy"></div>
+          <div class="biome-card__body">
+            <span class="medallion"><img src="assets/icon-cave.png" alt=""></span>
+            <h3>Cave</h3>
+            <div class="biome-card__effects">
+              <p class="fx fx--match"><span>Match — Nocturnal</span>A creature can navigate out of a cave in any direction.</p>
+              <p class="fx fx--mismatch"><span>Mismatch — Trapped</span>A creature may only exit this tile from the direction they entered; spells and abilities are not affected by this restriction.</p>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <p class="biomes__note" data-reveal>Biome movement restrictions apply to battle retreats too: a defender that cannot legally leave its biome is destroyed, even with open tiles nearby — unless the biome simply costs extra actions to cross.</p>
+    </section>
+
+    <!-- ============ CREATURE TYPES ============ -->
+    <section class="section creatures" id="creatures">
+      <div class="section__head">
+        <p class="section__eyebrow">Ten lineages</p>
+        <h2 class="section__title" data-split>Creature Types</h2>
+        <p class="section__lede">From angelic hosts to risen undead — every creature bears a type, a biome, a strength modifier and, for some, a lightning-bolt reaction.</p>
+      </div>
+    </section>
+    <div class="gallery" data-gallery>
+      <ul class="gallery__track" data-gallery-track>
+        <li class="creature"><figure><img src="assets/creature-angel.jpg" alt="Angel creature card art"></figure><span class="medallion medallion--sm"><img src="assets/type-angel.png" alt=""></span><h3>Angel</h3></li>
+        <li class="creature"><figure><img src="assets/creature-demon.jpg" alt="Demon creature card art"></figure><span class="medallion medallion--sm"><img src="assets/type-demon.png" alt=""></span><h3>Demon</h3></li>
+        <li class="creature"><figure><img src="assets/creature-dragon.jpg" alt="Dragon creature card art"></figure><span class="medallion medallion--sm"><img src="assets/type-dragon.png" alt=""></span><h3>Dragon</h3></li>
+        <li class="creature"><figure><img src="assets/creature-dwarf.jpg" alt="Dwarf creature card art"></figure><span class="medallion medallion--sm"><img src="assets/type-dwarf.png" alt=""></span><h3>Dwarf</h3></li>
+        <li class="creature"><figure><img src="assets/creature-elemental.jpg" alt="Elemental creature card art"></figure><span class="medallion medallion--sm"><img src="assets/type-elemental.png" alt=""></span><h3>Elemental</h3></li>
+        <li class="creature"><figure><img src="assets/creature-elite.jpg" alt="Elite creature card art"></figure><span class="medallion medallion--sm"><img src="assets/type-elite.png" alt=""></span><h3>Elite</h3></li>
+        <li class="creature"><figure><img src="assets/creature-orc.jpg" alt="Orc creature card art"></figure><span class="medallion medallion--sm"><img src="assets/type-orc.png" alt=""></span><h3>Orc</h3></li>
+        <li class="creature"><figure><img src="assets/creature-mermaid.jpg" alt="Mermaid creature card art"></figure><span class="medallion medallion--sm"><img src="assets/type-mermaid.png" alt=""></span><h3>Mermaid</h3></li>
+        <li class="creature"><figure><img src="assets/creature-giant.jpg" alt="Giant creature card art"></figure><span class="medallion medallion--sm"><img src="assets/type-giant.png" alt=""></span><h3>Giant</h3></li>
+        <li class="creature"><figure><img src="assets/creature-undead.jpg" alt="Undead creature card art"></figure><span class="medallion medallion--sm"><img src="assets/type-undead.png" alt=""></span><h3>Undead</h3></li>
+      </ul>
+    </div>
+
+    <!-- ============ WIN CONDITION ============ -->
+    <section class="win" id="win">
+      <div class="win__content">
+        <p class="win__eyebrow" data-reveal>The path to victory</p>
+        <h2 class="win__title" data-split>Control the realm</h2>
+        <div class="win__hexgrid" data-hexgrid aria-hidden="true"></div>
+        <p class="win__text" data-reveal>Before the first tile is placed, agree on the size of a winning realm: <strong>3&ndash;7 connected land tiles</strong>. Fewer tiles make quick skirmishes; more tiles make long campaigns.</p>
+        <p class="win__check" data-reveal>&ldquo;I am in check.&rdquo;</p>
+        <p class="win__text" data-reveal>Complete your chain, announce it at the end of your turn, and hold it until your next turn begins &mdash; the realm is yours.</p>
+        <p class="win__tip" data-reveal>Rule of thumb: eight minus the number of players.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <img src="assets/hex-symbol.png" alt="" class="footer__hex">
+    <p class="footer__title">Mystic</p>
+    <p class="footer__credit">A game by <strong>Daniel Schormann</strong> &amp; <strong>Don Kruger</strong></p>
+    <a href="#top" class="footer__top" data-scroll-to>Back to the summit</a>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

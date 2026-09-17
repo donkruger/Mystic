@@ -1,0 +1,15 @@
+# macOS
+.DS_Store
+
+# Editor
+.cursor/
+
+# Source design assets (kept locally, not in repo)
+Digital Art Assets/
+Playbook Redo.svg
+Playbook Redo - Smaller Version.svg
+Mystic Playbook V2.pdf
+Both pages.pdf
+
+# Empty scaffold
+board-game-file-builder/
