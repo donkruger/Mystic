@@ -59,7 +59,10 @@ window.MysticCards = (function () {
     var b = D.biome[biomeId];
     var chip = el("span", "mcard__chip", parent);
     chip.title = b.name + " biome";
-    img(ART.biomeIcon(b.slug), b.name, chip);
+    /* inner hex window: the medallion is an opaque square, so it is
+       zoomed inside a nested clip — same art as the biome chart */
+    var win = el("span", "mcard__chipin", chip);
+    img(ART.biomeIcon(b.slug), b.name, win);
     return chip;
   }
   function coin(value, label, parent) {
@@ -221,7 +224,8 @@ window.MysticCards = (function () {
 
     var chip = el("span", "mtile__chip", t);
     chip.title = biome.name + " biome";
-    img(ART.biomeIcon(biome.slug), "", chip);
+    var chipWin = el("span", "mtile__chipin", chip);
+    img(ART.biomeIcon(biome.slug), "", chipWin);
 
     el("span", "mtile__yield", t).textContent = harvestYield;
     el("span", "mtile__diamond", t).title = "Orientation marker — align diamonds when building the map";
