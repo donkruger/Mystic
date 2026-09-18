@@ -83,14 +83,99 @@
   gsap.from("[data-hero-fade]", {
     opacity: 0, y: 26, duration: 1.1, ease: "power3.out", stagger: 0.18, delay: 0.7
   });
-  gsap.from("[data-hero-hex]", {
-    opacity: 0, scale: 0.6, rotate: -30, duration: 1.6, ease: "power3.out", delay: 0.1
-  });
+  /* Hero land tile: a live, full-fidelity tile (random biome per load).
+     Entrance plays on the wrapper; the infinite idle spin plays on the
+     .mtile itself so the two tweens never fight. (Uses window.MysticCards
+     directly — the C/D aliases aren't assigned until the artefacts block.) */
+  var heroTile = document.querySelector("[data-hero-tile]");
+  if (heroTile && window.MysticCards && window.MYSTIC_DATA) {
+    var heroBiomes = window.MYSTIC_DATA.biomes;
+    var heroBiome = heroBiomes[(Math.random() * heroBiomes.length) | 0];
+    var heroTileEl = window.MysticCards.tile(heroBiome.id, { tilt: false });
+    if (heroTileEl) {
+      heroTile.appendChild(heroTileEl);
+      gsap.from(heroTile, {
+        opacity: 0, scale: 0.6, rotate: -30, duration: 1.6, ease: "power3.out", delay: 0.1
+      });
+      gsap.to(heroTileEl, { rotate: 360, duration: 90, ease: "none", repeat: -1 });
+    }
+  }
 
-  /* Hero hex: slow idle spin only — no scroll fade (it read as a glitch) */
-  var heroHex = document.querySelector("[data-hero-hex]");
-  if (heroHex) {
-    gsap.to(heroHex, { rotate: 360, duration: 90, ease: "none", repeat: -1 });
+  /* ---------- hero hex map: a honeycomb that builds around the title ----------
+     Light biome cells (gold ring + tinted parchment inset + icon), packed
+     flush pointy-top, with a ragged keep-out behind the hero copy. */
+  var heroMap = document.querySelector("[data-hero-map]");
+  if (heroMap && window.MYSTIC_ICONS && window.MYSTIC_DATA) {
+    var heroEl = heroMap.parentElement;
+    var heroContent = document.querySelector(".hero__content");
+    var mapBiomes = window.MYSTIC_DATA.biomes;
+    var mapTween = null;
+
+    var buildMap = function () {
+      if (mapTween) {
+        if (mapTween.scrollTrigger) mapTween.scrollTrigger.kill();
+        mapTween.kill();
+        mapTween = null;
+      }
+      heroMap.innerHTML = "";
+      var hw = heroEl.offsetWidth, hh = heroEl.offsetHeight;
+      if (!hw || !hh) return;
+      var W = Math.min(130, Math.max(96, hw * 0.09));
+      var stepX = W * 0.866, stepY = W * 0.75;
+      var hr = heroEl.getBoundingClientRect();
+      var cr = heroContent.getBoundingClientRect();
+      var keep = {
+        x0: cr.left - hr.left - W * 0.3, x1: cr.right - hr.left + W * 0.3,
+        y0: cr.top - hr.top - W * 0.3, y1: cr.bottom - hr.top + W * 0.3
+      };
+      var cells = [];
+      var row = 0;
+      for (var y = -W * 0.5; y < hh + W * 0.5; y += stepY, row++) {
+        var off = (row % 2) ? stepX / 2 : 0;
+        for (var x = -W + off; x < hw + W * 0.5; x += stepX) {
+          var cx = x + W / 2, cy = y + W / 2;
+          if (cx > keep.x0 && cx < keep.x1 && cy > keep.y0 && cy < keep.y1) continue;
+          var dx = Math.max(keep.x0 - cx, cx - keep.x1, 0);
+          var dy = Math.max(keep.y0 - cy, cy - keep.y1, 0);
+          if (Math.sqrt(dx * dx + dy * dy) < W * 1.2 && Math.random() < 0.4) continue;
+          var biome = mapBiomes[(Math.random() * mapBiomes.length) | 0];
+          var cell = document.createElement("span");
+          cell.className = "hexmap__cell bicon--" + biome.slug;
+          cell.style.width = W + "px";
+          cell.style.height = W + "px";
+          cell.style.left = x + "px";
+          cell.style.top = y + "px";
+          var inner = document.createElement("span");
+          inner.className = "hexmap__cellin";
+          inner.innerHTML = window.MYSTIC_ICONS.biome(biome.slug);
+          cell.appendChild(inner);
+          cell.__op = 0.35 + Math.random() * 0.65;
+          heroMap.appendChild(cell);
+          cells.push(cell);
+        }
+      }
+      if (!cells.length) return;
+      if (reduceMotion) {
+        cells.forEach(function (c) { c.style.opacity = c.__op; });
+        return;
+      }
+      gsap.set(cells, { opacity: 0, scale: 0, y: 50 });
+      mapTween = gsap.to(cells, {
+        scrollTrigger: { trigger: heroEl, start: "top 75%", toggleActions: "play none none reverse" },
+        duration: 0.6,
+        scale: 1,
+        y: 0,
+        opacity: function (i, t) { return t.__op; },
+        ease: "back.out(1.7)",
+        stagger: { amount: 1.5, grid: "auto", from: "center" }
+      });
+    };
+    buildMap();
+    var mapRz = null;
+    window.addEventListener("resize", function () {
+      clearTimeout(mapRz);
+      mapRz = setTimeout(buildMap, 250);
+    });
   }
 
   /* ---------- layered parallax ---------- */
