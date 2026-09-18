@@ -126,7 +126,8 @@
         duration: 1,
         ease: "power3.out",
         stagger: 0.09,
-        overwrite: true
+        overwrite: true,
+        clearProps: "transform" /* drop the composited layer after reveal — stale clip bug */
       });
     }
   });
