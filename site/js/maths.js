@@ -550,18 +550,25 @@
   var poly7Node = document.querySelector('[data-v="poly7"]');
   if (poly7Node) poly7Node.textContent = polyCounts[7];
 
-  /* draw every winning shape of sizes 3 and 4 */
+  /* draw every winning shape of sizes 3 and 4 — each cell borrows the
+     landing page's hero-map tile verbatim: gold ring + parchment inset +
+     biome icon, at the hero-map ratios (stepX = 0.866W, stepY = 0.75W,
+     hexRound clip). Deliberately small: this is a diagram, not a hero. */
   (function () {
     var m = mount("polyhex");
-    if (!m) return;
-    var S = 15; /* hex radius */
-    function hexPts(cx, cy) {
-      var pts = [];
-      for (var i = 0; i < 6; i++) {
-        var ang = Math.PI / 180 * (60 * i - 90);
-        pts.push((cx + S * Math.cos(ang)).toFixed(2) + "," + (cy + S * Math.sin(ang)).toFixed(2));
-      }
-      return pts.join(" ");
+    if (!m || !window.MYSTIC_ICONS) return;
+    var W = 34; /* cell box, px */
+    function rot60(c) { return [-c[1], c[0] + c[1]]; } /* axial 60° rotation */
+    function layout(cells) {
+      var pts = cells.map(function (c) {
+        return [0.866 * W * (c[0] + c[1] / 2), 0.75 * W * c[1]];
+      });
+      var minX = Math.min.apply(null, pts.map(function (p) { return p[0]; }));
+      var minY = Math.min.apply(null, pts.map(function (p) { return p[1]; }));
+      var norm = pts.map(function (p) { return [p[0] - minX, p[1] - minY]; });
+      var maxX = Math.max.apply(null, norm.map(function (p) { return p[0]; }));
+      var maxY = Math.max.apply(null, norm.map(function (p) { return p[1]; }));
+      return { pts: norm, w: maxX + W, h: maxY + W };
     }
     [3, 4].forEach(function (size) {
       var row = document.createElement("div");
@@ -572,19 +579,33 @@
       row.appendChild(cap);
       var strip = document.createElement("div");
       strip.className = "polyrow__strip";
-      polyShapes[size].forEach(function (cells) {
-        var minQ = Math.min.apply(null, cells.map(function (c) { return c[0]; }));
-        var minR = Math.min.apply(null, cells.map(function (c) { return c[1]; }));
-        var norm = cells.map(function (c) { return [c[0] - minQ, c[1] - minR]; });
-        var pts = norm.map(function (c) {
-          return [S * Math.sqrt(3) * (c[0] + c[1] / 2) + S, S * 1.5 * c[1] + S];
+      polyShapes[size].forEach(function (cells, si) {
+        /* rotate each shape to its most compact orientation (min height, then min width) */
+        var best = null, cur = cells;
+        for (var k = 0; k < 6; k++) {
+          var lay = layout(cur);
+          if (!best || lay.h < best.h - 0.01 || (Math.abs(lay.h - best.h) < 0.01 && lay.w < best.w)) best = lay;
+          cur = cur.map(rot60);
+        }
+        var shape = document.createElement("span");
+        shape.className = "polyshape";
+        shape.style.width = Math.ceil(best.w) + "px";
+        shape.style.height = Math.ceil(best.h) + "px";
+        best.pts.forEach(function (p, ci) {
+          var biome = D.biomes[(si + ci) % D.biomes.length];
+          var cell = document.createElement("span");
+          cell.className = "hexmap__cell bicon--" + biome.slug;
+          cell.style.width = W + "px";
+          cell.style.height = W + "px";
+          cell.style.left = p[0].toFixed(1) + "px";
+          cell.style.top = p[1].toFixed(1) + "px";
+          var inner = document.createElement("span");
+          inner.className = "hexmap__cellin";
+          inner.innerHTML = window.MYSTIC_ICONS.biome(biome.slug);
+          cell.appendChild(inner);
+          shape.appendChild(cell);
         });
-        var maxX = Math.max.apply(null, pts.map(function (p) { return p[0]; })) + S;
-        var maxY = Math.max.apply(null, pts.map(function (p) { return p[1]; })) + S;
-        var svg = el("svg", { viewBox: "0 0 " + maxX + " " + maxY, "class": "polyshape", role: "img" }, strip);
-        pts.forEach(function (p, i) {
-          el("polygon", { points: hexPts(p[0], p[1]), "class": "polyshape__cell" + (i === 0 ? " polyshape__cell--first" : "") }, svg);
-        });
+        strip.appendChild(shape);
       });
       row.appendChild(strip);
       m.appendChild(row);

@@ -10,6 +10,10 @@
      death (attacker dies)     -> mismatch
    ============================================================ */
 
+/* defined in cards.css on the landing page; restated so the borrowed
+   .hexmap__cell tiles render their gold ring on this page too */
+:root { --gold-bright: #e8cf8f; }
+
 /* ---------- header ---------- */
 .mhero {
   position: relative;
@@ -220,12 +224,10 @@
 .polyrow + .polyrow { margin-top: 1.4rem; }
 .polyrow__cap { color: var(--muted); font-size: 0.9rem; }
 .polyrow__cap strong { color: var(--gold-deep); }
-.polyrow__strip { display: flex; flex-wrap: wrap; gap: 1.1rem; align-items: flex-end; }
-.polyshape { width: auto; height: 86px; }
-.polyshape__cell {
-  fill: rgba(201,162,75,0.22); stroke: var(--gold-deep); stroke-width: 1.4;
-}
-.polyshape__cell--first { fill: var(--gold); }
+.polyrow__strip { display: flex; flex-wrap: wrap; gap: 1.2rem 1.5rem; align-items: flex-end; }
+/* each shape is a cluster of landing-page hero-map tiles (hexmap__cell) */
+.polyshape { position: relative; display: inline-block; flex: 0 0 auto; }
+.polyshape .hexmap__cell { will-change: auto; } /* static diagram — no scroll animation */
 
 /* ---------- calculator ---------- */
 .calc {

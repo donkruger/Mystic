@@ -10,12 +10,21 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css?v=62">
-  <link rel="stylesheet" href="css/maths.css?v=1">
+  <link rel="stylesheet" href="css/maths.css?v=2">
 </head>
 <body class="maths-page">
 
   <!-- Scroll progress -->
   <div class="progress" aria-hidden="true"><span class="progress__bar" data-progress></span></div>
+
+  <!-- shared clip def: pointy-top hex with subtly rounded vertices (same as index) -->
+  <svg class="svg-defs" width="0" height="0" aria-hidden="true" focusable="false">
+    <defs>
+      <clipPath id="hexRound" clipPathUnits="objectBoundingBox">
+        <path d="M0.4654 0.0200Q0.5 0 0.5346 0.0200L0.8984 0.2300Q0.933 0.25 0.9330 0.2900L0.9330 0.7100Q0.933 0.75 0.8984 0.7700L0.5346 0.9800Q0.5 1 0.4654 0.9800L0.1016 0.7700Q0.067 0.75 0.0670 0.7100L0.0670 0.2900Q0.067 0.25 0.1016 0.2300Z"/>
+      </clipPath>
+    </defs>
+  </svg>
 
   <!-- ============ HEADER ============ -->
   <header class="mhero">
@@ -496,6 +505,6 @@
 
   <script src="js/icons.js?v=62"></script>
   <script src="js/card-data.js?v=62"></script>
-  <script src="js/maths.js?v=1"></script>
+  <script src="js/maths.js?v=2"></script>
 </body>
 </html>
