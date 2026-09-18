@@ -211,9 +211,9 @@ window.MysticCards = (function () {
     mirror(s.name, head);
     coin(1, "Cost: 1 gold (Rules: all spells cost 1 gold)", head);
 
-    /* no mirrored description band — a spell's text is its whole content,
-       so repeating it above the art reads as duplication; the mirrored
-       top strip (name) is the opponent's read */
+    /* mirrored description band above the art — same treatment as creatures */
+    mirrorRules(s.text, inner);
+
     var sfig = artWindow(spellArt(s.name), s.name, inner);
     el("h4", "mcard__artname", sfig).textContent = s.name;
 
