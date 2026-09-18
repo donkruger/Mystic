@@ -193,23 +193,52 @@
         </article>
       </div>
 
-      <aside class="example" data-reveal>
-        <p class="example__tag">From the rulebook</p>
-        <h3 class="example__title">Troll vs Giant Spider</h3>
-        <div class="example__versus">
-          <div class="example__side">
-            <span class="example__name">Troll</span>
-            <span class="example__math">+2 &times; roll 4</span>
-            <span class="example__total">6</span>
-          </div>
-          <div class="example__vs">vs</div>
-          <div class="example__side example__side--winner">
-            <span class="example__name">Giant Spider</span>
-            <span class="example__math">+3 &times; roll 5</span>
-            <span class="example__total">8</span>
+      <aside class="example example--battle" data-reveal>
+        <div class="example__artwrap">
+          <img src="assets/battle-elite-demon-2048.jpg"
+               srcset="assets/battle-elite-demon-1280.jpg 1280w, assets/battle-elite-demon-2048.jpg 2048w"
+               sizes="(max-width: 1240px) 100vw, 1240px"
+               alt="An Elite knight in golden armour faces a shadow Demon across the hex map" loading="lazy" decoding="async">
+          <div class="example__overlay">
+            <p class="example__tag">From the rulebook</p>
+            <h3 class="example__title">Elite vs Demon</h3>
+            <div class="example__versus">
+              <div class="example__side">
+                <span class="example__name">Elite</span>
+                <span class="example__math">+2 &times; <svg class="die" viewBox="0 0 24 24" aria-label="roll 4"><rect x="2" y="2" width="20" height="20" rx="4.5"/><circle cx="8" cy="8" r="1.9"/><circle cx="16" cy="8" r="1.9"/><circle cx="8" cy="16" r="1.9"/><circle cx="16" cy="16" r="1.9"/></svg></span>
+                <span class="example__total">6</span>
+              </div>
+              <div class="example__vs">vs</div>
+              <div class="example__side example__side--winner">
+                <span class="example__name">Demon</span>
+                <span class="example__math">+3 &times; <svg class="die" viewBox="0 0 24 24" aria-label="roll 5"><rect x="2" y="2" width="20" height="20" rx="4.5"/><circle cx="8" cy="8" r="1.9"/><circle cx="16" cy="8" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="8" cy="16" r="1.9"/><circle cx="16" cy="16" r="1.9"/></svg></span>
+                <span class="example__total">8</span>
+              </div>
+            </div>
           </div>
         </div>
-        <p class="example__outcome">A margin of 2 — less than 4. The Troll survives but must retreat to an adjacent unoccupied tile not adjacent to the Giant Spider, and the Giant Spider advances into the vacated tile.</p>
+        <div class="example__aftermath">
+          <p class="example__outcome">A margin of 2 — less than 4. The Elite is <strong>not destroyed</strong>, but must retreat to an adjacent unoccupied tile that does not border the Demon — and the Demon <strong>must advance</strong> into the vacated tile.</p>
+          <figure class="example__diagram">
+            <svg viewBox="-40 -52 170 106" aria-hidden="true">
+              <polygon class="diag-hex diag-hex--demon" points="30,0 15,26 -15,26 -30,0 -15,-26 15,-26"/>
+              <polygon class="diag-hex diag-hex--vacated" points="75,0 60,26 30,26 15,0 30,-26 60,-26"/>
+              <polygon class="diag-hex diag-hex--elite" points="120,0 105,26 75,26 60,0 75,-26 105,-26"/>
+              <text class="diag-hexletter diag-hexletter--light" x="0" y="5">D</text>
+              <text class="diag-hexletter" x="90" y="5">E</text>
+              <path class="diag-arrow" d="M3,-11 Q22.5,-37 42,-11"/>
+              <path class="diag-arrow" d="M42,-11 L35,-14.5 M42,-11 L39.5,-4"/>
+              <path class="diag-arrow" d="M48,-11 Q67.5,-37 87,-11"/>
+              <path class="diag-arrow" d="M87,-11 L80,-14.5 M87,-11 L84.5,-4"/>
+              <text class="diag-arclabel" x="22.5" y="-42">advances</text>
+              <text class="diag-arclabel" x="67.5" y="-42">retreats</text>
+              <text class="diag-hexlabel" x="0" y="42">Demon</text>
+              <text class="diag-hexlabel" x="45" y="42">vacated</text>
+              <text class="diag-hexlabel" x="90" y="42">Elite</text>
+            </svg>
+            <figcaption>The retreat tile must not border the attacker.</figcaption>
+          </figure>
+        </div>
       </aside>
     </section>
 
