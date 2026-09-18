@@ -1191,10 +1191,11 @@
       { c: flower[3], rot: 180 }, { c: flower[2], rot: 180 }, /* opponent's */
       { c: flower[6], rot: 0 }, { c: flower[5], rot: 0 }      /* yours */
     ].map(function (cfg) {
-      var land = makeCard("land", 32, 44);
-      put(land, cfg.c.x, cfg.c.y, 90, 0);
-      var cre = makeCard("creature", 26, 38);
+      /* physical stack: creature card on the tile, land card on top */
+      var cre = makeCard("creature", 32, 44);
       put(cre, cfg.c.x, cfg.c.y, 90, 0);
+      var land = makeCard("land", 26, 38);
+      put(land, cfg.c.x, cfg.c.y, 90, 0);
       return { land: land, cre: cre, rot: cfg.rot };
     });
     /* a lone land card of the opponent's on the centre hex — the claim beat */
@@ -1373,7 +1374,7 @@
     w = w || 44; h = h || 60;
     var g = el("g", { "class": "setup-card setup-card--" + kind }, stage);
     el("rect", { x: -w / 2, y: -h / 2, width: w, height: h, rx: 4 }, g);
-    if (kind === "creature") {
+    if (kind === "creature" || kind === "foe") {
       el("polygon", { "class": "setup-card__mark", points: hexPts(0, -h * 0.14, 7) }, g);
       el("path", { "class": "setup-card__mark", d: "M" + (-w * 0.22) + "," + (h * 0.22) + " H" + (w * 0.22) + " M" + (-w * 0.22) + "," + (h * 0.22 + 4) + " H" + (w * 0.1) }, g);
     } else {
@@ -1381,11 +1382,13 @@
     }
     return g;
   }
-  function makePawn(cls) {
-    var g = el("g", { "class": "actions-pawn actions-pawn--" + cls }, stage);
-    el("circle", { r: 14 }, g);
-    el("polygon", { points: hexPts(0, 0, 6) }, g);
-    return g;
+  /* the physical stack: creature card on the tile, land card on top of it */
+  function makeStack(x, y, rot, scale) {
+    var cre = makeCard("creature", 40, 54);
+    put(cre, x, y, rot || 0, scale);
+    var land = makeCard("land", 32, 44);
+    put(land, x, y, rot || 0, scale);
+    return { cre: cre, land: land };
   }
   function makeCoin() {
     return el("circle", { "class": "setup-coin", r: 11 }, stage);
@@ -1426,16 +1429,16 @@
   /* ============ SCENE 1 — Summon ============ */
   async function actSummon(token) {
     clearStage();
-    caption("<strong>Summon</strong> — play a creature card with its matching land card, pay its gold cost, and place it on that land tile. Each land card summons only once.");
+    caption("<strong>Summon</strong> — pay its gold cost, place the creature card on the matching land tile, and cover it with its land card. Each land card summons only once.");
     badge("summon");
     var hexes = buildBoard();
     var target = FLOWER[6];
 
-    /* hand + gold */
-    var land = makeCard("land");
-    put(land, 452, 84, -6, 0);
+    /* hand + gold (creature created first so the land card paints on top) */
     var cre = makeCard("creature");
     put(cre, 502, 78, 8, 0);
+    var land = makeCard("land");
+    put(land, 452, 84, -6, 0);
     var coins = [0, 1, 2, 3].map(function (i) {
       var c = makeCoin();
       put(c, 462 + i * 26, 236, 0, 0);
@@ -1461,47 +1464,65 @@
       stepTl.call(function () { count.textContent = "× " + (3 - k); }, null, t + k * 0.16 * DUR + 0.2 * DUR);
     });
 
-    /* land card onto its matching tile, creature on top, pawn appears */
+    /* creature card onto its matching tile, then the land card covers it */
     t += 0.75 * DUR;
-    stepTl.to(land, { x: target.x, y: target.y, rotation: 0, duration: 0.55 * DUR, ease: "power2.inOut" }, t);
-    stepTl.to(cre, { x: target.x, y: target.y, rotation: 0, scale: 0.78, duration: 0.55 * DUR, ease: "power2.inOut" }, t + 0.3 * DUR);
-    stepTl.call(function () {
-      var pawn = makePawn("you");
-      put(pawn, target.x, target.y, 0, 0);
-      gsap.to(pawn, { scale: 1, duration: 0.4 * DUR, ease: "back.out(2)" });
-    }, null, t + 0.95 * DUR);
-    await delay((t / DUR + 1.6) * 1000 * DUR);
+    stepTl.to(cre, { x: target.x, y: target.y, rotation: 0, scale: 0.91, duration: 0.55 * DUR, ease: "power2.inOut" }, t);
+    stepTl.to(land, { x: target.x, y: target.y, rotation: 0, scale: 0.73, duration: 0.55 * DUR, ease: "power2.inOut" }, t + 0.35 * DUR);
+    await delay((t / DUR + 1.3) * 1000 * DUR);
   }
 
   /* ============ SCENE 2 — Move ============ */
   async function actMove(token) {
     clearStage();
-    caption("<strong>Move</strong> — one of your creatures to an adjacent tile. Land cards stay behind: territory endures.");
+    caption("<strong>Move</strong> — the creature card slides out from under its land card and moves to an adjacent tile. The land card stays behind: territory endures.");
     badge("move");
     var hexes = buildBoard();
     var from = FLOWER[0], to = FLOWER[1];
 
-    var land = makeCard("land", 36, 50);
-    put(land, from.x, from.y, 0, 0.9);
-    var pawn = makePawn("you");
-    put(pawn, from.x, from.y, 0, 0);
+    var stack = makeStack(from.x, from.y, 0, 0);
 
     stepTl = gsap.timeline();
     revealBoard(stepTl, hexes);
-    stepTl.to(pawn, { scale: 1, duration: 0.35 * DUR, ease: "back.out(1.7)" }, 0.5 * DUR);
+    stepTl.to([stack.cre, stack.land], { scale: 1, duration: 0.35 * DUR, ease: "back.out(1.7)" }, 0.5 * DUR);
     /* destination pulses */
-    stepTl.to(hexes[1], { fill: "rgba(201,162,75,0.3)", stroke: "#c9a24b", duration: 0.35 * DUR }, 1.0 * DUR);
-    /* the hop */
-    stepTl.to(pawn, { x: to.x, duration: 0.6 * DUR, ease: "power1.inOut" }, 1.5 * DUR);
-    stepTl.to(pawn, {
+    stepTl.to(hexes[1], { fill: "rgba(201,162,75,0.3)", stroke: "#c9a24b", duration: 0.35 * DUR }, 1.1 * DUR);
+    /* the creature card slides out from under the land card... */
+    stepTl.to(stack.cre, { y: from.y + 34, duration: 0.3 * DUR, ease: "power2.out" }, 1.6 * DUR);
+    /* ...and hops to the adjacent tile */
+    stepTl.to(stack.cre, { x: to.x, duration: 0.55 * DUR, ease: "power1.inOut" }, 2.0 * DUR);
+    stepTl.to(stack.cre, {
       keyframes: [
-        { y: (from.y + to.y) / 2 - 24, duration: 0.3 * DUR, ease: "power2.out" },
-        { y: to.y, duration: 0.3 * DUR, ease: "power2.in" }
+        { y: (from.y + to.y) / 2 - 18, duration: 0.28 * DUR, ease: "power2.out" },
+        { y: to.y, duration: 0.27 * DUR, ease: "power2.in" }
       ]
-    }, 1.5 * DUR);
+    }, 2.0 * DUR);
     /* the vacated land card stays — a quiet emphasis pulse */
-    stepTl.to(land, { scale: 1, duration: 0.3 * DUR, ease: "back.out(2)" }, 2.3 * DUR);
-    await delay(3.0 * 1000 * DUR);
+    stepTl.to(stack.land, { scale: 1.12, yoyo: true, repeat: 1, duration: 0.18 * DUR, ease: "power1.inOut" }, 2.7 * DUR);
+    await delay(3.4 * 1000 * DUR);
+  }
+
+  /* ============ SCENE 3 — Claim (no badge: a consequence, not an action) ============ */
+  async function actClaim(token) {
+    clearStage();
+    caption("<strong>Claim</strong> — cover an unoccupied tile and its land card turns to <strong>face that player</strong>. Defend your land.");
+    var hexes = buildBoard();
+    var home = FLOWER[3]; /* top hex */
+
+    /* enemy card created first so the land card paints on top of it */
+    var foe = makeCard("foe", 40, 54);
+    put(foe, home.x, -50, 180, 0);
+    var land = makeCard("land", 32, 44);
+    put(land, home.x, home.y, 0, 0);
+
+    stepTl = gsap.timeline();
+    revealBoard(stepTl, hexes);
+    stepTl.to(land, { scale: 1, duration: 0.35 * DUR, ease: "back.out(1.7)" }, 0.5 * DUR);
+    /* the enemy creature slides in and covers the tile, tucking under the land card */
+    stepTl.to(foe, { scale: 1, duration: 0.3 * DUR, ease: "back.out(1.7)" }, 1.1 * DUR);
+    stepTl.to(foe, { y: home.y, duration: 0.7 * DUR, ease: "power2.inOut" }, 1.4 * DUR);
+    /* the land card turns to face the enemy */
+    stepTl.to(land, { rotation: 180, duration: 0.7 * DUR, ease: "power2.inOut" }, 2.4 * DUR);
+    await delay(3.5 * 1000 * DUR);
   }
 
   /* ============ SCENE 3 — Battle (teaser) ============ */
@@ -1512,10 +1533,10 @@
     var hexes = buildBoard();
     var home = FLOWER[0], foe = FLOWER[1];
 
-    var you = makePawn("you");
+    var you = makeCard("creature", 40, 54);
     put(you, home.x, home.y, 0, 0);
-    var enemy = makePawn("foe");
-    put(enemy, foe.x, foe.y, 0, 0);
+    var enemy = makeCard("foe", 40, 54);
+    put(enemy, foe.x, foe.y, 180, 0);
 
     var dice = [0, 1].map(function (i) {
       var g = el("g", { "class": "setup-die" }, stage);
@@ -1555,10 +1576,7 @@
     var hexes = buildBoard();
     var home = FLOWER[0];
 
-    var land = makeCard("land", 36, 50);
-    put(land, home.x, home.y, 0, 0.9);
-    var pawn = makePawn("you");
-    put(pawn, home.x, home.y, 0, 0);
+    var stack = makeStack(home.x, home.y, 0, 0);
 
     /* gold pile */
     var pile = [0, 1, 2, 3].map(function (i) {
@@ -1575,7 +1593,7 @@
 
     stepTl = gsap.timeline();
     revealBoard(stepTl, hexes);
-    stepTl.to(pawn, { scale: 1, duration: 0.35 * DUR, ease: "back.out(1.7)" }, 0.5 * DUR);
+    stepTl.to([stack.cre, stack.land], { scale: 1, duration: 0.35 * DUR, ease: "back.out(1.7)" }, 0.5 * DUR);
     stepTl.to(count, { opacity: 1, duration: 0.3 * DUR }, 0.6 * DUR);
     pile.forEach(function (c, i) {
       stepTl.to(c, { scale: 1, duration: 0.3 * DUR, ease: "back.out(2)" }, 0.6 * DUR + i * 0.08 * DUR);
@@ -1635,10 +1653,10 @@
     await delay(2.2 * 1000 * DUR);
   }
 
-  var STEPS = [actSummon, actMove, actBattle, actHarvest, actDraw];
+  var STEPS = [actSummon, actMove, actClaim, actBattle, actHarvest, actDraw];
 
   /* ---------- stepper machinery ---------- */
-  var STEP_COUNT = 5;
+  var STEP_COUNT = 6;
   var currentStep = 0;
   var playToken = 0;
   var stepTl = null;
@@ -1684,7 +1702,7 @@
     var dot = document.createElement("button");
     dot.type = "button";
     dot.className = "battle-sim__dot";
-    dot.setAttribute("aria-label", "Go to action " + (d + 1));
+    dot.setAttribute("aria-label", "Go to scene " + (d + 1));
     (function (idx, elBtn) {
       elBtn.addEventListener("click", function () { goTo(idx); });
     })(d, dot);
@@ -1712,8 +1730,7 @@
     FLOWER.forEach(function (c) {
       el("polygon", { "class": "setup-tile", points: hexPts(c.x, c.y, S - 1.5) }, stage);
     });
-    var pawn = makePawn("you");
-    pawn.setAttribute("transform", "translate(" + FLOWER[0].x + "," + FLOWER[0].y + ")");
+    makeStack(FLOWER[0].x, FLOWER[0].y, 0);
   }
 
   if (!hasGsap || reduceMotion) {

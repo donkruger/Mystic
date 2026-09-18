@@ -231,13 +231,9 @@ a { color: inherit; text-decoration: none; }
   fill: var(--gold-deep); text-anchor: middle;
 }
 .actions-goldcount { font-family: var(--font-display); font-weight: 700; font-size: 15px; fill: var(--gold-deep); }
-.actions-pawn { pointer-events: none; }
-.actions-pawn circle { stroke-width: 2; }
-.actions-pawn polygon { fill: none; stroke-width: 1.2; }
-.actions-pawn--you circle { fill: #f6ecc9; stroke: var(--gold-deep); }
-.actions-pawn--you polygon { stroke: var(--gold-deep); }
-.actions-pawn--foe circle { fill: #2a2118; stroke: var(--gold); }
-.actions-pawn--foe polygon { stroke: #e8cf8f; }
+/* enemy creature card (dark, mirroring the demon token language) */
+.setup-card--foe rect { fill: #2a2118; stroke: var(--gold); }
+.setup-card--foe .setup-card__mark { stroke: #e8cf8f; }
 
 /* ---------- mechanics ---------- */
 .mechanics__grid {
