@@ -1865,8 +1865,9 @@
     chip: ".mcard__chip", coin: ".mcard__coin", strength: ".mcard__str",
     rules: ".mcard__rules", shield: ".mcard__shield", "class": ".mcard__class",
     art: ".mcard__art", mirror: ".mcard__mirror", chevrons: ".mcard__chev",
+    mrules: ".mcard__rules--mirror",
     tchip: ".mtile__chip", tyield: ".mtile__yield", tart: ".mtile__art",
-    tmark: ".mtile__mark--2"
+    tmark: ".mtile__mark--5"
   };
 
   document.querySelectorAll("[data-artefact-panel]").forEach(function (panel) {

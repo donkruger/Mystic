@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=30">
-  <link rel="stylesheet" href="css/cards.css?v=30">
+  <link rel="stylesheet" href="css/style.css?v=31">
+  <link rel="stylesheet" href="css/cards.css?v=31">
 </head>
 <body>
 
@@ -341,7 +341,8 @@
           <p class="anno" data-side="right" data-anchor="shield"><span class="anno__n">05.</span><span class="anno__t"><strong>Reaction shield</strong> — a golden shield on the right edge means the ability can answer another player's move.</span></p>
           <p class="anno" data-side="right" data-anchor="class"><span class="anno__n">06.</span><span class="anno__t"><strong>Creature type</strong> — the class medallion set into the art, bottom right, matching the creature gallery emblems. Dragon, Orc, Elite, Undead, Elemental, Angel, Demon, Giant, Mermaid or Dwarf.</span></p>
           <p class="anno" data-side="left" data-anchor="mirror"><span class="anno__n">07.</span><span class="anno__t"><strong>Opponent index</strong> — the mirrored strip on the top edge: strength and ability name, readable from across the table.</span></p>
-          <p class="anno" data-side="right" data-anchor="chevrons"><span class="anno__n">08.</span><span class="anno__t"><strong>Orientation chevrons</strong> — three gold chevrons point the way the card faces; struck in gold foil in print.</span></p>
+          <p class="anno" data-side="right" data-anchor="chevrons"><span class="anno__n">08.</span><span class="anno__t"><strong>Orientation chevrons</strong> — a column of nine gold chevrons beside the art points the way the card faces; struck in gold foil in print.</span></p>
+          <p class="anno" data-side="left" data-anchor="mrules"><span class="anno__n">09.</span><span class="anno__t"><strong>Mirrored description</strong> — the ability repeats upside down above the art; key elements reflect, never the whole card.</span></p>
           <svg class="artefact-lines" aria-hidden="true"></svg>
         </div>
       </div>
@@ -359,6 +360,7 @@
           <p class="anno" data-side="left" data-anchor="rules"><span class="anno__n">03.</span><span class="anno__t"><strong>Effect</strong> — the rules panel, bottom center. What the spell does, and when it may be played.</span></p>
           <p class="anno" data-side="right" data-anchor="shield"><span class="anno__n">04.</span><span class="anno__t"><strong>Reaction shield</strong> — when present, the spell may be cast in response to another player's action.</span></p>
           <p class="anno" data-side="left" data-anchor="mirror"><span class="anno__n">05.</span><span class="anno__t"><strong>Mirrored name</strong> — the top edge reads from across the table, so opponents see what was cast.</span></p>
+          <p class="anno" data-side="right" data-anchor="mrules"><span class="anno__n">06.</span><span class="anno__t"><strong>Mirrored effect</strong> — the rules text repeats upside down above the art, readable from across the table.</span></p>
           <svg class="artefact-lines" aria-hidden="true"></svg>
         </div>
       </div>
@@ -375,7 +377,8 @@
           <p class="anno" data-side="right" data-anchor="coin"><span class="anno__n">02.</span><span class="anno__t"><strong>Harvest yield</strong> — the coin, top right. Gold gained when one of your creatures harvests here.</span></p>
           <p class="anno" data-side="left" data-anchor="art"><span class="anno__n">03.</span><span class="anno__t"><strong>Land image</strong> — the terrain portrait. On the board, the card's <em>orientation</em> marks whose realm it belongs to.</span></p>
           <p class="anno" data-side="left" data-anchor="mirror"><span class="anno__n">04.</span><span class="anno__t"><strong>Mirrored biome</strong> — the top edge names the biome, readable from across the table.</span></p>
-          <p class="anno" data-side="right" data-anchor="chevrons"><span class="anno__n">05.</span><span class="anno__t"><strong>Orientation chevrons</strong> — the card's facing direction, in gold.</span></p>
+          <p class="anno" data-side="right" data-anchor="chevrons"><span class="anno__n">05.</span><span class="anno__t"><strong>Orientation chevrons</strong> — nine gold chevrons beside the art point the way the card faces.</span></p>
+          <p class="anno" data-side="right" data-anchor="mrules"><span class="anno__n">06.</span><span class="anno__t"><strong>Mirrored description</strong> — the rules repeat upside down above the art.</span></p>
           <svg class="artefact-lines" aria-hidden="true"></svg>
         </div>
       </div>
@@ -391,7 +394,7 @@
           <p class="anno" data-side="right" data-anchor="tchip"><span class="anno__n">01.</span><span class="anno__t"><strong>Biome marker</strong> — which of the nine biomes this tile belongs to.</span></p>
           <p class="anno" data-side="right" data-anchor="tyield"><span class="anno__n">02.</span><span class="anno__t"><strong>Harvest yield</strong> — the coin. Gold this tile grants per harvest.</span></p>
           <p class="anno" data-side="left" data-anchor="tart"><span class="anno__n">03.</span><span class="anno__t"><strong>Land image</strong> — full-bleed terrain art; the biome at a glance.</span></p>
-          <p class="anno" data-side="left" data-anchor="tmark"><span class="anno__n">04.</span><span class="anno__t"><strong>Three-way symmetry</strong> — the marker pair repeats on alternating edges, rotated 120° apart, so the tile reads the same from every seat.</span></p>
+          <p class="anno" data-side="left" data-anchor="tmark"><span class="anno__n">04.</span><span class="anno__t"><strong>Six-way symmetry</strong> — the marker pair repeats on every edge, rotated to read from each of the six seats.</span></p>
           <svg class="artefact-lines" aria-hidden="true"></svg>
         </div>
       </div>
@@ -422,9 +425,9 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
-  <script src="js/icons.js?v=30"></script>
-  <script src="js/card-data.js?v=30"></script>
-  <script src="js/cards.js?v=30"></script>
-  <script src="js/main.js?v=30"></script>
+  <script src="js/icons.js?v=31"></script>
+  <script src="js/card-data.js?v=31"></script>
+  <script src="js/cards.js?v=31"></script>
+  <script src="js/main.js?v=31"></script>
 </body>
 </html>

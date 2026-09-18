@@ -84,22 +84,32 @@ window.MysticCards = (function () {
     return m;
   }
   function chevrons(parent) {
-    /* three stacked upward chevrons = the card's facing direction;
-       gold-foil spot element in print (PPF §1.8 / Part 6) */
+    /* column of nine stacked upward chevrons beside the art = the card's
+       facing direction; gold-foil spot element in print (PPF §1.8 / Part 6) */
     var s = el("span", "mcard__chev", parent);
     s.title = "Orientation — the card faces the way the chevrons point";
+    var paths = "";
+    for (var i = 0; i < 9; i++) {
+      var y = 20 + i * 30;
+      paths += '<path d="M4.5 ' + y + ' L12 ' + (y - 8) + ' L19.5 ' + y + '"/>';
+    }
     s.innerHTML =
-      '<svg viewBox="0 0 24 30" aria-hidden="true">' +
+      '<svg viewBox="0 0 24 270" aria-hidden="true">' +
       '<defs><linearGradient id="mchev-g" x1="0" y1="0" x2="1" y2="1">' +
       '<stop offset="0" stop-color="#f6e7bd"/><stop offset="0.55" stop-color="#c9a24b"/>' +
       '<stop offset="1" stop-color="#8a6a25"/></linearGradient></defs>' +
-      '<g fill="none" stroke="url(#mchev-g)" stroke-width="2.2" ' +
-      'stroke-linecap="round" stroke-linejoin="round">' +
-      '<path d="M5 8 L12 2.5 L19 8"/>' +
-      '<path d="M5 16 L12 10.5 L19 16"/>' +
-      '<path d="M5 24 L12 18.5 L19 24"/>' +
-      '</g></svg>';
+      '<g fill="none" stroke="url(#mchev-g)" stroke-width="2.6" ' +
+      'stroke-linecap="round" stroke-linejoin="round">' + paths + '</g></svg>';
     return s;
+  }
+  function mirrorRules(strongText, text, parent) {
+    /* mirrored description band above the art — the opponent reads the card's
+       essence upside down; key elements reflect, never the whole card */
+    var mr = el("div", "mcard__rules mcard__rules--mirror", parent);
+    mr.setAttribute("aria-hidden", "true");
+    el("strong", null, mr).textContent = strongText;
+    mr.appendChild(document.createTextNode(text));
+    return mr;
   }
   function classIcon(classId, parent) {
     var c = D.cls[classId];
@@ -161,10 +171,14 @@ window.MysticCards = (function () {
        §6.1) — the coin shows strength as a placeholder until costs land. */
     coin(c.strength, "Summoning cost (placeholder: strength)", head);
 
-    /* name overlaid on the art; class medallion set into the art (SuperAI-style) */
-    var fig = artWindow(creatureArt(biome.slug, cls.slug), c.name + " — " + cls.name + " of the " + biome.name, inner);
+    mirrorRules(ab.name, ab.text, inner);
+
+    /* art at 73% width, left-aligned; nine-chevron column fills the strip */
+    var mid = el("div", "mcard__mid", inner);
+    var fig = artWindow(creatureArt(biome.slug, cls.slug), c.name + " — " + cls.name + " of the " + biome.name, mid);
     el("h4", "mcard__artname", fig).textContent = c.name;
     classIcon(c.classId, fig);
+    chevrons(mid);
 
     var rules = el("div", "mcard__rules", inner);
     el("strong", null, rules).textContent = ab.name;
@@ -172,7 +186,6 @@ window.MysticCards = (function () {
 
     var foot = el("footer", "mcard__foot", inner);
     strength(c.strength, foot);
-    chevrons(inner);
 
     if (ab.reaction) reactionShield(inner);
     return finishShell(card, opts && opts.tilt);
@@ -193,6 +206,8 @@ window.MysticCards = (function () {
     img(ART.potion, "Spell", chip);
     mirror(s.name, head);
     coin(1, "Cost: 1 gold (Rules: all spells cost 1 gold)", head);
+
+    mirrorRules("Spell" + (s.reaction ? " · Reaction" : ""), s.text, inner);
 
     var sfig = artWindow(spellArt(s.name), s.name, inner);
     el("h4", "mcard__artname", sfig).textContent = s.name;
@@ -219,16 +234,20 @@ window.MysticCards = (function () {
     mirror(biome.name, head);
     coin(l.harvest, "Harvest yield: " + l.harvest + " gold", head);
 
-    var lfig = artWindow(ART.biomeArt(biome.slug), biome.name + " land", inner);
+    var landText = "Yields " + l.harvest + " gold when harvested. Place on a matching " +
+      biome.name + " tile to summon; its orientation marks your ownership.";
+    mirrorRules("Land", landText, inner);
+
+    /* art at 73% width, left-aligned; nine-chevron column fills the strip */
+    var mid = el("div", "mcard__mid", inner);
+    var lfig = artWindow(ART.biomeArt(biome.slug), biome.name + " land", mid);
     el("h4", "mcard__artname", lfig).textContent = biome.name;
+    chevrons(mid);
 
     var rules = el("div", "mcard__rules mcard__rules--plain", inner);
     el("strong", null, rules).textContent = "Land";
-    rules.appendChild(document.createTextNode(
-      "Yields " + l.harvest + " gold when harvested. Place on a matching " +
-      biome.name + " tile to summon; its orientation marks your ownership."));
+    rules.appendChild(document.createTextNode(landText));
 
-    chevrons(inner);
     return finishShell(card, opts && opts.tilt);
   }
 
@@ -246,9 +265,9 @@ window.MysticCards = (function () {
     img(ART.biomeArt(biome.slug), "", art);
     el("div", "mtile__veil", t);
 
-    /* marker pair (biome chip + yield coin) repeated on three alternating
-       edges, rotated 120° apart — the tile reads the same from every seat */
-    for (var i = 0; i < 3; i++) {
+    /* marker pair (biome chip + yield coin) repeated on every edge,
+       rotated 60° apart — one pair per seat around the hex */
+    for (var i = 0; i < 6; i++) {
       var mark = el("span", "mtile__mark mtile__mark--" + i, t);
       var chip = el("span", "mtile__chip bicon--" + biome.slug, mark);
       chip.title = biome.name + " biome";

@@ -46,22 +46,27 @@ Design notes (current iteration):
   SVG `clipPath` with subtly rounded vertices (polygon fallback kept).
 - **Strength** — rendered as a bare gold **"+N" numeral** at bottom left (no diamond
   housing); the die roll adds to it in battle.
-- **Art window** — enlarged to 50% of the card height so the art crops less; the card's
-  **name is overlaid on the art's bottom edge** over an ivory scrim (SuperAI-style), and the
-  class medallion is set into the art's bottom-right corner. Card titles are set at the same
-  size as the rules text.
+- **Art window** — 50% of the card height; on creature and land cards it narrows to
+  **73% width, left-aligned**, with the chevron column filling the strip to its right
+  (spells keep full-width art — they carry no facing). The card's **name is overlaid on
+  the art's bottom edge** over an ivory scrim (SuperAI-style), and the class medallion is
+  set into the art's bottom-right corner. Card titles are set at the same size as the
+  rules text.
 - **Opponent index** — the top edge of every card carries a **mirrored strip** (rotated
   180°) so players across the table can read it: creatures show strength + ability name,
-  spells their name, lands their biome.
+  spells their name, lands their biome. The **description also repeats** in a muted,
+  two-line-clamped mirrored band directly above the art — key elements reflect with
+  alternative placement, never the whole card.
 - **Tile symmetry** — the land tile repeats its biome marker + harvest yield, side by
-  side, on three alternating edges, rotated 120° apart, so the tile reads identically
-  from every seat (3-fold rotational symmetry). Tiles have no facing and mark no
-  ownership — orientation/ownership lives on the cards only (chevrons + mirrored index).
-- **Orientation chevrons** — three stacked, smooth-edged upward chevrons at the bottom
-  right of creature and land cards signify the card's facing direction. Designated
-  **hot-foil (烫金) spot element**: at export it becomes a named "Foil Gold" separation
-  flagged overprint per Premium-Print-Formats §1.8 / Part 6 — same treatment as the
-  reaction shield.
+  side, on **every edge** — six pairs rotated 60° apart, pushed to the rim — so the tile
+  reads identically from each of the six seats (6-fold rotational symmetry). Tiles have
+  no facing and mark no ownership — orientation/ownership lives on the cards only
+  (chevrons + mirrored index).
+- **Orientation chevrons** — a column of **nine** smooth-edged upward chevrons beside
+  the art (roughly twice the original mark's size) signifies the facing direction of
+  creature and land cards. Designated **hot-foil (烫金) spot element**: at export it
+  becomes a named "Foil Gold" separation flagged overprint per Premium-Print-Formats
+  §1.8 / Part 6 — same treatment as the reaction shield.
 - **Annotation pattern** — the explainer panels are unified diagrams: numbered labels flank
   the artefact (vanlent.dev-style `01.` numerals fused with the text) and dashed connector
   lines, measured from the live DOM, point to each element's edge. No markers sit on the
@@ -169,9 +174,9 @@ Components sheet: **3 elements** — Biome (middle right), harvest yield (middle
 land image (center). The Rules sheet adds: tiles carry a **diamond marker on the right
 side** used to align orientation when building the map ("aligning the diamonds on the
 right side of each tile"). The code-generated design (§5.4) drops the diamond: the
-biome marker + harvest yield repeat on three alternating edges, rotated 120° apart
-(3-fold symmetry), so the tile reads the same from every seat. Tiles carry no facing
-or ownership — orientation is a card property (§5.1–5.3).
+biome marker + harvest yield repeat on every edge, rotated 60° apart (6-fold
+symmetry), so the tile reads the same from each of the six seats. Tiles carry no
+facing or ownership — orientation is a card property (§5.1–5.3).
 
 North-star render (Desert) shows: full-bleed painted biome scene with a subtle 3D rim —
 **no** visible biome icon, harvest numeral, or orientation diamond. These markers must be
@@ -316,7 +321,7 @@ Component-relevant facts from the Rules sheet:
 | Land image | asset pipeline (per biome) | Full-bleed hex art |
 | Biome marker | `Biomes_tbl` via `BiomeID` | Icon, middle right (per Components) |
 | Harvest yield | `Lands_tbl.Harvest amount` | Numeral, middle right (per Components) |
-| Biome marker + harvest yield ×3 | `Biomes_tbl` icon + `Lands_tbl.Harvest amount` | Alternating edges, rotated 120° apart — reads the same from every seat; no facing/ownership (supersedes the Rules' orientation diamond) |
+| Biome marker + harvest yield ×6 | `Biomes_tbl` icon + `Lands_tbl.Harvest amount` | Every edge, rotated 60° apart, at the rim — reads the same from each of the six seats; no facing/ownership (supersedes the Rules' orientation diamond) |
 
 ---
 

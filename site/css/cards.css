@@ -160,6 +160,16 @@
   box-shadow: 0 6px 14px -10px rgba(34, 29, 18, 0.5);
   background: #e9e2cf;
 }
+/* mid row (creature + land): art at 73% left-aligned + chevron strip right */
+.mcard__mid {
+  display: flex;
+  gap: 3%;
+  flex: 0 0 50%;
+  min-height: 0;
+  position: relative;
+  z-index: 3;
+}
+.mcard__mid .mcard__art { flex: 0 0 73%; min-width: 0; }
 .mcard__art > img {
   width: 100%;
   height: 100%;
@@ -203,6 +213,19 @@
   line-height: 1.42;
   color: var(--ink);
   overflow: hidden;
+}
+/* mirrored description band above the art — muted, clamped, for opponents */
+.mcard__rules--mirror {
+  flex: 0 0 auto;
+  transform: rotate(180deg);
+  color: var(--muted);
+  font-size: calc(var(--card-w) * 0.034);
+  line-height: 1.3;
+  max-height: 2.7em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
 }
 .mcard__rules strong {
   display: block;
@@ -264,15 +287,13 @@
 
 /* ---------- orientation chevrons (gold, bottom right) ---------- */
 .mcard__chev {
-  position: absolute;
-  z-index: 6;
-  right: calc(var(--mcard-safe) * 0.85);
-  bottom: calc(var(--mcard-safe) * 0.85);
-  width: 7%;
-  aspect-ratio: 24 / 30;
+  flex: 1 1 auto;
+  min-width: 0;
+  display: grid;
+  place-items: center;
   filter: drop-shadow(0 1px 2px rgba(138, 106, 37, 0.4));
 }
-.mcard__chev svg { width: 100%; height: 100%; display: block; }
+.mcard__chev svg { height: 94%; width: auto; max-width: 100%; display: block; }
 
 /* ---------- reaction shield (golden, right edge) ---------- */
 .mcard__shield {
@@ -362,15 +383,12 @@
 }
 .mtile__art { position: absolute; inset: 0; }
 .mtile__art img { width: 100%; height: 100%; object-fit: cover; }
-.mtile__veil {                       /* legibility wash behind each marker group */
+.mtile__veil {                       /* legibility rim wash behind the marker ring */
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(90deg, transparent 62%, rgba(20, 16, 8, 0.34) 100%),
-    linear-gradient(210deg, transparent 62%, rgba(20, 16, 8, 0.34) 100%),
-    linear-gradient(330deg, transparent 62%, rgba(20, 16, 8, 0.34) 100%);
+  background: radial-gradient(circle, transparent 56%, rgba(20, 16, 8, 0.34) 100%);
 }
-/* marker pair (chip + coin, side by side) on three alternating edges, 120° apart */
+/* marker pair (chip + coin, side by side) on every edge — one per seat */
 .mtile__mark {
   position: absolute;
   left: var(--mx);
@@ -382,9 +400,12 @@
   gap: calc(var(--tile-w) * 0.02);
   z-index: 2;
 }
-.mtile__mark--0 { --mx: 80%; --my: 50%; --mr: 90deg; }
-.mtile__mark--1 { --mx: 35%; --my: 76%; --mr: 210deg; }
-.mtile__mark--2 { --mx: 35%; --my: 24%; --mr: 330deg; }
+.mtile__mark--0 { --mx: 67%; --my: 20.6%; --mr: 30deg; }
+.mtile__mark--1 { --mx: 84%; --my: 50%;   --mr: 90deg; }
+.mtile__mark--2 { --mx: 67%; --my: 79.4%; --mr: 150deg; }
+.mtile__mark--3 { --mx: 33%; --my: 79.4%; --mr: 210deg; }
+.mtile__mark--4 { --mx: 16%; --my: 50%;   --mr: 270deg; }
+.mtile__mark--5 { --mx: 33%; --my: 20.6%; --mr: 330deg; }
 .mtile__chip {
   width: calc(var(--tile-w) * 0.15);
   aspect-ratio: 1;
