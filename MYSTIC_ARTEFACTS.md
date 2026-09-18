@@ -44,10 +44,10 @@ Design notes (current iteration):
 - **Opponent index** — the top edge of every card carries a **mirrored strip** (rotated
   180°) so players across the table can read it: creatures show strength + ability name,
   spells their name, lands their biome.
-- **Tile symmetry** — the land tile repeats its biome marker + harvest yield on three
-  alternating edges, rotated 120° apart, so the tile reads identically from every seat
-  (3-fold rotational symmetry). Tiles have no facing and mark no ownership —
-  orientation/ownership lives on the cards only (chevrons + mirrored index).
+- **Tile symmetry** — the land tile repeats its biome marker + harvest yield, side by
+  side, on three alternating edges, rotated 120° apart, so the tile reads identically
+  from every seat (3-fold rotational symmetry). Tiles have no facing and mark no
+  ownership — orientation/ownership lives on the cards only (chevrons + mirrored index).
 - **Orientation chevrons** — three stacked, smooth-edged upward chevrons at the bottom
   right of creature and land cards signify the card's facing direction. Designated
   **hot-foil (烫金) spot element**: at export it becomes a named "Foil Gold" separation

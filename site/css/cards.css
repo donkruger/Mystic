@@ -370,21 +370,21 @@
     linear-gradient(210deg, transparent 62%, rgba(20, 16, 8, 0.34) 100%),
     linear-gradient(330deg, transparent 62%, rgba(20, 16, 8, 0.34) 100%);
 }
-/* marker pair (chip + coin) repeated on three alternating edges, 120° apart */
+/* marker pair (chip + coin, side by side) on three alternating edges, 120° apart */
 .mtile__mark {
   position: absolute;
   left: var(--mx);
   top: var(--my);
   transform: translate(-50%, -50%) rotate(var(--mr));
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   gap: calc(var(--tile-w) * 0.02);
   z-index: 2;
 }
-.mtile__mark--0 { --mx: 77%;   --my: 50%;   --mr: 90deg; }
-.mtile__mark--1 { --mx: 36.5%; --my: 73.5%; --mr: 210deg; }
-.mtile__mark--2 { --mx: 36.5%; --my: 26.5%; --mr: 330deg; }
+.mtile__mark--0 { --mx: 80%; --my: 50%; --mr: 90deg; }
+.mtile__mark--1 { --mx: 35%; --my: 76%; --mr: 210deg; }
+.mtile__mark--2 { --mx: 35%; --my: 24%; --mr: 330deg; }
 .mtile__chip {
   width: calc(var(--tile-w) * 0.15);
   aspect-ratio: 1;
