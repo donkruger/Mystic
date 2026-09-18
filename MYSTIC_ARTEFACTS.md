@@ -28,11 +28,17 @@ Part 6) is future work built on the same modules.
 Design notes (current iteration):
 
 - **Medallion assets** — the biome (`icon-*`) and type (`type-*`) icons ship as transparent
-  cutouts (white canvas removed at the source), so they sit inside their hex/circle housings
-  with a real gold margin; the spell card's top-left hex chip carries a **potion medallion**
-  (`assets/potion.png`) as the spell-mark instead of the brand hex.
-- **Rounded hexes** — all hex housings (chips, land tiles) clip to `#hexRound`, an inline
+  cutouts (white canvas removed at the source). On cards, the biome mark (top left) and the
+  spell-mark — a **potion medallion** (`assets/potion.png`) — are shown as **raw cutouts with
+  no housing** (the icons arrive pre-framed with their own ornate rims); the type medallion
+  (bottom right) keeps its parchment + gold circle badge. On land tiles, the biome marker
+  keeps its gold hex housing.
+- **Rounded hexes** — the land tile and its biome marker clip to `#hexRound`, an inline
   SVG `clipPath` with subtly rounded vertices (polygon fallback kept).
+- **Strength** — rendered as a bare gold **"+N" numeral** at bottom left (no diamond
+  housing); the die roll adds to it in battle.
+- **Art window** — enlarged to 52% of the card height so the art crops less; card titles
+  are set at the same size as the rules text.
 - **Annotation pattern** — the explainer panels are unified diagrams: numbered labels flank
   the artefact (vanlent.dev-style `01.` numerals fused with the text) and dashed connector
   lines, measured from the live DOM, point to each element's edge. No markers sit on the
@@ -250,7 +256,7 @@ Component-relevant facts from the Rules sheet:
 | Subtitle (flavor title) | **not in data — gap** | Gold italic script |
 | Biome badge | `Biomes_tbl` via `BiomeID` | Hex medallion; top center (render) / top left (Components) — pick one, see §6 |
 | Summoning cost | **not in `Creatures_tbl` — gap** | Coin badge, top right (Components) |
-| Strength | `Creatures_tbl.Strength` | Diamond badge, left side |
+| Strength | `Creatures_tbl.Strength` | Bare gold "+N" numeral, bottom left |
 | Ability name | `Abilities_tbl.Name` | Gold caps heading, bottom panel |
 | Ability rules text | `Abilities_tbl.Description` | Ivory body, bottom panel |
 | Ability cost | `Abilities_tbl.Cost` | Unused in render — see §6 |

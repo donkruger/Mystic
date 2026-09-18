@@ -63,7 +63,7 @@
   display: flex;
   flex-direction: column;
   padding: var(--mcard-safe);
-  gap: 3.2%;
+  gap: 2.4%;
 }
 
 .mcard[data-tilt]:hover .mcard__inner {
@@ -89,43 +89,31 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  min-height: 11%;
+  min-height: 8%;
   position: relative;
   z-index: 5;
 }
 
+/* biome / spell mark — the raw medallion cutout, no housing; the icons
+   arrive pre-framed with their own ornate rims */
 .mcard__chip {
   flex: 0 0 auto;
-  width: 12.5%;
+  width: 13.5%;
   aspect-ratio: 1;
-  clip-path: polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%);
-  clip-path: url(#hexRound); /* subtly rounded vertices */
-  background: linear-gradient(150deg, var(--gold-bright), var(--gold));
   display: grid;
   place-items: center;
-  box-shadow: 0 2px 6px -2px rgba(138, 106, 37, 0.6);
+  filter: drop-shadow(0 2px 4px rgba(138, 106, 37, 0.45));
 }
-/* medallion assets are pre-cropped transparent cutouts, so the inner hex
-   window floats them over the gold rim with real padding on every side */
-.mcard__chipin {
-  width: 84%;
-  aspect-ratio: 1;
-  clip-path: polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%);
-  clip-path: url(#hexRound);
-  overflow: hidden;
-  display: grid;
-  place-items: center;
-}
-.mcard__chipin img {
+.mcard__chip img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .mcard__name {
   flex: 1 1 auto;
   min-width: 0;
-  font-size: calc(var(--card-w) * 0.062);
+  font-size: calc(var(--card-w) * 0.041); /* same size as the rules text */
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -159,7 +147,7 @@
 .mcard__art {
   position: relative;
   z-index: 3;
-  flex: 0 0 44%;
+  flex: 0 0 52%;
   border-radius: calc(var(--card-radius) * 0.55);
   overflow: hidden;
   border: 1px solid rgba(201, 162, 75, 0.5);
@@ -202,27 +190,22 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  min-height: 10%;
+  min-height: 8%;
 }
 
-.mcard__diamond {
+/* strength — a bare gold numeral, no housing */
+.mcard__str {
   flex: 0 0 auto;
-  width: 13.5%;
-  aspect-ratio: 1;
-  transform: rotate(45deg);
-  border-radius: 18%;
-  background: linear-gradient(150deg, #fffdf4, #f0e3c0);
-  border: 1.5px solid var(--gold);
-  box-shadow: 0 3px 8px -3px rgba(138, 106, 37, 0.55);
-  display: grid;
-  place-items: center;
-  margin: 0 3% 1.5% 3%;
-}
-.mcard__diamond span {
-  transform: rotate(-45deg);
+  margin: 0 3% 1% 3%;
   font-weight: 700;
-  font-size: calc(var(--card-w) * 0.072);
+  font-size: calc(var(--card-w) * 0.075);
+  line-height: 1;
   color: var(--gold-deep);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+.mcard__str .plus {
+  font-size: 0.72em;
+  vertical-align: 0.08em;
 }
 
 /* creature type = the same circular medallion as the creature gallery

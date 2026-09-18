@@ -1854,7 +1854,7 @@
   };
   /* annotation anchor keys -> card element selectors */
   var ANCHORS = {
-    chip: ".mcard__chip", coin: ".mcard__coin", diamond: ".mcard__diamond",
+    chip: ".mcard__chip", coin: ".mcard__coin", strength: ".mcard__str",
     rules: ".mcard__rules", shield: ".mcard__shield", "class": ".mcard__class",
     art: ".mcard__art",
     tchip: ".mtile__chip", tyield: ".mtile__yield", tart: ".mtile__art",

@@ -60,10 +60,9 @@ window.MysticCards = (function () {
     var b = D.biome[biomeId];
     var chip = el("span", "mcard__chip", parent);
     chip.title = b.name + " biome";
-    /* inner hex window: the medallion is an opaque square, so it is
-       zoomed inside a nested clip — same art as the biome chart */
-    var win = el("span", "mcard__chipin", chip);
-    img(ART.biomeIcon(b.slug), b.name, win);
+    /* raw medallion cutout — the icons arrive pre-framed with their
+       own ornate rims, so no housing is needed */
+    img(ART.biomeIcon(b.slug), b.name, chip);
     return chip;
   }
   function coin(value, label, parent) {
@@ -72,10 +71,12 @@ window.MysticCards = (function () {
     c.title = label;
     return c;
   }
-  function diamond(value, parent) {
-    var d = el("span", "mcard__diamond", parent);
+  function strength(value, parent) {
+    /* bare gold "+N" numeral — no housing (the die roll adds to it) */
+    var d = el("span", "mcard__str", parent);
     d.title = "Strength " + value;
-    el("span", null, d).textContent = value;
+    el("span", "plus", d).textContent = "+";
+    d.appendChild(document.createTextNode(value));
     return d;
   }
   function classIcon(classId, parent) {
@@ -145,7 +146,7 @@ window.MysticCards = (function () {
     rules.appendChild(document.createTextNode(ab.text));
 
     var foot = el("footer", "mcard__foot", inner);
-    diamond(c.strength, foot);
+    strength(c.strength, foot);
     el("span", "mcard__tag", foot).textContent = cls.name + " · " + biome.name;
     classIcon(c.classId, foot);
 
@@ -164,10 +165,8 @@ window.MysticCards = (function () {
     var head = el("header", "mcard__head", inner);
     var chip = el("span", "mcard__chip", head);
     chip.title = "Spell card";
-    /* the spell-mark: potion medallion in the same nested-hex housing
-       as the biome chips */
-    var chipWin = el("span", "mcard__chipin", chip);
-    img(ART.potion, "Spell", chipWin);
+    /* the spell-mark: raw potion medallion, same treatment as biome chips */
+    img(ART.potion, "Spell", chip);
     el("h4", "mcard__name", head).textContent = s.name;
     coin(1, "Cost: 1 gold (Rules: all spells cost 1 gold)", head);
 
