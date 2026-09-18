@@ -255,15 +255,13 @@
   object-fit: cover;
 }
 
-/* QR zone, footer bottom right — gold modules on a borderless pure-white
-   square; the white field alone contrasts subtly with the ivory face */
+/* QR zone, footer bottom right — white modules on transparent, a ghost
+   texture directly on the ivory face (decorative; unscannable by design) */
 .mcard__qr {
   flex: 0 0 auto;
   width: 15%;
   aspect-ratio: 1;
   margin: 0 0 0 auto;
-  border-radius: 4%;
-  overflow: hidden;
   display: grid;
   place-items: center;
 }
