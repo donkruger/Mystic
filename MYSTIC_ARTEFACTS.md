@@ -44,6 +44,11 @@ Design notes (current iteration):
 - **Opponent index** — the top edge of every card carries a **mirrored strip** (rotated
   180°) so players across the table can read it: creatures show strength + ability name,
   spells their name, lands their biome.
+- **Orientation chevrons** — three stacked, smooth-edged upward chevrons at the bottom
+  right of creature and land cards signify the card's facing direction. Designated
+  **hot-foil (烫金) spot element**: at export it becomes a named "Foil Gold" separation
+  flagged overprint per Premium-Print-Formats §1.8 / Part 6 — same treatment as the
+  reaction shield.
 - **Annotation pattern** — the explainer panels are unified diagrams: numbered labels flank
   the artefact (vanlent.dev-style `01.` numerals fused with the text) and dashed connector
   lines, measured from the live DOM, point to each element's edge. No markers sit on the

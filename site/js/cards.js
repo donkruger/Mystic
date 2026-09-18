@@ -85,6 +85,24 @@ window.MysticCards = (function () {
     m.textContent = text;
     return m;
   }
+  function chevrons(parent) {
+    /* three stacked upward chevrons = the card's facing direction;
+       gold-foil spot element in print (PPF §1.8 / Part 6) */
+    var s = el("span", "mcard__chev", parent);
+    s.title = "Orientation — the card faces the way the chevrons point";
+    s.innerHTML =
+      '<svg viewBox="0 0 24 30" aria-hidden="true">' +
+      '<defs><linearGradient id="mchev-g" x1="0" y1="0" x2="1" y2="1">' +
+      '<stop offset="0" stop-color="#f6e7bd"/><stop offset="0.55" stop-color="#c9a24b"/>' +
+      '<stop offset="1" stop-color="#8a6a25"/></linearGradient></defs>' +
+      '<g fill="none" stroke="url(#mchev-g)" stroke-width="2.2" ' +
+      'stroke-linecap="round" stroke-linejoin="round">' +
+      '<path d="M5 8 L12 2.5 L19 8"/>' +
+      '<path d="M5 16 L12 10.5 L19 16"/>' +
+      '<path d="M5 24 L12 18.5 L19 24"/>' +
+      '</g></svg>';
+    return s;
+  }
   function classIcon(classId, parent) {
     var c = D.cls[classId];
     var wrap = el("span", "mcard__class", parent);
@@ -156,6 +174,7 @@ window.MysticCards = (function () {
 
     var foot = el("footer", "mcard__foot", inner);
     strength(c.strength, foot);
+    chevrons(inner);
 
     if (ab.reaction) reactionShield(inner);
     return finishShell(card, opts && opts.tilt);
@@ -211,6 +230,7 @@ window.MysticCards = (function () {
       "Yields " + l.harvest + " gold when harvested. Place on a matching " +
       biome.name + " tile to summon; its orientation marks your ownership."));
 
+    chevrons(inner);
     return finishShell(card, opts && opts.tilt);
   }
 
