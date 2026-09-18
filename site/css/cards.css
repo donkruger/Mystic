@@ -520,13 +520,23 @@
 }
 /* yield inset carries the ₲ mark + numeral as text instead of a glyph */
 .mtile__yieldin {
+  position: relative;
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: center;
+  line-height: 1;
   font-size: calc(var(--tile-w) * 0.032);
   font-weight: 700;
   color: var(--gold-deep);
 }
+/* inner frame line — the currency hex alone wears an engraved rim */
+.mtile__yieldring {
+  position: absolute;
+  inset: 7%;
+  color: var(--gold);
+  pointer-events: none;
+}
+.mtile__yieldring svg { width: 100%; height: 100%; display: block; }
 .mtile__chipin svg {
   width: 68%;
   height: 68%;

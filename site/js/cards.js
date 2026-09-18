@@ -291,6 +291,11 @@ window.MysticCards = (function () {
       var y = el("span", "mtile__yield", mark);
       y.title = "Harvest yield: " + harvestYield + " gold";
       var yin = el("span", "mtile__yieldin", y);
+      /* inner hexagonal frame line — currency hex only */
+      var ring = el("span", "mtile__yieldring", yin);
+      ring.setAttribute("aria-hidden", "true");
+      ring.innerHTML = '<svg viewBox="0 0 100 100"><polygon points="50,4 92,27 92,73 50,96 8,73 8,27" ' +
+        'fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></svg>';
       el("span", "mtile__cur", yin).textContent = "₲";
       yin.appendChild(document.createTextNode(harvestYield));
     }

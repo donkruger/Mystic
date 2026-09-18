@@ -335,7 +335,7 @@ Component-relevant facts from the Rules sheet:
 | Land image | asset pipeline (per biome) | Full-bleed hex art |
 | Biome marker | `Biomes_tbl` via `BiomeID` | Icon, middle right (per Components) |
 | Harvest yield | `Lands_tbl.Harvest amount` | Numeral, middle right (per Components) |
-| Biome marker + harvest yield ×3 | `Biomes_tbl` icon + `Lands_tbl.Harvest amount` | Alternating edges, rotated 120° apart, at the rim and left-aligned along each edge plane — equally spaced, 3-fold symmetry; no facing/ownership (supersedes the Rules' orientation diamond). Yield is a hexagon chip identical to the biome marker (gold rim, parchment inset) carrying the ₲ mark + numeral |
+| Biome marker + harvest yield ×3 | `Biomes_tbl` icon + `Lands_tbl.Harvest amount` | Alternating edges, rotated 120° apart, at the rim and left-aligned along each edge plane — equally spaced, 3-fold symmetry; no facing/ownership (supersedes the Rules' orientation diamond). Yield is a hexagon chip matching the biome marker (gold rim, parchment inset) carrying the ₲ mark + numeral, set apart by an inner hexagonal frame line (the biome marker has none) |
 
 ---
 
