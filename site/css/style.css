@@ -177,13 +177,17 @@ a { color: inherit; text-decoration: none; }
 
 /* ---------- flyway: cards in flight (scroll-scrubbed) ---------- */
 .flyway {
-  height: 280vh;               /* scroll distance = the flight timeline */
+  height: 220vh;               /* scroll distance = the flight timeline */
   position: relative;
 }
 .flyway__stage {
-  position: sticky; top: 0;    /* sticky pin — no extra ScrollTrigger pin */
-  height: 100vh;
+  position: sticky;
+  top: 15vh;                   /* sticks centered: 15vh above + below = snug */
+  height: 70vh;
   overflow: hidden;
+  border-top: 1px solid var(--gold-faint);
+  border-bottom: 1px solid var(--gold-faint);
+  background: var(--surface);
 }
 .flyway .mcard {
   --card-w: clamp(150px, 17vw, 230px);
@@ -203,7 +207,8 @@ a { color: inherit; text-decoration: none; }
 .flyway--static .mcard:nth-child(odd)  { transform: rotate(-4deg) translateY(6px); }
 .flyway--static .mcard:nth-child(even) { transform: rotate(3deg) translateY(-6px); }
 @media (max-width: 720px) {
-  .flyway { height: 200vh; }
+  .flyway { height: 190vh; }
+  .flyway__stage { top: 19vh; height: 62vh; }
   .flyway .mcard { --card-w: clamp(120px, 30vw, 160px); }
 }
 

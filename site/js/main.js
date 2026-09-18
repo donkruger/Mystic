@@ -243,26 +243,40 @@
   var flyStage = document.querySelector("[data-flyway]");
   if (flySection && flyStage && window.MysticCards && window.MYSTIC_DATA) {
     var FD = window.MYSTIC_DATA, FC = window.MysticCards;
-    var pickAt = function (arr, frac) {
-      return arr[Math.min(arr.length - 1, Math.floor(arr.length * frac))];
+    /* n evenly spread picks from a data pool, de-duplicated by identity key
+       (creatures repeat per biome in the data; lands repeat per biome) */
+    var spread = function (arr, n, key) {
+      var out = [], usedK = {};
+      for (var i = 0; i < n && out.length < n; i++) {
+        var idx = Math.min(arr.length - 1, Math.floor(arr.length * (i + 0.5) / n));
+        var guard = 0;
+        while (usedK[key(arr[idx])] && guard++ < arr.length) idx = (idx + 1) % arr.length;
+        if (usedK[key(arr[idx])]) break;
+        usedK[key(arr[idx])] = true;
+        out.push(arr[idx]);
+      }
+      return out;
     };
-    /* deterministic spread across the data for art/biome variety */
-    var castSpecs = [
-      { kind: "creature", ref: pickAt(FD.creatures, 0.15).id },
-      { kind: "spell",    ref: pickAt(FD.spells, 0.3).name },
-      { kind: "land",     ref: pickAt(FD.lands, 0.1).id },
-      { kind: "creature", ref: pickAt(FD.creatures, 0.45).id },
-      { kind: "spell",    ref: pickAt(FD.spells, 0.7).name },
-      { kind: "land",     ref: pickAt(FD.lands, 0.55).id },
-      { kind: "creature", ref: pickAt(FD.creatures, 0.8).id },
-      { kind: "land",     ref: pickAt(FD.lands, 0.9).id }
-    ];
+    /* a 12-card stream drawn from the full reference data (90 creatures,
+       35 spells, 36 lands) — interleaved for art/biome variety */
+    var pools = {
+      creature: spread(FD.creatures, 5, function (d) { return d.name; }),
+      spell:    spread(FD.spells, 4, function (d) { return d.name; }),
+      land:     spread(FD.lands, 3, function (d) { return d.biomeId; })
+    };
+    var mk = {
+      creature: function (d) { return FC.creature(d.id, { tilt: false }); },
+      spell:    function (d) { return FC.spell(d.name, { tilt: false }); },
+      land:     function (d) { return FC.land(d.id, { tilt: false }); }
+    };
+    var order = ["creature","spell","land","creature","spell","creature",
+                 "land","spell","creature","spell","creature","land"];
     var flyCards = [];
-    castSpecs.forEach(function (spec, i) {
-      if (window.innerWidth <= 720 && i >= 5) return; /* lighter cast on mobile */
-      var node = spec.kind === "creature" ? FC.creature(spec.ref, { tilt: false })
-               : spec.kind === "spell"    ? FC.spell(spec.ref, { tilt: false })
-               :                            FC.land(spec.ref, { tilt: false });
+    order.forEach(function (kind, i) {
+      if (window.innerWidth <= 720 && i >= 6) return; /* lighter cast on mobile */
+      var d = pools[kind].shift();
+      if (!d) return;
+      var node = mk[kind](d);
       if (node) { flyStage.appendChild(node); flyCards.push(node); }
     });
 
@@ -282,34 +296,44 @@
         if (!w || !h) return;
         lastFlyW = w;
         var cw = flyCards[0].offsetWidth || 200;
-        var total = 4.5; /* timeline units, mapped over the scroll distance */
+        /* scrub exactly over the period the stage is stuck: from its sticky
+           top offset to the point its bottom unsticks */
+        var vh = window.innerHeight;
+        var stTop = parseFloat(getComputedStyle(flyStage).top) || 0;
+        var startPct = (stTop / vh) * 100;
+        var endPct = ((stTop + h) / vh) * 100;
         flyCards.forEach(function (card) {
           gsap.set(card, { clearProps: "transform,opacity" });
         });
         flyTl = gsap.timeline({
           scrollTrigger: {
-            trigger: flySection, start: "top top", end: "bottom bottom", scrub: 0.8
+            trigger: flySection,
+            start: "top " + startPct + "%", end: "bottom " + endPct + "%", scrub: 0.8
           }
         });
+        /* three flight lanes sharing one gentle crest shape — cards trace
+           similar arcs and follow each other closely, like a caravan */
+        var lanes = [0.30, 0.52, 0.72];
+        var gap = 0.34; /* tight stagger: each card chases the previous */
         flyCards.forEach(function (card, i) {
-          /* gently curved path across the stage — the arc term guarantees
-             no strictly-horizontal trajectory */
-          var y0 = h * (0.1 + Math.random() * 0.55);
-          var y1 = h * (0.1 + Math.random() * 0.55);
-          var arc = h * (0.12 + Math.random() * 0.2) * (Math.random() < 0.5 ? -1 : 1);
+          var lane = lanes[i % lanes.length];
+          var jit = function () { return (Math.random() - 0.5) * 0.07; };
+          var y0 = h * (lane + jit());
+          var y1 = h * (lane + jit());
+          var arc = h * (0.16 + Math.random() * 0.07); /* crest upward */
           var pts = [
-            { x: -cw,     y: y0 },
+            { x: -cw,      y: y0 },
             { x: w * 0.33, y: y0 - arc },
-            { x: w * 0.66, y: y1 + arc * 0.6 },
-            { x: w + cw,  y: y1 }
+            { x: w * 0.66, y: y1 - arc * 0.7 },
+            { x: w + cw,   y: y1 }
           ];
           /* depth: smaller cards sit further back */
-          var scale = 0.7 + Math.random() * 0.45;
+          var scale = 0.72 + Math.random() * 0.4;
           card.style.zIndex = Math.round(scale * 100);
-          gsap.set(card, { scale: scale, rotation: Math.random() * 12 - 6 });
+          gsap.set(card, { scale: scale, rotation: -(3 + Math.random() * 4) });
           /* per-card duration + ease = variable acceleration/deceleration */
-          var dur = 1.6 + Math.random() * 1.2;
-          var at = (i / flyCards.length) * (total - dur) + Math.random() * 0.15;
+          var dur = 2.6 + Math.random() * 0.6;
+          var at = i * gap;
           flyTl.fromTo(card, { opacity: 0 },
             { opacity: 1, duration: dur * 0.12, ease: "power1.out" }, at);
           flyTl.to(card, {
