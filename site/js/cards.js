@@ -63,9 +63,11 @@ window.MysticCards = (function () {
     return chip;
   }
   function coin(value, label, parent) {
+    /* gold amount as a flat parchment pill: ₲ currency mark + numeral */
     var c = el("span", "mcard__coin", parent);
-    c.textContent = value;
     c.title = label;
+    el("span", "mcard__cur", c).textContent = "₲";
+    c.appendChild(document.createTextNode(value));
     return c;
   }
   function strength(value, parent) {
@@ -123,15 +125,11 @@ window.MysticCards = (function () {
     /* golden shield = playable as a reaction (Glossary) */
     var s = el("span", "mcard__shield", parent);
     s.title = "Reaction — may be played in response to another player's action";
+    /* flat single-color gold (clean foil separation), ivory bolt */
     s.innerHTML =
       '<svg viewBox="0 0 24 28" aria-hidden="true">' +
-      '<defs><linearGradient id="mshield-g" x1="0" y1="0" x2="1" y2="1">' +
-      '<stop offset="0" stop-color="#f6e7bd"/><stop offset="0.55" stop-color="#c9a24b"/>' +
-      '<stop offset="1" stop-color="#8a6a25"/></linearGradient></defs>' +
       '<path d="M12 1 L22 5 V13.5 C22 20.5 17.5 25.2 12 27 C6.5 25.2 2 20.5 2 13.5 V5 Z" ' +
-      'fill="url(#mshield-g)" stroke="#8a6a25" stroke-width="1.2"/>' +
-      '<path d="M12 4.2 L18.6 7 V13.3 C18.6 18.4 15.4 22 12 23.4 C8.6 22 5.4 18.4 5.4 13.3 V7 Z" ' +
-      'fill="none" stroke="rgba(255,253,244,0.75)" stroke-width="1"/>' +
+      'fill="currentColor" stroke="#8a6a25" stroke-width="1.2"/>' +
       '<path d="M12.8 8 L9.6 14.4 H11.6 L11 19.6 L14.6 12.8 H12.4 Z" fill="#fffdf4"/>' +
       "</svg>";
     return s;

@@ -58,10 +58,11 @@ Design notes (current iteration):
   the art's bottom edge** over an ivory scrim (SuperAI-style), and the class medallion is
   set into the art's bottom-right corner. Card titles are set at the same size as the
   rules text.
-- **Opponent index** — the top edge of every card carries a **mirrored strip** (rotated
-  180°) so players across the table can read it: creatures show strength + ability name,
-  spells their name, lands their biome. The creature **footer echoes the strip upright**
-  as an "N · ability" lockup beside the strength numeral. On **creature and spell
+- **Opponent index** — the top edge of every card carries a **mirrored pill** (rotated
+  180°, gold-ringed parchment) so players across the table can read it: creatures show
+  strength + ability name, spells their name, lands their biome. The creature **footer
+  echoes it upright** — the same pill, centered at the bottom, with the crossed-swords
+  strength lockup inside. On **creature and spell
   cards** the rules text also repeats in a muted, two-line-clamped mirrored band
   directly above the art — bare rules text in both orientations (the name never heads
   the description, so nothing reads as a run-on). Land cards carry **no mirrored
@@ -297,12 +298,12 @@ Component-relevant facts from the Rules sheet:
 | Title | `Creatures_tbl.Name` | Gold serif small-caps, top |
 | Subtitle (flavor title) | **not in data — gap** | Gold italic script |
 | Biome badge | `Biomes_tbl` via `BiomeID` | Hex medallion; top center (render) / top left (Components) — pick one, see §6 |
-| Summoning cost | **not in `Creatures_tbl` — gap** | Coin badge, top right (Components) |
-| Strength | `Creatures_tbl.Strength` | Crossed-swords device + gold numeral + ability-name lockup, bottom left (echoes the top strip) |
+| Summoning cost | **not in `Creatures_tbl` — gap** | ₲ pill (flat parchment, gold ring), top right |
+| Strength | `Creatures_tbl.Strength` | Crossed-swords device + gold numeral + ability name in a gold-ringed parchment pill, bottom center (echoes the mirrored pill above) |
 | Ability name | `Abilities_tbl.Name` | In the top mirror strip and the footer lockup — not repeated in the rules panels |
 | Ability rules text | `Abilities_tbl.Description` | Ivory body, bottom panel (bare text, no heading) |
 | Ability cost | `Abilities_tbl.Cost` | Unused in render — see §6 |
-| Reaction shield | `Abilities_tbl.Reaction?` | Golden shield below the chevron column (right strip), shown when 1 |
+| Reaction shield | `Abilities_tbl.Reaction?` | Flat gold shield (single-color, ivory bolt) below the chevron column (right strip), shown when 1 |
 | Creature type | `Class_tbl` via `ClassID` | Class icon, bottom right |
 | Flavor text | **not in data — gap** | Italic line, bottom |
 | Art | asset pipeline (per creature) | Rounded-rect window, center |
@@ -312,7 +313,7 @@ Component-relevant facts from the Rules sheet:
 | Slot | Data source | Treatment |
 | --- | --- | --- |
 | Biome | `Biomes_tbl` via `BiomeID` | Biome icon, top left |
-| Harvest yield | `Lands_tbl.Harvest amount` | Numeral badge, top right (assumed) |
+| Harvest yield | `Lands_tbl.Harvest amount` | ₲ pill (flat parchment, gold ring), top right |
 | Biome effects | `Biomes_tbl` buff/debuff | Match/mismatch run-in lines, bottom panel (no "LAND" heading) |
 | Land image | asset pipeline (per biome) | Center art |
 
@@ -322,9 +323,9 @@ Component-relevant facts from the Rules sheet:
 | --- | --- | --- |
 | Title | `Spells_tbl.Name` | Gold serif small-caps |
 | Spell mark | — | Vector flask glyph, top left (gold ink) |
-| Cost | flat 1 (Rules) vs per-spell coin (render) — see §6 | Coin badge |
+| Cost | flat 1 (Rules) vs per-spell coin (render) — see §6 | ₲ pill (flat parchment, gold ring), top right |
 | Effect | `Spells_tbl.Effect` | Rules text below the art, headed only "Spell" (reaction status lives on the shield, not the heading) |
-| Reaction shield | `Spells_tbl.Reaction?` | Golden shield, right edge, shown when 1 |
+| Reaction shield | `Spells_tbl.Reaction?` | Flat gold shield (single-color, ivory bolt), right edge, shown when 1 |
 | Art | asset pipeline (per spell) | Art window |
 
 ### 5.4 Land tile
@@ -334,7 +335,7 @@ Component-relevant facts from the Rules sheet:
 | Land image | asset pipeline (per biome) | Full-bleed hex art |
 | Biome marker | `Biomes_tbl` via `BiomeID` | Icon, middle right (per Components) |
 | Harvest yield | `Lands_tbl.Harvest amount` | Numeral, middle right (per Components) |
-| Biome marker + harvest yield ×6 | `Biomes_tbl` icon + `Lands_tbl.Harvest amount` | Every edge, rotated 60° apart, at the rim — reads the same from each of the six seats; no facing/ownership (supersedes the Rules' orientation diamond). Yield coin sized to match the land card's coin |
+| Biome marker + harvest yield ×6 | `Biomes_tbl` icon + `Lands_tbl.Harvest amount` | Every edge, rotated 60° apart, at the rim — reads the same from each of the six seats; no facing/ownership (supersedes the Rules' orientation diamond). Yield is a flat parchment disc with a gold ring and bare numeral (too small for the ₲ mark, which cards carry) |
 
 ---
 

@@ -119,8 +119,9 @@
 /* mirrored opponent index — rotated 180° so the strength + ability name
    read correctly from across the table */
 .mcard__mirror {
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   min-width: 0;
+  margin: 0 auto;
   text-align: center;
   transform: rotate(180deg);
   font-size: calc(var(--card-w) * 0.034);
@@ -131,24 +132,32 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  /* gold-ringed parchment pill — the mirrored lockup */
+  border: 1.5px solid var(--gold);
+  border-radius: 999px;
+  padding: 0.35em 1em;
+  background: var(--parchment, #f7f1e3);
 }
 
+/* gold amount — flat parchment pill with gold ring (foil-ready, no gradient) */
 .mcard__coin {
   flex: 0 0 auto;
-  width: 12.5%;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 32% 28%, #f6e7bd 0%, var(--gold) 58%, var(--gold-deep) 100%);
-  color: #fffdf4;
+  display: inline-flex;
+  align-items: baseline;
+  padding: 0.28em 0.7em;
+  border-radius: 999px;
+  background: var(--parchment, #f7f1e3);
+  border: 1.5px solid var(--gold);
+  color: var(--gold-deep);
   font-weight: 700;
   font-size: calc(var(--card-w) * 0.066);
-  display: grid;
-  place-items: center;
-  box-shadow:
-    0 2px 6px -2px rgba(138, 106, 37, 0.65),
-    0 0 0 1.5px rgba(255, 250, 235, 0.65) inset;
-  text-shadow: 0 1px 1px rgba(90, 66, 18, 0.55);
+  box-shadow: 0 2px 6px -2px rgba(138, 106, 37, 0.35);
+}
+/* the ₲ currency mark — Inter/system stack (Comfortaa lacks U+20B2) */
+.mcard__cur {
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 0.8em;
+  margin-right: 0.15em;
 }
 
 /* ---------- art window ---------- */
@@ -228,8 +237,18 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
-/* footer lockup — strength numeral + ability name, echoing the top strip */
-.mcard__lockup { display: flex; align-items: baseline; gap: 0.4em; }
+/* footer lockup — strength numeral + ability name in a gold-ringed pill,
+   centered at the bottom, echoing the mirrored pill at the top */
+.mcard__lockup {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4em;
+  border: 1.5px solid var(--gold);
+  border-radius: 999px;
+  padding: 0.35em 1em;
+  background: rgba(247, 241, 227, 0.92);
+  margin-bottom: 1%;
+}
 .mcard__strname {
   font-family: var(--font-display);
   font-weight: 700;
@@ -237,7 +256,6 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--gold-deep);
-  margin-bottom: 1%;
 }
 .mcard__strname::before { content: "·"; margin-right: 0.4em; color: var(--gold); }
 
@@ -276,7 +294,7 @@
   z-index: 5;
   display: flex;
   align-items: flex-end;
-  justify-content: space-between;
+  justify-content: center;
   min-height: 8%;
 }
 
@@ -286,7 +304,6 @@
   display: inline-flex;
   align-items: center;
   gap: 0.18em;
-  margin: 0 3% 1% 3%;
   font-weight: 700;
   font-size: calc(var(--card-w) * 0.075);
   line-height: 1;
@@ -367,6 +384,7 @@
   top: 55%;
   width: 11%;
   aspect-ratio: 0.86;
+  color: var(--gold);
   filter: drop-shadow(0 2px 4px rgba(138, 106, 37, 0.5));
 }
 .mcard__shield svg { width: 100%; height: 100%; display: block; }
@@ -496,18 +514,18 @@
   display: block;
 }
 .mtile__yield {
-  /* sized to match the land card's coin (12.5% / 6.6% of the 240px panel card) */
+  /* flat parchment disc, gold ring — bare numeral (too small for the ₲ mark) */
   width: calc(var(--tile-w) * 0.111);
   aspect-ratio: 1;
   border-radius: 50%;
-  background: radial-gradient(circle at 32% 28%, #f6e7bd 0%, var(--gold) 58%, var(--gold-deep) 100%);
-  color: #fffdf4;
+  background: var(--parchment, #f7f1e3);
+  border: 1.5px solid var(--gold);
+  color: var(--gold-deep);
   font-weight: 700;
   font-size: calc(var(--tile-w) * 0.0587);
   display: grid;
   place-items: center;
-  text-shadow: 0 1px 1px rgba(90, 66, 18, 0.55);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
 }
 
 /* foil/glare shared with tiles */
