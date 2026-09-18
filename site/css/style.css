@@ -401,6 +401,10 @@ a { color: inherit; text-decoration: none; }
 .battle-sim__flatdie { width: 62px; height: 62px; }
 .battle-sim__flatdie rect { fill: #fff; stroke: var(--gold-deep); stroke-width: 1.2; }
 .battle-sim__flatdie circle { fill: var(--gold-deep); }
+/* team colors — match the board tokens */
+.battle-sim__flatdie--elite rect { fill: #f6ecc9; }
+.battle-sim__flatdie--demon rect { fill: #2a2118; stroke: var(--gold); }
+.battle-sim__flatdie--demon circle { fill: #e8cf8f; }
 .battle-sim__caption {
   min-height: 2.7em; margin: 0.7rem 0 0.2rem;
   color: var(--ink); font-size: 0.95rem; line-height: 1.5; text-align: center;

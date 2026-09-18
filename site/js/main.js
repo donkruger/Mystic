@@ -472,6 +472,10 @@
     }).catch(function () { diceBox = null; });
     return diceInit;
   }
+  /* team colors — match the board tokens */
+  var ELITE_COLOR = "#f6ecc9"; /* ivory */
+  var DEMON_COLOR = "#2a2118"; /* near-black umber */
+
   function rollValues() {
     if (!diceBox) return Promise.resolve(null);
     return new Promise(function (resolve) {
@@ -479,16 +483,27 @@
       var finish = function (groups) {
         if (done) return;
         done = true;
-        var values = [];
+        var elite = null, demon = null, positional = [];
         (groups || []).forEach(function (g) {
-          if (g && g.rolls) g.rolls.forEach(function (r) { if (typeof r.value === "number") values.push(r.value); });
-          else if (g && typeof g.value === "number") values.push(g.value);
+          var rolls = g && g.rolls ? g.rolls : (g && typeof g.value === "number" ? [g] : []);
+          rolls.forEach(function (r) {
+            if (typeof r.value !== "number") return;
+            positional.push(r.value);
+            var col = (r.themeColor || "").toLowerCase();
+            if (col === ELITE_COLOR) elite = r.value;
+            else if (col === DEMON_COLOR) demon = r.value;
+          });
         });
-        resolve(values.length >= 2 ? values.slice(0, 2) : null);
+        if (elite === null && positional.length >= 1) elite = positional[0];
+        if (demon === null && positional.length >= 2) demon = positional[1];
+        resolve(elite !== null && demon !== null ? { elite: elite, demon: demon } : null);
       };
       diceBox.onRollComplete = finish;
       try {
-        var p = diceBox.roll("2d6");
+        var p = diceBox.roll([
+          { qty: 1, sides: 6, themeColor: ELITE_COLOR },
+          { qty: 1, sides: 6, themeColor: DEMON_COLOR }
+        ]);
         if (p && p.then) p.then(finish, function () { finish(null); });
       } catch (e) { finish(null); }
       setTimeout(function () { finish(null); }, 12000); /* safety net */
@@ -504,7 +519,7 @@
     for (var i = 0; i < 2; i++) {
       var svg = document.createElementNS(ns, "svg");
       svg.setAttribute("viewBox", "0 0 24 24");
-      svg.setAttribute("class", "battle-sim__flatdie");
+      svg.setAttribute("class", "battle-sim__flatdie battle-sim__flatdie--" + (i === 0 ? "elite" : "demon"));
       var rect = document.createElementNS(ns, "rect");
       rect.setAttribute("x", 2); rect.setAttribute("y", 2);
       rect.setAttribute("width", 20); rect.setAttribute("height", 20); rect.setAttribute("rx", 4.5);
@@ -595,8 +610,8 @@
       if (diceBox) values = await rollValues();
       else { await shuffleTrayDice(1100); values = null; }
       if (!alive(token)) return;
-      elite = values ? values[0] : 1 + Math.floor(Math.random() * 6);
-      demon = values ? values[1] : 1 + Math.floor(Math.random() * 6);
+      elite = values ? values.elite : 1 + Math.floor(Math.random() * 6);
+      demon = values ? values.demon : 1 + Math.floor(Math.random() * 6);
       if (!diceBox && trayDice) { setDie(trayDice[0], elite); setDie(trayDice[1], demon); }
       updateChips(elite, demon);
       if (elite + 2 >= demon + 3) {
