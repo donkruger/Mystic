@@ -18,6 +18,183 @@
     });
   }
 
+  /* Hero land tile: render a live, full-fidelity tile (random biome per
+     load) up front so no-GSAP / reduced-motion users still see it.
+     (Uses window.MysticCards directly — the C/D aliases aren't assigned
+     until the artefacts block.) */
+  var heroTileMount = document.querySelector("[data-hero-tile]");
+  if (heroTileMount && window.MysticCards && window.MYSTIC_DATA) {
+    var heroBiomes = window.MYSTIC_DATA.biomes;
+    var heroBiome = heroBiomes[(Math.random() * heroBiomes.length) | 0];
+    var heroTileNode = window.MysticCards.tile(heroBiome.id, { tilt: false });
+    if (heroTileNode) heroTileMount.appendChild(heroTileNode);
+  }
+
+  /* ---------- hero hex map: a honeycomb that builds around the title ----------
+     Light biome cells (gold ring + tinted parchment inset + icon), packed
+     flush pointy-top, with a ragged keep-out behind the hero copy. Rendered
+     before the animation gates so static users get the final state. */
+  var heroMap = document.querySelector("[data-hero-map]");
+  var buildHeroMap = null;   // rebuilt on resize; assigned below
+  if (heroMap && window.MYSTIC_ICONS && window.MYSTIC_DATA) {
+    var heroEl = heroMap.parentElement;
+    var heroContent = document.querySelector(".hero__content");
+    var mapBiomes = window.MYSTIC_DATA.biomes;
+    var mapTween = null;
+    var mapScroll = null;
+
+    buildHeroMap = function () {
+      if (mapTween) {
+        if (mapTween.scrollTrigger) mapTween.scrollTrigger.kill();
+        mapTween.kill();
+        mapTween = null;
+      }
+      if (mapScroll) {
+        if (mapScroll.scrollTrigger) mapScroll.scrollTrigger.kill(true); /* revert the pin spacer */
+        mapScroll.kill();
+        mapScroll = null;
+      }
+      heroMap.innerHTML = "";
+      var hw = heroEl.offsetWidth, hh = heroEl.offsetHeight;
+      if (!hw || !hh) return;
+      var W = Math.min(130, Math.max(96, hw * 0.09));
+      var stepX = W * 0.866, stepY = W * 0.75;
+      var hr = heroEl.getBoundingClientRect();
+      var cr = heroContent.getBoundingClientRect();
+      var keep = {
+        x0: cr.left - hr.left - W * 0.3, x1: cr.right - hr.left + W * 0.3,
+        y0: cr.top - hr.top - W * 0.3, y1: cr.bottom - hr.top + W * 0.3
+      };
+      var cells = [];
+      var row = 0;
+      for (var y = -W * 0.5; y < hh + W * 0.5; y += stepY, row++) {
+        var off = (row % 2) ? stepX / 2 : 0;
+        for (var x = -W + off; x < hw + W * 0.5; x += stepX) {
+          var cx = x + W / 2, cy = y + W / 2;
+          if (cx > keep.x0 && cx < keep.x1 && cy > keep.y0 && cy < keep.y1) continue;
+          var dx = Math.max(keep.x0 - cx, cx - keep.x1, 0);
+          var dy = Math.max(keep.y0 - cy, cy - keep.y1, 0);
+          if (Math.sqrt(dx * dx + dy * dy) < W * 1.2 && Math.random() < 0.4) continue;
+          var biome = mapBiomes[(Math.random() * mapBiomes.length) | 0];
+          var cell = document.createElement("span");
+          cell.className = "hexmap__cell bicon--" + biome.slug;
+          cell.style.width = W + "px";
+          cell.style.height = W + "px";
+          cell.style.left = x + "px";
+          cell.style.top = y + "px";
+          var inner = document.createElement("span");
+          inner.className = "hexmap__cellin";
+          inner.innerHTML = window.MYSTIC_ICONS.biome(biome.slug);
+          cell.appendChild(inner);
+          cell.__op = 0.35 + Math.random() * 0.65;
+          cell.__hx = x; cell.__hy = y; cell.__extra = true;
+          heroMap.appendChild(cell);
+          cells.push(cell);
+        }
+      }
+      if (!cells.length) return;
+      /* Pick 6 spread-out cells to become the scroll cluster (the petals of
+         the 7-tile flower). Greedy max-min-distance so they start scattered
+         across the viewport rather than clumped. */
+      var clusterPick = [cells[(Math.random() * cells.length) | 0]];
+      while (clusterPick.length < 6) {
+        var best = null, bestD = -1;
+        for (var ci = 0; ci < cells.length; ci++) {
+          var cand = cells[ci];
+          if (clusterPick.indexOf(cand) !== -1) continue;
+          var minD = Infinity;
+          for (var pi = 0; pi < clusterPick.length; pi++) {
+            var pdx = cand.__hx - clusterPick[pi].__hx;
+            var pdy = cand.__hy - clusterPick[pi].__hy;
+            var d = Math.sqrt(pdx * pdx + pdy * pdy);
+            if (d < minD) minD = d;
+          }
+          if (minD > bestD) { bestD = minD; best = cand; }
+        }
+        if (!best) break;
+        clusterPick.push(best);
+      }
+      clusterPick.forEach(function (c) { c.__cluster = true; c.__extra = false; });
+      if (reduceMotion || !hasGsap) {
+        cells.forEach(function (c) { c.style.opacity = c.__op; });
+        return;
+      }
+      gsap.set(cells, { opacity: 0, scale: 0, y: 50 });
+      mapTween = gsap.to(cells, {
+        scrollTrigger: { trigger: heroEl, start: "top 75%", toggleActions: "play none none reverse" },
+        duration: 0.6,
+        scale: 1,
+        y: 0,
+        opacity: function (i, t) { return t.__op; },
+        ease: "back.out(1.7)",
+        stagger: { amount: 1.5, grid: "auto", from: "center" }
+      });
+
+      /* ---------- scroll formation: build the 7-tile flower ----------
+         Pinned + scrubbed: the copy and decorative cells fade, the hero
+         tile travels to viewport center while rotating -18 -> 0, and the
+         6 cluster cells fly in as petals scaled to the tile's size. */
+      var cluster = cells.filter(function (c) { return c.__cluster; });
+      var extras = cells.filter(function (c) { return c.__extra; });
+      if (cluster.length === 6 && heroTileMount && heroTileMount.firstChild) {
+        var centerInHero = function (el) {
+          var px = 0, py = 0, n = el;
+          while (n && n !== heroEl) { px += n.offsetLeft; py += n.offsetTop; n = n.offsetParent; }
+          return { x: px + el.offsetWidth / 2, y: py + el.offsetHeight / 2 };
+        };
+        var slotOffset = function (i) {
+          var tw = heroTileMount.offsetWidth;
+          return [
+            [tw * 0.866, 0], [tw * 0.433, -tw * 0.75], [-tw * 0.433, -tw * 0.75],
+            [-tw * 0.866, 0], [-tw * 0.433, tw * 0.75], [tw * 0.433, tw * 0.75]
+          ][i];
+        };
+        mapScroll = gsap.timeline({
+          scrollTrigger: {
+            trigger: heroEl, start: "top top", end: "+=120%",
+            pin: true, scrub: 0.6, anticipatePin: 1, invalidateOnRefresh: true
+          },
+          defaults: { ease: "power2.inOut" },
+          immediateRender: false
+        });
+        var copyEls = Array.prototype.filter.call(heroContent.children, function (n) {
+          return n !== heroTileMount;
+        });
+        /* NOTE: plain to() tweens, not fromTo — the build tween's inline
+           styles race a scrubbed fromTo's first render, so let each tween
+           capture whatever state it starts from. */
+        mapScroll.to(copyEls, { opacity: 0, y: -30, duration: 0.3 }, 0);
+        mapScroll.to(extras, { opacity: 0, scale: 0.7, duration: 0.3 }, 0);
+        mapScroll.to(heroTileMount, {
+          rotate: 0, duration: 0.65,
+          x: function () { return heroEl.offsetWidth / 2 - centerInHero(heroTileMount).x; },
+          y: function () { return heroEl.offsetHeight / 2 - centerInHero(heroTileMount).y; }
+        }, 0);
+        cluster.forEach(function (cell, i) {
+          mapScroll.to(cell,
+            {
+              duration: 0.6, ease: "back.out(1.4)", opacity: 1,
+              scale: function () { return heroTileMount.offsetWidth / cell.offsetWidth; },
+              x: function () {
+                var off = slotOffset(i);
+                return heroEl.offsetWidth / 2 + off[0] - (cell.__hx + W / 2);
+              },
+              y: function () {
+                var off = slotOffset(i);
+                return heroEl.offsetHeight / 2 + off[1] - (cell.__hy + W / 2);
+              }
+            }, 0.3 + i * 0.06);
+        });
+      }
+    };
+    buildHeroMap();
+    var mapRz = null;
+    window.addEventListener("resize", function () {
+      clearTimeout(mapRz);
+      mapRz = setTimeout(buildHeroMap, 250);
+    });
+  }
+
   /* Graceful degradation: if CDNs fail, show everything. */
   if (!hasGsap) {
     document.documentElement.classList.add("gsap-off");
@@ -31,6 +208,7 @@
   var lenis = null;
   if (!reduceMotion && typeof window.Lenis !== "undefined") {
     lenis = new Lenis({ lerp: 0.1, smoothWheel: true });
+    window.__lenis = lenis; /* exposed for QA tooling */
     lenis.on("scroll", ScrollTrigger.update);
     gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
     gsap.ticker.lagSmoothing(0);
@@ -83,99 +261,14 @@
   gsap.from("[data-hero-fade]", {
     opacity: 0, y: 26, duration: 1.1, ease: "power3.out", stagger: 0.18, delay: 0.7
   });
-  /* Hero land tile: a live, full-fidelity tile (random biome per load).
-     Entrance plays on the wrapper; the infinite idle spin plays on the
-     .mtile itself so the two tweens never fight. (Uses window.MysticCards
-     directly — the C/D aliases aren't assigned until the artefacts block.) */
+  /* Hero land tile entrance: pops in and settles slightly askew (-18deg).
+     The scroll formation timeline (below) scrubs it back to 0 as the map
+     gathers around it. The tile DOM is rendered before the motion gates
+     so static users still see it. */
   var heroTile = document.querySelector("[data-hero-tile]");
-  if (heroTile && window.MysticCards && window.MYSTIC_DATA) {
-    var heroBiomes = window.MYSTIC_DATA.biomes;
-    var heroBiome = heroBiomes[(Math.random() * heroBiomes.length) | 0];
-    var heroTileEl = window.MysticCards.tile(heroBiome.id, { tilt: false });
-    if (heroTileEl) {
-      heroTile.appendChild(heroTileEl);
-      gsap.from(heroTile, {
-        opacity: 0, scale: 0.6, rotate: -30, duration: 1.6, ease: "power3.out", delay: 0.1
-      });
-      gsap.to(heroTileEl, { rotate: 360, duration: 90, ease: "none", repeat: -1 });
-    }
-  }
-
-  /* ---------- hero hex map: a honeycomb that builds around the title ----------
-     Light biome cells (gold ring + tinted parchment inset + icon), packed
-     flush pointy-top, with a ragged keep-out behind the hero copy. */
-  var heroMap = document.querySelector("[data-hero-map]");
-  if (heroMap && window.MYSTIC_ICONS && window.MYSTIC_DATA) {
-    var heroEl = heroMap.parentElement;
-    var heroContent = document.querySelector(".hero__content");
-    var mapBiomes = window.MYSTIC_DATA.biomes;
-    var mapTween = null;
-
-    var buildMap = function () {
-      if (mapTween) {
-        if (mapTween.scrollTrigger) mapTween.scrollTrigger.kill();
-        mapTween.kill();
-        mapTween = null;
-      }
-      heroMap.innerHTML = "";
-      var hw = heroEl.offsetWidth, hh = heroEl.offsetHeight;
-      if (!hw || !hh) return;
-      var W = Math.min(130, Math.max(96, hw * 0.09));
-      var stepX = W * 0.866, stepY = W * 0.75;
-      var hr = heroEl.getBoundingClientRect();
-      var cr = heroContent.getBoundingClientRect();
-      var keep = {
-        x0: cr.left - hr.left - W * 0.3, x1: cr.right - hr.left + W * 0.3,
-        y0: cr.top - hr.top - W * 0.3, y1: cr.bottom - hr.top + W * 0.3
-      };
-      var cells = [];
-      var row = 0;
-      for (var y = -W * 0.5; y < hh + W * 0.5; y += stepY, row++) {
-        var off = (row % 2) ? stepX / 2 : 0;
-        for (var x = -W + off; x < hw + W * 0.5; x += stepX) {
-          var cx = x + W / 2, cy = y + W / 2;
-          if (cx > keep.x0 && cx < keep.x1 && cy > keep.y0 && cy < keep.y1) continue;
-          var dx = Math.max(keep.x0 - cx, cx - keep.x1, 0);
-          var dy = Math.max(keep.y0 - cy, cy - keep.y1, 0);
-          if (Math.sqrt(dx * dx + dy * dy) < W * 1.2 && Math.random() < 0.4) continue;
-          var biome = mapBiomes[(Math.random() * mapBiomes.length) | 0];
-          var cell = document.createElement("span");
-          cell.className = "hexmap__cell bicon--" + biome.slug;
-          cell.style.width = W + "px";
-          cell.style.height = W + "px";
-          cell.style.left = x + "px";
-          cell.style.top = y + "px";
-          var inner = document.createElement("span");
-          inner.className = "hexmap__cellin";
-          inner.innerHTML = window.MYSTIC_ICONS.biome(biome.slug);
-          cell.appendChild(inner);
-          cell.__op = 0.35 + Math.random() * 0.65;
-          heroMap.appendChild(cell);
-          cells.push(cell);
-        }
-      }
-      if (!cells.length) return;
-      if (reduceMotion) {
-        cells.forEach(function (c) { c.style.opacity = c.__op; });
-        return;
-      }
-      gsap.set(cells, { opacity: 0, scale: 0, y: 50 });
-      mapTween = gsap.to(cells, {
-        scrollTrigger: { trigger: heroEl, start: "top 75%", toggleActions: "play none none reverse" },
-        duration: 0.6,
-        scale: 1,
-        y: 0,
-        opacity: function (i, t) { return t.__op; },
-        ease: "back.out(1.7)",
-        stagger: { amount: 1.5, grid: "auto", from: "center" }
-      });
-    };
-    buildMap();
-    var mapRz = null;
-    window.addEventListener("resize", function () {
-      clearTimeout(mapRz);
-      mapRz = setTimeout(buildMap, 250);
-    });
+  if (heroTile && heroTile.firstChild) {
+    gsap.fromTo(heroTile, { opacity: 0, scale: 0.6, rotate: -42 },
+      { opacity: 1, scale: 1, rotate: -18, duration: 1.6, ease: "power3.out", delay: 0.1 });
   }
 
   /* ---------- layered parallax ---------- */
