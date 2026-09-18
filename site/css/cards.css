@@ -255,22 +255,6 @@
   object-fit: cover;
 }
 
-/* QR zone, footer bottom right — white modules on transparent, a ghost
-   texture directly on the ivory face (decorative; unscannable by design) */
-.mcard__qr {
-  flex: 0 0 auto;
-  width: 15%;
-  aspect-ratio: 1;
-  margin: 0 0 0 auto;
-  display: grid;
-  place-items: center;
-}
-.mcard__qr img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-}
 
 /* ---------- reaction shield (golden, right edge) ---------- */
 .mcard__shield {

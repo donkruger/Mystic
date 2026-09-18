@@ -44,11 +44,6 @@ Design notes (current iteration):
 - **Opponent index** — the top edge of every card carries a **mirrored strip** (rotated
   180°) so players across the table can read it: creatures show strength + ability name,
   spells their name, lands their biome.
-- **QR zone** — the footer's bottom-right reserves a QR (currently linking to
-  mysticmaneuvers.com). On the web it renders as a **decorative white-on-transparent
-  ghost** (unscannable by design); print production should render it dark enough to scan
-  at **at least 15 mm** if it is meant to be functional. Per-card deep-link QRs are future
-  work.
 - **Annotation pattern** — the explainer panels are unified diagrams: numbered labels flank
   the artefact (vanlent.dev-style `01.` numerals fused with the text) and dashed connector
   lines, measured from the live DOM, point to each element's edge. No markers sit on the

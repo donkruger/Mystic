@@ -18,7 +18,6 @@ window.MysticCards = (function () {
     classArt: function (slug) { return "assets/creature-" + slug + ".jpg"; },
     hexSymbol: "assets/hex-symbol.png",
     potion: "assets/potion.png",
-    qrSite: "assets/qr-site.png",
     /* curated per-creature art (biome-class), optimized into assets/art/.
        Falls back to class art when no curated piece exists yet. */
     creatureArt: {
@@ -85,12 +84,6 @@ window.MysticCards = (function () {
     var m = el("span", "mcard__mirror", parent);
     m.textContent = text;
     return m;
-  }
-  function qr(parent) {
-    var q = el("span", "mcard__qr", parent);
-    q.title = "mysticmaneuvers.com — the living rules";
-    img(ART.qrSite, "QR code linking to mysticmaneuvers.com", q);
-    return q;
   }
   function classIcon(classId, parent) {
     var c = D.cls[classId];
@@ -163,7 +156,6 @@ window.MysticCards = (function () {
 
     var foot = el("footer", "mcard__foot", inner);
     strength(c.strength, foot);
-    qr(foot);
 
     if (ab.reaction) reactionShield(inner);
     return finishShell(card, opts && opts.tilt);
@@ -192,9 +184,6 @@ window.MysticCards = (function () {
     el("strong", null, rules).textContent = "Spell" + (s.reaction ? " · Reaction" : "");
     rules.appendChild(document.createTextNode(s.text));
 
-    var foot = el("footer", "mcard__foot", inner);
-    qr(foot);
-
     if (s.reaction) reactionShield(inner);
     return finishShell(card, opts && opts.tilt);
   }
@@ -221,9 +210,6 @@ window.MysticCards = (function () {
     rules.appendChild(document.createTextNode(
       "Yields " + l.harvest + " gold when harvested. Place on a matching " +
       biome.name + " tile to summon; its orientation marks your ownership."));
-
-    var foot = el("footer", "mcard__foot", inner);
-    qr(foot);
 
     return finishShell(card, opts && opts.tilt);
   }
