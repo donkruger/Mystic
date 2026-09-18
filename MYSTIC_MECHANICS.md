@@ -137,13 +137,13 @@ flowchart TD
 - Requires **both a creature card and a land card** in your hand.
 - **Pay the creature's gold cost** (top-right of the creature card).
 - The creature can only be summoned onto the land tile that **matches the land card** being used.
-- Placement: put the **creature card** on its matching land tile **in your orientation**, then place the **land card on top of the creature card** (both readable from your seat).
+- Placement: put your **land card** on its matching land tile **in your orientation**, then place the **creature card on top of it** (both readable from your seat).
 - Each land card can only be used **once** to summon a creature.
 
 ### 6.2 Movement
 
 - Costs **1 action** to move one of your summoned creatures to an **adjacent tile** (hex adjacency: up to 6 neighbouring tiles).
-- The **creature card** is the piece that moves: slide it out from under its land card and onto the new tile. Any land card it was on **remains where it is** — territory endures.
+- The **creature card** (on top of the stack) is the piece that moves: lift it off and set it on the new tile. The land card it was on **remains where it is** — territory endures.
 - Biome effects may alter movement costs or restrict movement (see §7), e.g. Swamp's *Stuck* makes moving into or out of cost 2 actions.
 
 ### 6.3 Claiming land

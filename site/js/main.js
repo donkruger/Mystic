@@ -1191,11 +1191,11 @@
       { c: flower[3], rot: 180 }, { c: flower[2], rot: 180 }, /* opponent's */
       { c: flower[6], rot: 0 }, { c: flower[5], rot: 0 }      /* yours */
     ].map(function (cfg) {
-      /* physical stack: creature card on the tile, land card on top */
-      var cre = makeCard("creature", 32, 44);
-      put(cre, cfg.c.x, cfg.c.y, 90, 0);
-      var land = makeCard("land", 26, 38);
+      /* physical stack: land card on the tile, creature card on top */
+      var land = makeCard("land", 32, 44);
       put(land, cfg.c.x, cfg.c.y, 90, 0);
+      var cre = makeCard("creature", 26, 38);
+      put(cre, cfg.c.x, cfg.c.y, 90, 0);
       return { land: land, cre: cre, rot: cfg.rot };
     });
     /* a lone land card of the opponent's on the centre hex — the claim beat */
@@ -1382,12 +1382,14 @@
     }
     return g;
   }
-  /* the physical stack: creature card on the tile, land card on top of it */
+  /* the physical stack: land card flat on the tile, creature card on top.
+     Side-offset keeps a full-height strip of the land card exposed so its
+     rotation (ownership) stays readable while covered. */
   function makeStack(x, y, rot, scale) {
-    var cre = makeCard("creature", 40, 54);
-    put(cre, x, y, rot || 0, scale);
-    var land = makeCard("land", 32, 44);
-    put(land, x, y, rot || 0, scale);
+    var land = makeCard("land", 36, 50);
+    put(land, x - 5, y - 2, rot || 0, scale);
+    var cre = makeCard("creature", 32, 46);
+    put(cre, x + 5, y + 3, rot || 0, scale);
     return { cre: cre, land: land };
   }
   function makeCoin() {
@@ -1429,16 +1431,16 @@
   /* ============ SCENE 1 — Summon ============ */
   async function actSummon(token) {
     clearStage();
-    caption("<strong>Summon</strong> — pay its gold cost, place the creature card on the matching land tile, and cover it with its land card. Each land card summons only once.");
+    caption("<strong>Summon</strong> — pay its gold cost, place the land card on its matching tile, and set the creature card on top. Each land card summons only once.");
     badge("summon");
     var hexes = buildBoard();
     var target = FLOWER[6];
 
-    /* hand + gold (creature created first so the land card paints on top) */
-    var cre = makeCard("creature");
-    put(cre, 502, 78, 8, 0);
+    /* hand + gold (land created first so the creature card paints on top) */
     var land = makeCard("land");
     put(land, 452, 84, -6, 0);
+    var cre = makeCard("creature");
+    put(cre, 502, 78, 8, 0);
     var coins = [0, 1, 2, 3].map(function (i) {
       var c = makeCoin();
       put(c, 462 + i * 26, 236, 0, 0);
@@ -1464,17 +1466,17 @@
       stepTl.call(function () { count.textContent = "× " + (3 - k); }, null, t + k * 0.16 * DUR + 0.2 * DUR);
     });
 
-    /* creature card onto its matching tile, then the land card covers it */
+    /* land card onto its matching tile, then the creature card on top */
     t += 0.75 * DUR;
-    stepTl.to(cre, { x: target.x, y: target.y, rotation: 0, scale: 0.91, duration: 0.55 * DUR, ease: "power2.inOut" }, t);
-    stepTl.to(land, { x: target.x, y: target.y, rotation: 0, scale: 0.73, duration: 0.55 * DUR, ease: "power2.inOut" }, t + 0.35 * DUR);
+    stepTl.to(land, { x: target.x - 5, y: target.y - 2, rotation: 0, scale: 0.82, duration: 0.55 * DUR, ease: "power2.inOut" }, t);
+    stepTl.to(cre, { x: target.x + 5, y: target.y + 3, rotation: 0, scale: 0.73, duration: 0.55 * DUR, ease: "power2.inOut" }, t + 0.35 * DUR);
     await delay((t / DUR + 1.3) * 1000 * DUR);
   }
 
   /* ============ SCENE 2 — Move ============ */
   async function actMove(token) {
     clearStage();
-    caption("<strong>Move</strong> — the creature card slides out from under its land card and moves to an adjacent tile. The land card stays behind: territory endures.");
+    caption("<strong>Move</strong> — lift your creature card off the stack and set it on an adjacent tile. The land card stays behind: territory endures.");
     badge("move");
     var hexes = buildBoard();
     var from = FLOWER[0], to = FLOWER[1];
@@ -1483,12 +1485,12 @@
 
     stepTl = gsap.timeline();
     revealBoard(stepTl, hexes);
-    stepTl.to([stack.cre, stack.land], { scale: 1, duration: 0.35 * DUR, ease: "back.out(1.7)" }, 0.5 * DUR);
+    stepTl.to([stack.land, stack.cre], { scale: 1, duration: 0.35 * DUR, ease: "back.out(1.7)" }, 0.5 * DUR);
     /* destination pulses */
     stepTl.to(hexes[1], { fill: "rgba(201,162,75,0.3)", stroke: "#c9a24b", duration: 0.35 * DUR }, 1.1 * DUR);
-    /* the creature card slides out from under the land card... */
-    stepTl.to(stack.cre, { y: from.y + 34, duration: 0.3 * DUR, ease: "power2.out" }, 1.6 * DUR);
-    /* ...and hops to the adjacent tile */
+    /* lift the creature card off the top of the stack... */
+    stepTl.to(stack.cre, { y: from.y - 16, scale: 1.08, duration: 0.3 * DUR, ease: "power2.out" }, 1.6 * DUR);
+    /* ...and set it down on the adjacent tile */
     stepTl.to(stack.cre, { x: to.x, duration: 0.55 * DUR, ease: "power1.inOut" }, 2.0 * DUR);
     stepTl.to(stack.cre, {
       keyframes: [
@@ -1496,8 +1498,9 @@
         { y: to.y, duration: 0.27 * DUR, ease: "power2.in" }
       ]
     }, 2.0 * DUR);
-    /* the vacated land card stays — a quiet emphasis pulse */
-    stepTl.to(stack.land, { scale: 1.12, yoyo: true, repeat: 1, duration: 0.18 * DUR, ease: "power1.inOut" }, 2.7 * DUR);
+    stepTl.to(stack.cre, { scale: 1, duration: 0.2 * DUR, ease: "power1.in" }, 2.5 * DUR);
+    /* the vacated land card settles back onto the centre of its tile */
+    stepTl.to(stack.land, { x: from.x, y: from.y, duration: 0.35 * DUR, ease: "power2.inOut" }, 2.7 * DUR);
     await delay(3.4 * 1000 * DUR);
   }
 
@@ -1508,18 +1511,18 @@
     var hexes = buildBoard();
     var home = FLOWER[3]; /* top hex */
 
-    /* enemy card created first so the land card paints on top of it */
-    var foe = makeCard("foe", 40, 54);
-    put(foe, home.x, -50, 180, 0);
-    var land = makeCard("land", 32, 44);
-    put(land, home.x, home.y, 0, 0);
+    /* land card created first so the covering creature card paints on top */
+    var land = makeCard("land", 36, 50);
+    put(land, home.x - 5, home.y - 2, 0, 0);
+    var foe = makeCard("foe", 32, 46);
+    put(foe, home.x + 5, -50, 180, 0);
 
     stepTl = gsap.timeline();
     revealBoard(stepTl, hexes);
     stepTl.to(land, { scale: 1, duration: 0.35 * DUR, ease: "back.out(1.7)" }, 0.5 * DUR);
-    /* the enemy creature slides in and covers the tile, tucking under the land card */
+    /* the enemy creature slides in and covers the tile, on top of the land card */
     stepTl.to(foe, { scale: 1, duration: 0.3 * DUR, ease: "back.out(1.7)" }, 1.1 * DUR);
-    stepTl.to(foe, { y: home.y, duration: 0.7 * DUR, ease: "power2.inOut" }, 1.4 * DUR);
+    stepTl.to(foe, { y: home.y + 3, duration: 0.7 * DUR, ease: "power2.inOut" }, 1.4 * DUR);
     /* the land card turns to face the enemy */
     stepTl.to(land, { rotation: 180, duration: 0.7 * DUR, ease: "power2.inOut" }, 2.4 * DUR);
     await delay(3.5 * 1000 * DUR);
