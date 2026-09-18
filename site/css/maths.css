@@ -146,12 +146,13 @@
 .grid-line { stroke: rgba(34,29,18,0.09); stroke-width: 1; }
 .mean-line { stroke: var(--mismatch); stroke-width: 1.4; stroke-dasharray: 5 4; }
 
-/* outcome palette (cells, segments, swatches, calculator fills) */
-.mx-kill     { fill: var(--gold-deep); }
-.mx-retreat  { fill: var(--gold); }
-.mx-tie      { fill: #ece4cf; }
-.mx-repelled { fill: rgba(176,86,58,0.32); }
-.mx-death    { fill: var(--mismatch); }
+/* outcome palette (cells, segments, swatches, calculator fills).
+   fill paints SVG elements; background paints HTML spans (legends, cbar). */
+.mx-kill     { fill: var(--gold-deep); background: var(--gold-deep); }
+.mx-retreat  { fill: var(--gold); background: var(--gold); }
+.mx-tie      { fill: #ece4cf; background: #ece4cf; }
+.mx-repelled { fill: rgba(176,86,58,0.32); background: rgba(176,86,58,0.32); }
+.mx-death    { fill: var(--mismatch); background: var(--mismatch); }
 .mx-cell { stroke: rgba(34,29,18,0.12); stroke-width: 1; }
 .mx-num { font-size: 13px; font-weight: 700; fill: var(--ink); }
 .mx-num--kill, .mx-num--death { fill: #f6ecc9; }

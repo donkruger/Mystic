@@ -137,7 +137,7 @@
 
   var eq = enumerate(0, 0);            /* parity battle */
   var up1 = enumerate(1, 0), up2 = enumerate(2, 0), up3 = enumerate(3, 0);
-  var dn1 = enumerate(-1, 0), dn2 = enumerate(-2, 0);
+  var dn1 = enumerate(-1, 0), dn2 = enumerate(-2, 0), dn3 = enumerate(-3, 0);
 
   /* ==========================================================================
      INLINE VALUES — fill every [data-v] from this map
@@ -159,6 +159,7 @@
     winPlus2: pc(up2.win), killPlus2: pc(up2.kill),
     winPlus3: pc(up3.win), killPlus3: pc(up3.kill),
     winMinus1: pc(dn1.win), flipVsBuff: pc(dn2.win),
+    winMinus3: pc(dn3.win), deathMinus3: pc(dn3.death),
     killMargin3: pc(6), /* P(margin >= 3 at parity) = 6/36 */
     tundraBudget: budgetByBiome[4], tundraMean: f1(budgetByBiome[4] / countByBiome[4]),
     tundraEff: f1(budgetByBiome[4] / countByBiome[4] + 2),
@@ -186,7 +187,12 @@
     reactSp: reactSpells.length + " of " + spells.length,
     abilityCostMean3: f1(abilityCostMean),
     pLand2: (100 * pLand).toFixed(1) + "%",
-    pNoLand: (100 * (1 - pOpenLand)).toFixed(1) + "%"
+    pNoLand: (100 * (1 - pOpenLand)).toFixed(1) + "%",
+    nCreatures3: creatures.length,
+    nDefenders: creatures.length - 1,
+    nBiomes: D.biomes.length,
+    duelsAtomic: String(creatures.length * (creatures.length - 1) * D.biomes.length * 36)
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
   };
   document.querySelectorAll("[data-v]").forEach(function (n) {
     var k = n.getAttribute("data-v");
@@ -695,7 +701,36 @@
   })();
 
   /* ==========================================================================
-     SECTION 7 — BATTLE-ODDS CALCULATOR
+     SECTION 7 — EVERY POSSIBLE MYSTIC (log-scale league table)
+     ========================================================================== */
+  (function () {
+    var m = mount("universe");
+    if (!m) return;
+    /* approximate state spaces as log10 exponents */
+    var rows = [
+      { label: "Tic-tac-toe", exp: 4 },
+      { label: "Connect Four", exp: 13 },
+      { label: "Checkers", exp: 21 },
+      { label: "Chess", exp: 44 },
+      { label: "Mystic maps", exp: 64, color: GOLD_DEEP },
+      { label: "Go", exp: 170 }
+    ];
+    function sup(n) { return String(n).replace(/./g, function (ch) { return "⁰¹²³⁴⁵⁶⁷⁸⁹"[+ch]; }); }
+    var W = 600, rowH = 34, padL = 118, padR = 64, padT = 8;
+    var H = padT + rows.length * rowH + 8;
+    var svg = newSvg(m, W, H);
+    var plotW = W - padL - padR, maxExp = 175;
+    rows.forEach(function (r, i) {
+      var y = padT + i * rowH;
+      txt(svg, padL - 10, y + rowH / 2 + 4, r.label, "svg-label", "end");
+      var w = Math.max(plotW * r.exp / maxExp, 2);
+      el("rect", { x: padL, y: y + 5, width: w, height: rowH - 10, rx: 5, fill: r.color || GOLD, "class": "anim-bar" }, svg);
+      txt(svg, padL + w + 8, y + rowH / 2 + 4, "10" + sup(r.exp), "svg-value", "start");
+    });
+  })();
+
+  /* ==========================================================================
+     SECTION 8 — BATTLE-ODDS CALCULATOR
      ========================================================================== */
   (function () {
     var root = document.querySelector("[data-calc]");

@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css?v=62">
-  <link rel="stylesheet" href="css/maths.css?v=2">
+  <link rel="stylesheet" href="css/maths.css?v=3">
 </head>
 <body class="maths-page">
 
@@ -333,7 +333,55 @@
       </p>
     </section>
 
-    <!-- ============ 7. BATTLE-ODDS CALCULATOR ============ -->
+    <!-- ============ 7. EVERY POSSIBLE MYSTIC ============ -->
+    <section class="msection" id="scale">
+      <div class="msection__head" data-mreveal>
+        <p class="msection__eyebrow">Combinatorial scale</p>
+        <h2 class="msection__title">Every Possible Mystic</h2>
+        <p class="msection__lede">
+          How large is this game? Before anyone rolls a die, the board itself is drawn from a
+          combinatorial ocean, and every battle multiplies it further. Exact where the data
+          allows, honest estimates where it does not.
+        </p>
+      </div>
+
+      <div class="mgrid mgrid--2">
+        <div class="mpanel" data-mreveal>
+          <h3 class="mpanel__title">Continents</h3>
+          <p class="mpanel__text">
+            The map is 36 unique tiles in any connected shape. This page enumerated the small
+            winning shapes exactly (3 trihexes, 7 tetrahexes, 333 at size 7); the counts are known
+            to size 25 (about 6.5 &times; 10<sup>14</sup>) and grow by about 5.2&times; per cell.
+            Extrapolated, roughly <strong>10<sup>23</sup> connected continents</strong> of 36 hexes
+            exist, and each admits <strong>36! &asymp; 3.7 &times; 10<sup>41</sup></strong> tile
+            assignments: about <strong>10<sup>64</sup> possible maps</strong>.
+          </p>
+        </div>
+        <div class="mpanel" data-mreveal>
+          <h3 class="mpanel__title">Battle situations</h3>
+          <p class="mpanel__text">
+            <strong data-v="nCreatures3">90</strong> attackers &times; <strong data-v="nDefenders">89</strong>
+            defenders &times; <strong data-v="nBiomes">9</strong> tile biomes &times; 36 dice outcomes
+            = <strong data-v="duelsAtomic">2,595,240</strong> atomic duels. Count which subset of the
+            35 spells is in play (2<sup>35</sup>) and the tally reaches roughly
+            <strong>10<sup>17</sup></strong> distinct battle situations.
+          </p>
+        </div>
+      </div>
+
+      <div class="mpanel mpanel--wide" data-mreveal>
+        <h3 class="mpanel__title">The league table of universes</h3>
+        <p class="mpanel__text">
+          State spaces on a log scale: each bar is roughly ten times the one before it. Mystic
+          lands between Chess and Go, mostly because its board is rebuilt every game.
+          (Approximate state spaces, for fun: Tic-tac-toe 10<sup>4</sup>, Connect Four
+          10<sup>13</sup>, Checkers 10<sup>21</sup>, Chess 10<sup>44</sup>, Go 10<sup>170</sup>.)
+        </p>
+        <div class="mchart" data-chart="universe"></div>
+      </div>
+    </section>
+
+    <!-- ============ 8. BATTLE-ODDS CALCULATOR ============ -->
     <section class="msection" id="calculator">
       <div class="msection__head" data-mreveal>
         <p class="msection__eyebrow">Try it yourself</p>
@@ -398,7 +446,7 @@
       </div>
     </section>
 
-    <!-- ============ 8. RECOMMENDATIONS ============ -->
+    <!-- ============ 9. RECOMMENDATIONS ============ -->
     <section class="msection" id="recommendations">
       <div class="msection__head" data-mreveal>
         <p class="msection__eyebrow">For the creators</p>
@@ -421,6 +469,10 @@
             <strong data-v="tundraEff">6.3</strong> against a world average of
             <strong data-v="worldMean">3.46</strong>, roughly a +3 differential, or
             <strong data-v="winPlus3">83.3%</strong> wins and <strong data-v="killPlus3">41.7%</strong> kills before spells are considered.
+            The biome&rsquo;s strongest native (Okami, strength 5) defends home ice at an effective 7:
+            a typical strength-4 attacker wins <strong data-v="winMinus3">8.3%</strong> of the time and is
+            destroyed <strong data-v="deathMinus3">41.7%</strong> of the time, while the holder cannot be
+            destroyed at all.
           </p>
           <p class="rec__action">
             At +1 the buff stays the best combat deal in the game (<strong data-v="winPlus1">58.3%</strong> wins,
@@ -561,6 +613,6 @@
 
   <script src="js/icons.js?v=62"></script>
   <script src="js/card-data.js?v=62"></script>
-  <script src="js/maths.js?v=3"></script>
+  <script src="js/maths.js?v=4"></script>
 </body>
 </html>
