@@ -318,7 +318,7 @@ a { color: inherit; text-decoration: none; }
   border: 1px solid var(--gold-faint);
   box-shadow: 0 40px 80px -45px rgba(34,29,18,0.45);
 }
-.example__artwrap img { display: block; width: 100%; height: auto; }
+.example__artwrap img { display: block; width: 100%; height: auto; aspect-ratio: 2848 / 1696; }
 .example__artwrap::after { /* legibility scrim over the lower art */
   content: ""; position: absolute; inset: 0;
   background: linear-gradient(180deg, rgba(10,8,5,0) 42%, rgba(10,8,5,0.72) 100%);
