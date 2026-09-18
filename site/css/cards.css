@@ -29,6 +29,10 @@
   --ink: #221d12;
   --muted: #6f6858;
 
+  /* rules text sets in Inter for small-size legibility;
+     everything else stays Comfortaa */
+  --font-body: "Inter", system-ui, sans-serif;
+
   /* interaction state (set by JS, pointer-fine only) */
   --rx: 0deg;
   --ry: 0deg;
@@ -194,6 +198,7 @@
   flex: 1 1 auto;
   min-height: 0;
   padding: 0 2%;
+  font-family: var(--font-body);
   font-size: calc(var(--card-w) * 0.041);
   line-height: 1.42;
   color: var(--ink);
@@ -201,6 +206,7 @@
 }
 .mcard__rules strong {
   display: block;
+  font-family: var(--font-display, "Comfortaa", sans-serif); /* label stays Comfortaa */
   color: var(--gold-deep);
   text-transform: uppercase;
   letter-spacing: 0.09em;
