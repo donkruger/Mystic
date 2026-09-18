@@ -255,16 +255,15 @@
   object-fit: cover;
 }
 
-/* QR zone, footer center — links to the living rules */
+/* QR zone, footer bottom right — gold modules on a borderless pure-white
+   square; the white field alone contrasts subtly with the ivory face */
 .mcard__qr {
   flex: 0 0 auto;
   width: 15%;
   aspect-ratio: 1;
-  margin: 0 auto;
-  background: #fffdf4;
-  border: 1px solid rgba(201, 162, 75, 0.45);
-  border-radius: 6%;
-  padding: 1.2%;
+  margin: 0 0 0 auto;
+  border-radius: 4%;
+  overflow: hidden;
   display: grid;
   place-items: center;
 }
