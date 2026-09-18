@@ -27,12 +27,21 @@ Part 6) is future work built on the same modules.
 
 Design notes (current iteration):
 
-- **Medallion assets** — the biome (`icon-*`) and type (`type-*`) icons ship as transparent
-  cutouts (white canvas removed at the source). On cards, the biome mark (top left) and the
-  spell-mark — a **potion medallion** (`assets/potion.png`) — are shown as **raw cutouts with
-  no housing** (the icons arrive pre-framed with their own ornate rims); the type medallion
-  (bottom right) keeps its parchment + gold circle badge. On land tiles, the biome marker
-  keeps its gold hex housing.
+- **Biome marks are vector icons** — nine hand-authored geometric SVGs on a 24×24 grid,
+  single-color `currentColor` throughout (solid fills, `fill-rule="evenodd"` negative
+  space, thick round-capped strokes). Web source of truth: `site/js/icons.js`; print
+  masters: `site/assets/icons/biome/<slug>.svg`. Single-color geometry = clean
+  spot-color / foil separations at any size. Motifs: Desert sun-over-dunes, Forest pine,
+  Tundra snowflake, Plains wheat, Mountains twin peaks, Town gabled hall, Swamp cattails,
+  Ocean wave crests, Cave arched mound. Each biome carries a muted accent color that sits
+  beside the ivory/gold theme (CSS `--biome-*` vars): Desert `#BE8238` amber, Forest
+  `#557A46` moss, Tundra `#7FA9BF` glacier, Plains `#A3A848` olive, Mountains `#7E8590`
+  slate, Town `#A85A4A` brick, Swamp `#5F7A68` jade, Ocean `#3F6E8E` deep sea, Cave
+  `#68586A` dusk violet. On cards the mark is a raw glyph (no housing); on tiles it sits
+  in a parchment-inset gold hex; on the site medallions it keeps the parchment + gold ring.
+- **Type marks remain raster** — the creature-type (`type-*`) icons and the spell-mark
+  potion (`assets/potion.png`) still ship as transparent cutouts (type medallion keeps its
+  parchment + gold circle badge). Same vector treatment can follow in a later pass.
 - **Rounded hexes** — the land tile and its biome marker clip to `#hexRound`, an inline
   SVG `clipPath` with subtly rounded vertices (polygon fallback kept).
 - **Strength** — rendered as a bare gold **"+N" numeral** at bottom left (no diamond

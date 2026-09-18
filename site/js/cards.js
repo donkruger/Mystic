@@ -12,7 +12,6 @@ window.MysticCards = (function () {
 
   /* ---------- ART map (single place to re-point art) -------------------- */
   var ART = {
-    biomeIcon: function (slug) { return "assets/icon-" + slug + ".png"; },
     classIcon: function (slug) { return "assets/type-" + slug + ".png"; },
     biomeArt: function (slug) { return "assets/biome-" + slug + ".jpg"; },
     classArt: function (slug) { return "assets/creature-" + slug + ".jpg"; },
@@ -58,11 +57,10 @@ window.MysticCards = (function () {
   /* ---------- shared partials --------------------------------------------- */
   function biomeChip(biomeId, parent) {
     var b = D.biome[biomeId];
-    var chip = el("span", "mcard__chip", parent);
+    /* raw vector glyph in the biome's accent color — no housing */
+    var chip = el("span", "mcard__chip bicon--" + b.slug, parent);
     chip.title = b.name + " biome";
-    /* raw medallion cutout — the icons arrive pre-framed with their
-       own ornate rims, so no housing is needed */
-    img(ART.biomeIcon(b.slug), b.name, chip);
+    chip.innerHTML = window.MYSTIC_ICONS.biome(b.slug);
     return chip;
   }
   function coin(value, label, parent) {
@@ -252,10 +250,10 @@ window.MysticCards = (function () {
        edges, rotated 120° apart — the tile reads the same from every seat */
     for (var i = 0; i < 3; i++) {
       var mark = el("span", "mtile__mark mtile__mark--" + i, t);
-      var chip = el("span", "mtile__chip", mark);
+      var chip = el("span", "mtile__chip bicon--" + biome.slug, mark);
       chip.title = biome.name + " biome";
       var chipWin = el("span", "mtile__chipin", chip);
-      img(ART.biomeIcon(biome.slug), "", chipWin);
+      chipWin.innerHTML = window.MYSTIC_ICONS.biome(biome.slug);
       el("span", "mtile__yield", mark).textContent = harvestYield;
     }
 

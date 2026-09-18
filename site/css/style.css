@@ -13,6 +13,16 @@
   --gold-soft: rgba(201, 162, 75, 0.28);
   --gold-faint: rgba(201, 162, 75, 0.14);
   --mismatch: #b0563a;
+  /* biome accent palette — muted companions to the ivory/gold theme */
+  --biome-desert: #be8238;
+  --biome-forest: #557a46;
+  --biome-tundra: #7fa9bf;
+  --biome-plains: #a3a848;
+  --biome-mountains: #7e8590;
+  --biome-town: #a85a4a;
+  --biome-swamp: #5f7a68;
+  --biome-ocean: #3f6e8e;
+  --biome-cave: #68586a;
   --font-display: "Comfortaa", system-ui, sans-serif;
   --font-body: "Comfortaa", system-ui, sans-serif;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -512,13 +522,26 @@ a { color: inherit; text-decoration: none; }
 
 /* medallions (icons have baked parchment backgrounds — framed as seals) */
 .medallion {
-  display: inline-block; width: 64px; height: 64px;
+  display: inline-grid; place-items: center; width: 64px; height: 64px;
   border-radius: 50%; overflow: hidden;
   border: 2px solid var(--gold);
   box-shadow: 0 0 0 3px var(--surface), 0 8px 20px -6px rgba(34,29,18,0.3);
   background: #e9dfc8;
 }
 .medallion img { width: 100%; height: 100%; object-fit: cover; }
+/* vector biome icons (currentColor glyphs, biome accent palette) */
+.bicon { display: inline-grid; place-items: center; }
+.bicon svg { width: 100%; height: 100%; display: block; }
+.bicon--desert    { color: var(--biome-desert); }
+.bicon--forest    { color: var(--biome-forest); }
+.bicon--tundra    { color: var(--biome-tundra); }
+.bicon--plains    { color: var(--biome-plains); }
+.bicon--mountains { color: var(--biome-mountains); }
+.bicon--town      { color: var(--biome-town); }
+.bicon--swamp     { color: var(--biome-swamp); }
+.bicon--ocean     { color: var(--biome-ocean); }
+.bicon--cave      { color: var(--biome-cave); }
+.medallion .bicon { width: 62%; height: 62%; }
 .medallion--sm { width: 52px; height: 52px; border-width: 1.5px; }
 
 /* ---------- creature gallery ---------- */

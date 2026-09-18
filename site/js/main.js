@@ -10,6 +10,14 @@
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var hasGsap = typeof window.gsap !== "undefined";
 
+  /* Vector biome icons — hydrate every [data-icon] mount from the single
+     source in icons.js (runs even when GSAP is unavailable). */
+  if (window.MYSTIC_ICONS) {
+    document.querySelectorAll("[data-icon]").forEach(function (n) {
+      n.innerHTML = window.MYSTIC_ICONS.biome(n.getAttribute("data-icon"));
+    });
+  }
+
   /* Graceful degradation: if CDNs fail, show everything. */
   if (!hasGsap) {
     document.documentElement.classList.add("gsap-off");

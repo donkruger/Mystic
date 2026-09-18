@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=29">
-  <link rel="stylesheet" href="css/cards.css?v=29">
+  <link rel="stylesheet" href="css/style.css?v=30">
+  <link rel="stylesheet" href="css/cards.css?v=30">
 </head>
 <body>
 
@@ -184,7 +184,7 @@
         <li class="biome-card">
           <div class="biome-card__media"><img src="assets/biome-desert.jpg" alt="Desert biome" loading="lazy"></div>
           <div class="biome-card__body">
-            <span class="medallion"><img src="assets/icon-desert.png" alt=""></span>
+            <span class="medallion"><span class="bicon bicon--desert" data-icon="desert"></span></span>
             <h3>Desert</h3>
             <div class="biome-card__effects">
               <p class="fx fx--match"><span>Match — Conditioned</span>Gain one gold when your creature enters or leaves.</p>
@@ -195,7 +195,7 @@
         <li class="biome-card">
           <div class="biome-card__media"><img src="assets/biome-forest.jpg" alt="Forest biome" loading="lazy"></div>
           <div class="biome-card__body">
-            <span class="medallion"><img src="assets/icon-forest.png" alt=""></span>
+            <span class="medallion"><span class="bicon bicon--forest" data-icon="forest"></span></span>
             <h3>Forest</h3>
             <div class="biome-card__effects">
               <p class="fx fx--match"><span>Match — Hidden</span>Gain +2 strength when defending.</p>
@@ -206,7 +206,7 @@
         <li class="biome-card">
           <div class="biome-card__media"><img src="assets/biome-tundra.jpg" alt="Tundra biome" loading="lazy"></div>
           <div class="biome-card__body">
-            <span class="medallion"><img src="assets/icon-tundra.png" alt=""></span>
+            <span class="medallion"><span class="bicon bicon--tundra" data-icon="tundra"></span></span>
             <h3>Tundra</h3>
             <div class="biome-card__effects">
               <p class="fx fx--match"><span>Match — Acclimatized</span>+2 strength.</p>
@@ -217,7 +217,7 @@
         <li class="biome-card">
           <div class="biome-card__media"><img src="assets/biome-plains.jpg" alt="Plains biome" loading="lazy"></div>
           <div class="biome-card__body">
-            <span class="medallion"><img src="assets/icon-plains.png" alt=""></span>
+            <span class="medallion"><span class="bicon bicon--plains" data-icon="plains"></span></span>
             <h3>Plains</h3>
             <div class="biome-card__effects">
               <p class="fx fx--match"><span>Match — Ranged</span>Attack creatures from an additional tile away; on success, move into the new tile without changing ownership of the skipped tile.</p>
@@ -228,7 +228,7 @@
         <li class="biome-card">
           <div class="biome-card__media"><img src="assets/biome-mountains.jpg" alt="Mountains biome" loading="lazy"></div>
           <div class="biome-card__body">
-            <span class="medallion"><img src="assets/icon-mountains.png" alt=""></span>
+            <span class="medallion"><span class="bicon bicon--mountains" data-icon="mountains"></span></span>
             <h3>Mountains</h3>
             <div class="biome-card__effects">
               <p class="fx fx--match"><span>Match — Resourceful</span>+2 gold when harvested.</p>
@@ -239,7 +239,7 @@
         <li class="biome-card">
           <div class="biome-card__media"><img src="assets/biome-town.jpg" alt="Town biome" loading="lazy"></div>
           <div class="biome-card__body">
-            <span class="medallion"><img src="assets/icon-town.png" alt=""></span>
+            <span class="medallion"><span class="bicon bicon--town" data-icon="town"></span></span>
             <h3>Town</h3>
             <div class="biome-card__effects">
               <p class="fx fx--match"><span>Match — Negotiator</span>+2 gold for each adjacent allied creature, &minus;1 gold for each adjacent enemy creature when harvested.</p>
@@ -250,7 +250,7 @@
         <li class="biome-card">
           <div class="biome-card__media"><img src="assets/biome-swamp.jpg" alt="Swamp biome" loading="lazy"></div>
           <div class="biome-card__body">
-            <span class="medallion"><img src="assets/icon-swamp.png" alt=""></span>
+            <span class="medallion"><span class="bicon bicon--swamp" data-icon="swamp"></span></span>
             <h3>Swamp</h3>
             <div class="biome-card__effects">
               <p class="fx fx--match"><span>Match — Evolved</span>Completely skip swamp tiles for 1 action; only costs 1 action to move into or out of.</p>
@@ -261,7 +261,7 @@
         <li class="biome-card">
           <div class="biome-card__media"><img src="assets/biome-ocean.jpg" alt="Ocean biome" loading="lazy"></div>
           <div class="biome-card__body">
-            <span class="medallion"><img src="assets/icon-ocean.png" alt=""></span>
+            <span class="medallion"><span class="bicon bicon--ocean" data-icon="ocean"></span></span>
             <h3>Ocean</h3>
             <div class="biome-card__effects">
               <p class="fx fx--match"><span>Match — Lucky</span>When you enter, roll a die — on a 6, gain 4 gold.</p>
@@ -272,7 +272,7 @@
         <li class="biome-card">
           <div class="biome-card__media"><img src="assets/biome-cave.jpg" alt="Cave biome" loading="lazy"></div>
           <div class="biome-card__body">
-            <span class="medallion"><img src="assets/icon-cave.png" alt=""></span>
+            <span class="medallion"><span class="bicon bicon--cave" data-icon="cave"></span></span>
             <h3>Cave</h3>
             <div class="biome-card__effects">
               <p class="fx fx--match"><span>Match — Nocturnal</span>A creature can navigate out of a cave in any direction.</p>
@@ -422,8 +422,9 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
-  <script src="js/card-data.js?v=29"></script>
-  <script src="js/cards.js?v=29"></script>
-  <script src="js/main.js?v=29"></script>
+  <script src="js/icons.js?v=30"></script>
+  <script src="js/card-data.js?v=30"></script>
+  <script src="js/cards.js?v=30"></script>
+  <script src="js/main.js?v=30"></script>
 </body>
 </html>
