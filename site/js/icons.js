@@ -85,8 +85,17 @@ window.MYSTIC_ICONS = (function () {
     '<path d="M5.1 16.3 L7.7 18.9"/>' +
     '<path d="M16.3 18.9 L18.9 16.3"/></svg>';
 
+  /* Potion flask — the spell mark. Round bulb, neck, rim, liquid line;
+     stroke style matching the tundra/ocean marks. */
+  var flask =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    '<path d="M9.5 3.5 V9.2 L6 15.6 A6.3 6.3 0 0 0 18 15.6 L14.5 9.2 V3.5"/>' +
+    '<path d="M8.2 3.5 H15.8"/>' +
+    '<path d="M7.7 14.2 H16.3"/></svg>';
+
   return {
     biome: function (slug) { return biome[slug] || ""; },
-    swords: swords
+    swords: swords,
+    flask: flask
   };
 })();

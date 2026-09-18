@@ -16,7 +16,6 @@ window.MysticCards = (function () {
     biomeArt: function (slug) { return "assets/biome-" + slug + ".jpg"; },
     classArt: function (slug) { return "assets/creature-" + slug + ".jpg"; },
     hexSymbol: "assets/hex-symbol.png",
-    potion: "assets/potion.png",
     /* curated per-creature art (biome-class), optimized into assets/art/.
        Falls back to class art when no curated piece exists yet. */
     creatureArt: {
@@ -207,10 +206,10 @@ window.MysticCards = (function () {
     var inner = card.firstChild;
 
     var head = el("header", "mcard__head", inner);
-    var chip = el("span", "mcard__chip", head);
+    /* the spell-mark: vector flask glyph, same system as the biome marks */
+    var chip = el("span", "mcard__chip mcard__chip--spell", head);
     chip.title = "Spell card";
-    /* the spell-mark: raw potion medallion, same treatment as biome chips */
-    img(ART.potion, "Spell", chip);
+    chip.innerHTML = window.MYSTIC_ICONS.flask;
     mirror(s.name, head);
     coin(1, "Cost: 1 gold (Rules: all spells cost 1 gold)", head);
 
@@ -220,8 +219,9 @@ window.MysticCards = (function () {
     var sfig = artWindow(spellArt(s.name), s.name, inner);
     el("h4", "mcard__artname", sfig).textContent = s.name;
 
+    /* heading is just "Spell" — reaction status lives on the golden shield */
     var rules = el("div", "mcard__rules mcard__rules--plain", inner);
-    el("strong", null, rules).textContent = "Spell" + (s.reaction ? " · Reaction" : "");
+    el("strong", null, rules).textContent = "Spell";
     rules.appendChild(document.createTextNode(s.text));
 
     if (s.reaction) reactionShield(inner);

@@ -113,6 +113,8 @@
   height: 92%;
   display: block;
 }
+/* spell mark — the flask glyph in gold ink (biome chips use their accents) */
+.mcard__chip--spell { color: var(--gold-deep); }
 
 /* mirrored opponent index — rotated 180° so the strength + ability name
    read correctly from across the table */

@@ -39,13 +39,15 @@ Design notes (current iteration):
   slate, Town `#A85A4A` brick, Swamp `#5F7A68` jade, Ocean `#3F6E8E` deep sea, Cave
   `#68586A` dusk violet. On cards the mark is a raw glyph (no housing); on tiles it sits
   in a parchment-inset gold hex; on the site medallions it keeps the parchment + gold ring.
-  A tenth mark joins the set for strength: **crossed swords** (`MysticIcons.swords`,
+  Two more marks join the set: **crossed swords** for strength (`MysticIcons.swords`,
   master `site/assets/icons/swords.svg`) — two diagonal blades, 180°-symmetric so it
   survives the mirrored opponent strip; it leads the creature's strength numeral in the
-  footer lockup and the top strip.
-- **Type marks remain raster** — the creature-type (`type-*`) icons and the spell-mark
-  potion (`assets/potion.png`) still ship as transparent cutouts (type medallion keeps its
-  parchment + gold circle badge). Same vector treatment can follow in a later pass.
+  footer lockup and the top strip. And the **flask** spell mark (`MysticIcons.flask`,
+  master `site/assets/icons/flask.svg`) — bulb, neck, rim and liquid line in gold ink,
+  replacing the old raster potion on the spell card's top-left chip.
+- **Type marks remain raster** — the creature-type (`type-*`) icons still ship as
+  transparent cutouts (the type medallion keeps its parchment + gold circle badge).
+  Same vector treatment can follow in a later pass.
 - **Rounded hexes** — the land tile and its biome marker clip to `#hexRound`, an inline
   SVG `clipPath` with subtly rounded vertices (polygon fallback kept).
 - **Strength** — rendered as a crossed-swords device + bare gold **numeral** at bottom left (no diamond
@@ -318,8 +320,9 @@ Component-relevant facts from the Rules sheet:
 | Slot | Data source | Treatment |
 | --- | --- | --- |
 | Title | `Spells_tbl.Name` | Gold serif small-caps |
+| Spell mark | — | Vector flask glyph, top left (gold ink) |
 | Cost | flat 1 (Rules) vs per-spell coin (render) — see §6 | Coin badge |
-| Effect | `Spells_tbl.Effect` | Rules text, bottom center |
+| Effect | `Spells_tbl.Effect` | Rules text below the art, headed only "Spell" (reaction status lives on the shield, not the heading) |
 | Reaction shield | `Spells_tbl.Reaction?` | Golden shield, right edge, shown when 1 |
 | Art | asset pipeline (per spell) | Art window |
 
