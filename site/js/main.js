@@ -126,8 +126,7 @@
         duration: 1,
         ease: "power3.out",
         stagger: 0.09,
-        overwrite: true,
-        clearProps: "transform" /* drop the composited layer after reveal — stale clip bug */
+        overwrite: true
       });
     }
   });
@@ -160,7 +159,26 @@
   if (gallery && track) {
     ScrollTrigger.matchMedia({
       "(min-width: 769px)": function () {
+        var cards = gsap.utils.toArray(track.children);
         var distance = function () { return track.scrollWidth - window.innerWidth; };
+
+        /* cards fade/rise into place as they cross into the viewport */
+        gsap.set(cards, { opacity: 0, y: 28 });
+        var revealVisible = function () {
+          var d = 0;
+          cards.forEach(function (card) {
+            if (card.dataset.seen) return;
+            if (card.getBoundingClientRect().left < window.innerWidth - 40) {
+              card.dataset.seen = "1";
+              gsap.to(card, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out", delay: d });
+              d += 0.08;
+            }
+          });
+        };
+        ScrollTrigger.create({
+          trigger: gallery, start: "top 85%", once: true,
+          onEnter: revealVisible
+        });
         gsap.to(track, {
           x: function () { return -distance(); },
           ease: "none",
@@ -171,9 +189,16 @@
             pin: true,
             scrub: 1,
             anticipatePin: 1,
-            invalidateOnRefresh: true
+            invalidateOnRefresh: true,
+            onUpdate: revealVisible
           }
         });
+
+        return function () {
+          /* matchMedia cleanup: restore plain cards for mobile */
+          cards.forEach(function (card) { delete card.dataset.seen; });
+          gsap.set(cards, { clearProps: "opacity,transform" });
+        };
       }
     });
   }
