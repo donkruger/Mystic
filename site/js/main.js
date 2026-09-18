@@ -31,9 +31,10 @@
      until the artefacts block.) */
   var heroTileMount = document.querySelector("[data-hero-tile]");
   if (heroTileMount && window.MysticCards && window.MYSTIC_DATA) {
-    var heroBiomes = window.MYSTIC_DATA.biomes;
-    var heroBiome = heroBiomes[(Math.random() * heroBiomes.length) | 0];
-    var heroTileNode = window.MysticCards.tile(heroBiome.id, { tilt: false });
+    /* random land (each carries biomeId + an authentic harvest 1-5) */
+    var heroLands = window.MYSTIC_DATA.lands;
+    var heroLand = heroLands[(Math.random() * heroLands.length) | 0];
+    var heroTileNode = window.MysticCards.tile(heroLand.biomeId, heroLand.harvest, { tilt: false });
     if (heroTileNode) heroTileMount.appendChild(heroTileNode);
   }
 
@@ -183,11 +184,15 @@
           duration: 0.45, ease: "power1.out",
           stagger: { amount: 0.3, grid: "auto", from: "center" }
         }, 0);
-        mapScroll.to(heroTileMount, {
-          rotate: 0, duration: 0.65,
-          x: function () { return heroEl.offsetWidth / 2 - centerInHero(heroTileMount).x; },
-          y: function () { return heroEl.offsetHeight / 2 - centerInHero(heroTileMount).y; }
-        }, 0);
+        /* fromTo pinned to the entrance's deterministic end state — a plain
+           to() would capture its start mid-entrance and snap on first scroll */
+        mapScroll.fromTo(heroTileMount,
+          { rotate: -18, x: 0, y: 0 },
+          {
+            rotate: 0, duration: 0.65, immediateRender: false,
+            x: function () { return heroEl.offsetWidth / 2 - centerInHero(heroTileMount).x; },
+            y: function () { return heroEl.offsetHeight / 2 - centerInHero(heroTileMount).y; }
+          }, 0);
         cluster.forEach(function (cell, i) {
           mapScroll.to(cell,
             {
