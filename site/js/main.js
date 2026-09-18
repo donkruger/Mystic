@@ -18,6 +18,13 @@
     });
   }
 
+  /* Register GSAP plugins up front — the map build below creates
+     ScrollTriggers, so registration must precede it. */
+  if (hasGsap) {
+    gsap.registerPlugin(ScrollTrigger);
+    if (typeof window.SplitText !== "undefined") gsap.registerPlugin(SplitText);
+  }
+
   /* Hero land tile: render a live, full-fidelity tile (random biome per
      load) up front so no-GSAP / reduced-motion users still see it.
      (Uses window.MysticCards directly — the C/D aliases aren't assigned
@@ -42,6 +49,7 @@
     var mapBiomes = window.MYSTIC_DATA.biomes;
     var mapTween = null;
     var mapScroll = null;
+    var lastMapW = 0;
 
     buildHeroMap = function () {
       if (mapTween) {
@@ -57,6 +65,7 @@
       heroMap.innerHTML = "";
       var hw = heroEl.offsetWidth, hh = heroEl.offsetHeight;
       if (!hw || !hh) return;
+      lastMapW = hw;
       var W = Math.min(130, Math.max(96, hw * 0.09));
       var stepX = W * 0.866, stepY = W * 0.75;
       var hr = heroEl.getBoundingClientRect();
@@ -152,7 +161,10 @@
         mapScroll = gsap.timeline({
           scrollTrigger: {
             trigger: heroEl, start: "top top", end: "+=120%",
-            pin: true, scrub: 0.6, anticipatePin: 1, invalidateOnRefresh: true
+            pin: true, scrub: 0.6, anticipatePin: 1
+            /* no invalidateOnRefresh: auto-refreshes (late images/fonts)
+               would re-capture mid-flight positions and cause jumps;
+               geometry stays fresh via the debounced width-only rebuild */
           },
           defaults: { ease: "power2.inOut" },
           immediateRender: false
@@ -164,7 +176,13 @@
            styles race a scrubbed fromTo's first render, so let each tween
            capture whatever state it starts from. */
         mapScroll.to(copyEls, { opacity: 0, y: -30, duration: 0.3 }, 0);
-        mapScroll.to(extras, { opacity: 0, scale: 0.7, duration: 0.3 }, 0);
+        /* radial dissolve: center cells clear first (making room for the
+           flower), edges last — an organic dissolve, not a uniform vanish */
+        mapScroll.to(extras, {
+          opacity: 0, scale: 0.85, y: -24,
+          duration: 0.45, ease: "power1.out",
+          stagger: { amount: 0.3, grid: "auto", from: "center" }
+        }, 0);
         mapScroll.to(heroTileMount, {
           rotate: 0, duration: 0.65,
           x: function () { return heroEl.offsetWidth / 2 - centerInHero(heroTileMount).x; },
@@ -187,11 +205,22 @@
         });
       }
     };
-    buildHeroMap();
+    /* First build after fonts arrive so the keep-out is measured against
+       the true Comfortaa title box, not the narrower fallback font. */
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(buildHeroMap);
+    } else {
+      buildHeroMap();
+    }
     var mapRz = null;
     window.addEventListener("resize", function () {
       clearTimeout(mapRz);
-      mapRz = setTimeout(buildHeroMap, 250);
+      mapRz = setTimeout(function () {
+        /* height-only resizes (mobile URL bar on scroll) must not wipe
+           and re-pop the map mid-scroll — rebuild on width change only */
+        if (heroEl.offsetWidth === lastMapW) return;
+        buildHeroMap();
+      }, 250);
     });
   }
 
@@ -200,9 +229,6 @@
     document.documentElement.classList.add("gsap-off");
     return;
   }
-
-  gsap.registerPlugin(ScrollTrigger);
-  if (typeof window.SplitText !== "undefined") gsap.registerPlugin(SplitText);
 
   /* ---------- Lenis smooth scroll ---------- */
   var lenis = null;
@@ -247,6 +273,7 @@
   var heroTitle = document.querySelector(".hero__title");
   if (heroTitle && typeof window.SplitText !== "undefined") {
     var heroSplit = new SplitText(heroTitle, { type: "chars", charsClass: "char" });
+    heroTitle.classList.add("hero__title--split"); // stop the parent repainting the glyphs
     gsap.from(heroSplit.chars, {
       yPercent: 110,
       opacity: 0,

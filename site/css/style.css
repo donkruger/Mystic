@@ -133,6 +133,9 @@ a { color: inherit; text-decoration: none; }
   -webkit-text-fill-color: transparent; color: transparent;
   text-wrap: balance;
 }
+/* once split, chars carry the gradient — the parent must not repaint them
+   (background-clip:text on the parent double-paints descendant glyphs) */
+.hero__title--split { background: none; }
 .hero__title .char {
   display: inline-block; will-change: transform, opacity;
   /* SplitText chars are composited layers, which breaks the parent's
