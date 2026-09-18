@@ -724,6 +724,7 @@
   }
 
   var STEPS = [stepRoll, stepMargin, stepOutcome, stepOther, stepNoWayOut];
+  var lastAutoAt = 0; /* timestamp of the last auto-play advance (race guard) */
 
   function runStep(idx, token) {
     currentStep = idx;
@@ -733,6 +734,7 @@
     var token = ++playToken;
     for (var i = 0; i < STEP_COUNT; i++) {
       if (!alive(token)) return;
+      lastAutoAt = Date.now();
       await runStep(i, token);
       if (!alive(token)) return;
       await delay(1800);
@@ -772,7 +774,10 @@
     goTo(Math.max(0, currentStep - 1));
   });
   sim.querySelector("[data-step-next]").addEventListener("click", function () {
-    goTo(Math.min(STEP_COUNT - 1, currentStep + 1));
+    /* a click landing right as auto-play advanced means "show me the scene
+       that just appeared", not "skip past it" — don't compound the two */
+    var justAutoAdvanced = Date.now() - lastAutoAt < 900;
+    goTo(Math.min(STEP_COUNT - 1, currentStep + (justAutoAdvanced ? 0 : 1)));
   });
   sim.querySelector("[data-replay]").addEventListener("click", function () {
     lastRoll = null;
@@ -1230,6 +1235,7 @@
   }
 
   var STEPS = [stepShare, stepMap, stepDecks, stepFirst, stepHand, stepOrient];
+  var lastAutoAt = 0; /* timestamp of the last auto-play advance (race guard) */
 
   async function runStep(idx, token) {
     currentStep = idx;
@@ -1240,6 +1246,7 @@
     var token = ++playToken;
     for (var i = 0; i < STEP_COUNT; i++) {
       if (!alive(token)) return;
+      lastAutoAt = Date.now();
       await runStep(i, token);
       if (!alive(token)) return;
       await delay(1900);
@@ -1277,7 +1284,10 @@
     goTo(Math.max(0, currentStep - 1));
   });
   sim.querySelector("[data-setup-next]").addEventListener("click", function () {
-    goTo(Math.min(STEP_COUNT - 1, currentStep + 1));
+    /* a click landing right as auto-play advanced means "show me the scene
+       that just appeared", not "skip past it" — don't compound the two */
+    var justAutoAdvanced = Date.now() - lastAutoAt < 900;
+    goTo(Math.min(STEP_COUNT - 1, currentStep + (justAutoAdvanced ? 0 : 1)));
   });
   sim.querySelector("[data-setup-replay]").addEventListener("click", function () {
     playAll();
@@ -1674,6 +1684,7 @@
   }
 
   var STEPS = [actSummon, actMove, actClaim, actBattle, actHarvest, actDraw];
+  var lastAutoAt = 0; /* timestamp of the last auto-play advance (race guard) */
 
   /* ---------- stepper machinery ---------- */
   var STEP_COUNT = 6;
@@ -1703,12 +1714,14 @@
     var token = ++playToken;
     for (var i = 0; i < STEP_COUNT; i++) {
       if (!alive(token)) return;
+      lastAutoAt = Date.now();
       await runStep(i, token);
       if (!alive(token)) return;
       await delay(1900);
     }
     /* closing beat: back to the first scene, inviting a replay */
     if (!alive(token)) return;
+    lastAutoAt = Date.now();
     runStep(0, playToken);
   }
   function goTo(idx) {
@@ -1738,7 +1751,10 @@
     goTo(Math.max(0, currentStep - 1));
   });
   sim.querySelector("[data-actions-next]").addEventListener("click", function () {
-    goTo(Math.min(STEP_COUNT - 1, currentStep + 1));
+    /* a click landing right as auto-play advanced means "show me the scene
+       that just appeared", not "skip past it" — don't compound the two */
+    var justAutoAdvanced = Date.now() - lastAutoAt < 900;
+    goTo(Math.min(STEP_COUNT - 1, currentStep + (justAutoAdvanced ? 0 : 1)));
   });
   sim.querySelector("[data-actions-replay]").addEventListener("click", function () {
     playAll();
