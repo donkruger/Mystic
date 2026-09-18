@@ -25,6 +25,19 @@ The website's "Artefacts" section renders live from these modules, so design ite
 happens in one place. Print export (PDF/X-1a with spot foil layers per Premium-Print-Formats
 Part 6) is future work built on the same modules.
 
+Design notes (current iteration):
+
+- **Medallion assets** — the biome (`icon-*`) and type (`type-*`) icons ship as transparent
+  cutouts (white canvas removed at the source), so they sit inside their hex/circle housings
+  with a real gold margin; the spell card's top-left hex chip carries a **potion medallion**
+  (`assets/potion.png`) as the spell-mark instead of the brand hex.
+- **Rounded hexes** — all hex housings (chips, land tiles) clip to `#hexRound`, an inline
+  SVG `clipPath` with subtly rounded vertices (polygon fallback kept).
+- **Annotation pattern** — the explainer panels are unified diagrams: numbered labels flank
+  the artefact (vanlent.dev-style `01.` numerals fused with the text) and dashed connector
+  lines, measured from the live DOM, point to each element's edge. No markers sit on the
+  card face.
+
 ---
 
 ## 1. Sources and authority

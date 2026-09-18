@@ -99,25 +99,19 @@
   width: 12.5%;
   aspect-ratio: 1;
   clip-path: polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%);
+  clip-path: url(#hexRound); /* subtly rounded vertices */
   background: linear-gradient(150deg, var(--gold-bright), var(--gold));
   display: grid;
   place-items: center;
   box-shadow: 0 2px 6px -2px rgba(138, 106, 37, 0.6);
 }
-/* brand mark (transparent png) sits directly in the chip */
-.mcard__chip > img {
-  width: 62%;
-  height: 62%;
-  object-fit: contain;
-  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.35));
-}
-/* biome medallions are opaque squares — the inner hex window crops the
-   canvas away and the zoom lets the medallion rim bleed past the crop,
-   leaving a clean gold rim. Same medallion art as the biome chart. */
+/* medallion assets are pre-cropped transparent cutouts, so the inner hex
+   window floats them over the gold rim with real padding on every side */
 .mcard__chipin {
   width: 84%;
   aspect-ratio: 1;
   clip-path: polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%);
+  clip-path: url(#hexRound);
   overflow: hidden;
   display: grid;
   place-items: center;
@@ -126,7 +120,6 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transform: scale(1.24);
 }
 
 .mcard__name {
@@ -243,12 +236,13 @@
   background: #e9dfc8;
   border: 1.5px solid var(--gold);
   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.9), 0 2px 6px -3px rgba(34, 29, 18, 0.4);
+  display: grid;
+  place-items: center;
 }
 .mcard__class img {
-  width: 100%;
-  height: 100%;
+  width: 88%; /* parchment ring margin inside the gold border */
+  height: 88%;
   object-fit: cover;
-  transform: scale(1.08); /* zoom past the opaque canvas margin */
 }
 
 .mcard__tag {
@@ -341,6 +335,7 @@
   aspect-ratio: 1;
   font-family: var(--font-display, "Comfortaa", sans-serif);
   clip-path: polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%);
+  clip-path: url(#hexRound);
   background: #e9e2cf;
   overflow: hidden;
   -webkit-user-select: none;
@@ -361,6 +356,7 @@
   width: 15%;
   aspect-ratio: 1;
   clip-path: polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%);
+  clip-path: url(#hexRound);
   background: linear-gradient(150deg, var(--gold-bright), var(--gold));
   display: grid;
   place-items: center;
@@ -370,6 +366,7 @@
   width: 84%;
   aspect-ratio: 1;
   clip-path: polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%);
+  clip-path: url(#hexRound);
   overflow: hidden;
   display: grid;
   place-items: center;
@@ -378,7 +375,6 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transform: scale(1.24);
 }
 .mtile__yield {
   position: absolute;
@@ -444,76 +440,92 @@
   color: var(--muted);
 }
 
-.artefact-panel {
-  display: grid;
-  grid-template-columns: minmax(0, auto) minmax(0, 1fr);
-  gap: clamp(1.6rem, 5vw, 4rem);
-  align-items: center;
-  margin-bottom: 4.5rem;
+.artefact-panel { margin-bottom: 5.5rem; }
+.artefact-panel__head {
+  text-align: center;
+  max-width: 560px;
+  margin: 0 auto 2.8rem;
 }
-.artefact-panel:nth-child(even) { grid-template-columns: minmax(0, 1fr) minmax(0, auto); }
-.artefact-panel:nth-child(even) .artefact-panel__stage { order: 2; }
-.artefact-panel:nth-child(even) .artefact-panel__notes { order: 1; }
+.artefact-panel__head h3 {
+  font-size: 1.35rem;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.35rem;
+}
+.artefact-panel__sub {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
 
+/* unified annotation diagram: numbered labels flank the artefact and
+   dashed connectors point back to each element — the numeral lives with
+   its description, so no markers sit on the card face itself */
+.artefact-diagram {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  column-gap: clamp(2.5rem, 7vw, 5.5rem);
+  row-gap: 1.35rem;
+}
 .artefact-panel__stage {
+  grid-column: 2;
   position: relative;
   display: grid;
   place-items: center;
   padding: 1.2rem;
 }
+/* stage spans exactly the rows its annos create — no phantom gaps */
+[data-artefact-panel="creature"] .artefact-panel__stage,
+[data-artefact-panel="tile"] .artefact-panel__stage { grid-row: 1 / span 3; }
+[data-artefact-panel="spell"] .artefact-panel__stage,
+[data-artefact-panel="land"] .artefact-panel__stage { grid-row: 1 / span 2; }
 .artefact-panel__stage .mcard { --card-w: 240px; }
 .artefact-panel__stage .mtile { --tile-w: 270px; }
 
-/* numbered hotspots overlaid on the card */
-.artefact-hot {
-  position: absolute;
-  z-index: 20;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: var(--gold);
-  color: #fff;
-  font-size: 0.72rem;
-  font-weight: 700;
-  display: grid;
-  place-items: center;
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.9), 0 4px 10px -3px rgba(34, 29, 18, 0.5);
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-}
-
-.artefact-panel__notes h3 {
-  font-size: 1.35rem;
-  letter-spacing: 0.04em;
-  margin-bottom: 0.35rem;
-}
-.artefact-panel__notes .artefact-panel__sub {
-  color: var(--muted);
+.anno {
+  display: flex;
+  gap: 0.55rem;
+  align-items: baseline;
+  align-self: center;
+  max-width: 320px;
+  margin: 0;
   font-size: 0.92rem;
-  margin-bottom: 1.2rem;
-}
-.artefact-legend { display: grid; gap: 0.65rem; }
-.artefact-legend li {
-  display: grid;
-  grid-template-columns: 24px 1fr;
-  gap: 0.7rem;
-  align-items: start;
-  font-size: 0.92rem;
+  line-height: 1.5;
   color: var(--muted);
 }
-.artefact-legend li strong { color: var(--ink); font-weight: 700; }
-.artefact-legend .n {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  border: 1px solid var(--gold);
+.anno[data-side="left"] {
+  grid-column: 1;
+  justify-self: end;
+  flex-direction: row-reverse;
+  text-align: right;
+}
+.anno[data-side="right"] {
+  grid-column: 3;
+  justify-self: start;
+}
+.anno__n {
+  flex: 0 0 auto;
   color: var(--gold-deep);
-  font-size: 0.72rem;
   font-weight: 700;
-  display: grid;
-  place-items: center;
-  margin-top: 0.1em;
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
 }
+.anno__t strong { color: var(--ink); font-weight: 700; }
+
+.artefact-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+}
+.artefact-line {
+  stroke: var(--gold-deep);
+  stroke-opacity: 0.5;
+  stroke-width: 1;
+  stroke-dasharray: 2 5;
+}
+.artefact-line-dot { fill: var(--gold); }
 
 /* ---------- deck explorer (after fanki's Card Randomizer) ---------- */
 .deck {
@@ -571,10 +583,26 @@
 .deck__meta strong { color: var(--ink); }
 
 @media (max-width: 860px) {
-  .artefact-panel,
-  .artefact-panel:nth-child(even) { grid-template-columns: 1fr; }
-  .artefact-panel:nth-child(even) .artefact-panel__stage { order: 0; }
-  .artefact-panel:nth-child(even) .artefact-panel__notes { order: 1; }
+  .artefact-diagram { grid-template-columns: 1fr; row-gap: 1rem; }
+  .artefact-panel__stage,
+  [data-artefact-panel="creature"] .artefact-panel__stage,
+  [data-artefact-panel="spell"] .artefact-panel__stage,
+  [data-artefact-panel="land"] .artefact-panel__stage,
+  [data-artefact-panel="tile"] .artefact-panel__stage {
+    grid-column: 1;
+    grid-row: auto;
+    margin-bottom: 1.4rem;
+  }
+  .anno,
+  .anno[data-side="left"],
+  .anno[data-side="right"] {
+    grid-column: 1;
+    justify-self: start;
+    flex-direction: row;
+    text-align: left;
+    max-width: 560px;
+  }
+  .artefact-lines { display: none; }
   .deck { grid-template-columns: 1fr; justify-items: center; text-align: center; }
 }
 

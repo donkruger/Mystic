@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=18">
-  <link rel="stylesheet" href="css/cards.css?v=18">
+  <link rel="stylesheet" href="css/style.css?v=19">
+  <link rel="stylesheet" href="css/cards.css?v=19">
 </head>
 <body>
 
@@ -34,6 +34,15 @@
       <span class="hero__cue-text">Begin the journey</span>
     </a>
   </header>
+
+  <!-- shared clip def: pointy-top hex with subtly rounded vertices -->
+  <svg class="svg-defs" width="0" height="0" aria-hidden="true" focusable="false">
+    <defs>
+      <clipPath id="hexRound" clipPathUnits="objectBoundingBox">
+        <path d="M0.4654 0.0200Q0.5 0 0.5346 0.0200L0.8984 0.2300Q0.933 0.25 0.9330 0.2900L0.9330 0.7100Q0.933 0.75 0.8984 0.7700L0.5346 0.9800Q0.5 1 0.4654 0.9800L0.1016 0.7700Q0.067 0.75 0.0670 0.7100L0.0670 0.2900Q0.067 0.25 0.1016 0.2300Z"/>
+      </clipPath>
+    </defs>
+  </svg>
 
   <main>
 
@@ -319,61 +328,66 @@
 
       <!-- Creature card -->
       <div class="artefact-panel" data-artefact-panel="creature" data-reveal>
-        <div class="artefact-panel__stage" data-artefact-stage></div>
-        <div class="artefact-panel__notes">
+        <header class="artefact-panel__head">
           <h3>The creature card</h3>
           <p class="artefact-panel__sub">White-backed. Your agents on the board — summoned with gold, a matching land card, and a free tile.</p>
-          <ol class="artefact-legend">
-            <li><span class="n">1</span><span><strong>Native biome</strong> — the hex chip, top left, bearing the same medallion as the biome reference above. On matching tiles the creature gains its biome's buff; elsewhere it suffers the debuff.</span></li>
-            <li><span class="n">2</span><span><strong>Summoning cost</strong> — the gold coin, top right. Paid when the creature enters play.</span></li>
-            <li><span class="n">3</span><span><strong>Strength</strong> — the diamond, bottom left. Add a die roll to it in every battle.</span></li>
-            <li><span class="n">4</span><span><strong>Ability</strong> — the rules panel. Usable once per turn, free of actions.</span></li>
-            <li><span class="n">5</span><span><strong>Reaction shield</strong> — a golden shield on the right edge means the ability can answer another player's move.</span></li>
-            <li><span class="n">6</span><span><strong>Creature type</strong> — the class medallion, bottom right, matching the creature gallery emblems. Dragon, Orc, Elite, Undead, Elemental, Angel, Demon, Giant, Mermaid or Dwarf.</span></li>
-          </ol>
+        </header>
+        <div class="artefact-diagram" data-diagram>
+          <div class="artefact-panel__stage" data-artefact-stage></div>
+          <p class="anno" data-side="left" data-anchor="chip"><span class="anno__n">01.</span><span class="anno__t"><strong>Native biome</strong> — the hex chip, top left, bearing the same medallion as the biome reference above. On matching tiles the creature gains its biome's buff; elsewhere it suffers the debuff.</span></p>
+          <p class="anno" data-side="right" data-anchor="coin"><span class="anno__n">02.</span><span class="anno__t"><strong>Summoning cost</strong> — the gold coin, top right. Paid when the creature enters play.</span></p>
+          <p class="anno" data-side="left" data-anchor="diamond"><span class="anno__n">03.</span><span class="anno__t"><strong>Strength</strong> — the diamond, bottom left. Add a die roll to it in every battle.</span></p>
+          <p class="anno" data-side="left" data-anchor="rules"><span class="anno__n">04.</span><span class="anno__t"><strong>Ability</strong> — the rules panel. Usable once per turn, free of actions.</span></p>
+          <p class="anno" data-side="right" data-anchor="shield"><span class="anno__n">05.</span><span class="anno__t"><strong>Reaction shield</strong> — a golden shield on the right edge means the ability can answer another player's move.</span></p>
+          <p class="anno" data-side="right" data-anchor="class"><span class="anno__n">06.</span><span class="anno__t"><strong>Creature type</strong> — the class medallion, bottom right, matching the creature gallery emblems. Dragon, Orc, Elite, Undead, Elemental, Angel, Demon, Giant, Mermaid or Dwarf.</span></p>
+          <svg class="artefact-lines" aria-hidden="true"></svg>
         </div>
       </div>
 
       <!-- Spell card -->
       <div class="artefact-panel" data-artefact-panel="spell" data-reveal>
-        <div class="artefact-panel__stage" data-artefact-stage></div>
-        <div class="artefact-panel__notes">
+        <header class="artefact-panel__head">
           <h3>The spell card</h3>
           <p class="artefact-panel__sub">Black-backed. Held in hand, played for one gold — no action required.</p>
-          <ol class="artefact-legend">
-            <li><span class="n">1</span><span><strong>Cost</strong> — the coin, top right. Every spell costs a single gold.</span></li>
-            <li><span class="n">2</span><span><strong>Effect</strong> — the rules panel, bottom center. What the spell does, and when it may be played.</span></li>
-            <li><span class="n">3</span><span><strong>Reaction shield</strong> — when present, the spell may be cast in response to another player's action.</span></li>
-          </ol>
+        </header>
+        <div class="artefact-diagram" data-diagram>
+          <div class="artefact-panel__stage" data-artefact-stage></div>
+          <p class="anno" data-side="left" data-anchor="chip"><span class="anno__n">01.</span><span class="anno__t"><strong>Spell mark</strong> — the potion medallion, top left. The sign of a spell.</span></p>
+          <p class="anno" data-side="right" data-anchor="coin"><span class="anno__n">02.</span><span class="anno__t"><strong>Cost</strong> — the coin, top right. Every spell costs a single gold.</span></p>
+          <p class="anno" data-side="left" data-anchor="rules"><span class="anno__n">03.</span><span class="anno__t"><strong>Effect</strong> — the rules panel, bottom center. What the spell does, and when it may be played.</span></p>
+          <p class="anno" data-side="right" data-anchor="shield"><span class="anno__n">04.</span><span class="anno__t"><strong>Reaction shield</strong> — when present, the spell may be cast in response to another player's action.</span></p>
+          <svg class="artefact-lines" aria-hidden="true"></svg>
         </div>
       </div>
 
       <!-- Land card -->
       <div class="artefact-panel" data-artefact-panel="land" data-reveal>
-        <div class="artefact-panel__stage" data-artefact-stage></div>
-        <div class="artefact-panel__notes">
+        <header class="artefact-panel__head">
           <h3>The land card</h3>
           <p class="artefact-panel__sub">Black-backed. The deed to a tile — and the seat of every summoning.</p>
-          <ol class="artefact-legend">
-            <li><span class="n">1</span><span><strong>Biome</strong> — the hex chip, top left, bearing the biome's medallion as in the reference chart. Pairs the card with its matching tiles on the board.</span></li>
-            <li><span class="n">2</span><span><strong>Harvest yield</strong> — the coin, top right. Gold gained when one of your creatures harvests here.</span></li>
-            <li><span class="n">3</span><span><strong>Land image</strong> — the terrain portrait. On the board, the card's <em>orientation</em> marks whose realm it belongs to.</span></li>
-          </ol>
+        </header>
+        <div class="artefact-diagram" data-diagram>
+          <div class="artefact-panel__stage" data-artefact-stage></div>
+          <p class="anno" data-side="left" data-anchor="chip"><span class="anno__n">01.</span><span class="anno__t"><strong>Biome</strong> — the hex chip, top left, bearing the biome's medallion as in the reference chart. Pairs the card with its matching tiles on the board.</span></p>
+          <p class="anno" data-side="right" data-anchor="coin"><span class="anno__n">02.</span><span class="anno__t"><strong>Harvest yield</strong> — the coin, top right. Gold gained when one of your creatures harvests here.</span></p>
+          <p class="anno" data-side="left" data-anchor="art"><span class="anno__n">03.</span><span class="anno__t"><strong>Land image</strong> — the terrain portrait. On the board, the card's <em>orientation</em> marks whose realm it belongs to.</span></p>
+          <svg class="artefact-lines" aria-hidden="true"></svg>
         </div>
       </div>
 
       <!-- Land tile -->
       <div class="artefact-panel" data-artefact-panel="tile" data-reveal>
-        <div class="artefact-panel__stage" data-artefact-stage></div>
-        <div class="artefact-panel__notes">
+        <header class="artefact-panel__head">
           <h3>The land tile</h3>
           <p class="artefact-panel__sub">Hexagonal. Thirty-six of them become the board — a different realm every game.</p>
-          <ol class="artefact-legend">
-            <li><span class="n">1</span><span><strong>Biome marker</strong> — middle right. Which of the nine biomes this tile belongs to.</span></li>
-            <li><span class="n">2</span><span><strong>Harvest yield</strong> — the coin, middle right. Gold this tile grants per harvest.</span></li>
-            <li><span class="n">3</span><span><strong>Land image</strong> — full-bleed terrain art; the biome at a glance.</span></li>
-            <li><span class="n">4</span><span><strong>Orientation diamond</strong> — the right edge. Align every tile's diamond the same way when building the map.</span></li>
-          </ol>
+        </header>
+        <div class="artefact-diagram" data-diagram>
+          <div class="artefact-panel__stage" data-artefact-stage></div>
+          <p class="anno" data-side="right" data-anchor="tchip"><span class="anno__n">01.</span><span class="anno__t"><strong>Biome marker</strong> — middle right. Which of the nine biomes this tile belongs to.</span></p>
+          <p class="anno" data-side="right" data-anchor="tyield"><span class="anno__n">02.</span><span class="anno__t"><strong>Harvest yield</strong> — the coin, middle right. Gold this tile grants per harvest.</span></p>
+          <p class="anno" data-side="left" data-anchor="tart"><span class="anno__n">03.</span><span class="anno__t"><strong>Land image</strong> — full-bleed terrain art; the biome at a glance.</span></p>
+          <p class="anno" data-side="right" data-anchor="tdiamond"><span class="anno__n">04.</span><span class="anno__t"><strong>Orientation diamond</strong> — the right edge. Align every tile's diamond the same way when building the map.</span></p>
+          <svg class="artefact-lines" aria-hidden="true"></svg>
         </div>
       </div>
 
@@ -403,8 +417,8 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
-  <script src="js/card-data.js?v=18"></script>
-  <script src="js/cards.js?v=18"></script>
-  <script src="js/main.js?v=18"></script>
+  <script src="js/card-data.js?v=19"></script>
+  <script src="js/cards.js?v=19"></script>
+  <script src="js/main.js?v=19"></script>
 </body>
 </html>

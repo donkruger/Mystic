@@ -17,6 +17,7 @@ window.MysticCards = (function () {
     biomeArt: function (slug) { return "assets/biome-" + slug + ".jpg"; },
     classArt: function (slug) { return "assets/creature-" + slug + ".jpg"; },
     hexSymbol: "assets/hex-symbol.png",
+    potion: "assets/potion.png",
     /* curated per-creature art (biome-class), optimized into assets/art/.
        Falls back to class art when no curated piece exists yet. */
     creatureArt: {
@@ -162,8 +163,11 @@ window.MysticCards = (function () {
 
     var head = el("header", "mcard__head", inner);
     var chip = el("span", "mcard__chip", head);
-    chip.title = "Spell";
-    img(ART.hexSymbol, "Spell", chip);
+    chip.title = "Spell card";
+    /* the spell-mark: potion medallion in the same nested-hex housing
+       as the biome chips */
+    var chipWin = el("span", "mcard__chipin", chip);
+    img(ART.potion, "Spell", chipWin);
     el("h4", "mcard__name", head).textContent = s.name;
     coin(1, "Cost: 1 gold (Rules: all spells cost 1 gold)", head);
 

@@ -1852,12 +1852,13 @@
     land: function () { return C.land(3); },            /* Desert, harvest 4 */
     tile: function () { return C.tile(1, 4, { tilt: false }); }
   };
-  /* hotspot positions (% of the artefact face), keyed to the legend order */
-  var HOTSPOTS = {
-    creature: [[13, 10], [87, 10], [15, 86], [50, 71], [90, 55], [85, 86]],
-    spell: [[87, 10], [50, 71], [90, 55]],
-    land: [[13, 10], [87, 10], [50, 46]],
-    tile: [[77, 39], [77, 59], [38, 50], [89, 50]]
+  /* annotation anchor keys -> card element selectors */
+  var ANCHORS = {
+    chip: ".mcard__chip", coin: ".mcard__coin", diamond: ".mcard__diamond",
+    rules: ".mcard__rules", shield: ".mcard__shield", "class": ".mcard__class",
+    art: ".mcard__art",
+    tchip: ".mtile__chip", tyield: ".mtile__yield", tart: ".mtile__art",
+    tdiamond: ".mtile__diamond"
   };
 
   document.querySelectorAll("[data-artefact-panel]").forEach(function (panel) {
@@ -1866,16 +1867,73 @@
     var card = EXAMPLES[kind] && EXAMPLES[kind]();
     if (!stage || !card) return;
     stage.appendChild(card);
-    var host = card.querySelector(".mcard__inner") || card;
-    (HOTSPOTS[kind] || []).forEach(function (pos, i) {
-      var dot = document.createElement("span");
-      dot.className = "artefact-hot";
-      dot.textContent = i + 1;
-      dot.style.left = pos[0] + "%";
-      dot.style.top = pos[1] + "%";
-      host.appendChild(dot);
-    });
+    wireDiagram(panel, card);
   });
+
+  /* Dashed connector lines from each numbered label to its card element,
+     measured from the live DOM so the diagram stays honest at any size. */
+  function wireDiagram(panel, card) {
+    var diagram = panel.querySelector("[data-diagram]");
+    var svg = diagram && diagram.querySelector(".artefact-lines");
+    if (!diagram || !svg) return;
+    var SVGNS = "http://www.w3.org/2000/svg";
+    var annos = Array.prototype.slice.call(diagram.querySelectorAll(".anno[data-anchor]"));
+
+    function draw() {
+      var dr = diagram.getBoundingClientRect();
+      if (dr.width < 10) return;
+      svg.setAttribute("viewBox", "0 0 " + dr.width + " " + dr.height);
+      svg.textContent = "";
+      annos.forEach(function (anno) {
+        var sel = ANCHORS[anno.getAttribute("data-anchor")];
+        var target = sel && card.querySelector(sel);
+        if (!target) return;
+        var badge = anno.querySelector(".anno__n") || anno;
+        var br = badge.getBoundingClientRect();
+        var tr = target.getBoundingClientRect();
+        var left = anno.getAttribute("data-side") === "left";
+        /* start at the numeral edge facing the card, end at the
+           element edge facing the label — never covering the art */
+        var x1 = (left ? br.right : br.left) - dr.left;
+        var y1 = br.top + br.height / 2 - dr.top;
+        var x2 = (left ? tr.left : tr.right) - dr.left;
+        var y2 = tr.top + tr.height / 2 - dr.top;
+        var line = document.createElementNS(SVGNS, "line");
+        line.setAttribute("x1", x1.toFixed(1));
+        line.setAttribute("y1", y1.toFixed(1));
+        line.setAttribute("x2", x2.toFixed(1));
+        line.setAttribute("y2", y2.toFixed(1));
+        line.setAttribute("class", "artefact-line");
+        svg.appendChild(line);
+        var dot = document.createElementNS(SVGNS, "circle");
+        dot.setAttribute("cx", x2.toFixed(1));
+        dot.setAttribute("cy", y2.toFixed(1));
+        dot.setAttribute("r", "3");
+        dot.setAttribute("class", "artefact-line-dot");
+        svg.appendChild(dot);
+      });
+    }
+
+    /* keep honest: fonts, images and layout shifts all move the anchors */
+    draw();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
+    window.addEventListener("load", draw);
+    if (window.ResizeObserver) new ResizeObserver(draw).observe(diagram);
+
+    /* connectors fade in gently when the panel scrolls into view */
+    if (hasGsap && !reduceMotion && window.ScrollTrigger) {
+      gsap.set(svg, { opacity: 0 });
+      ScrollTrigger.create({
+        trigger: diagram,
+        start: "top 82%",
+        once: true,
+        onEnter: function () {
+          draw();
+          gsap.to(svg, { opacity: 1, duration: 0.7, ease: "power2.out" });
+        }
+      });
+    }
+  }
 
   /* ---------- deck explorer ---------- */
   var deck = document.querySelector("[data-deck]");
