@@ -242,8 +242,6 @@ window.MysticCards = (function () {
     mirror(biome.name, head);
     coin(l.harvest, "Harvest yield: " + l.harvest + " gold", head);
 
-    var landText = "Yields " + l.harvest + " gold when harvested. Place on a matching " +
-      biome.name + " tile to summon; its orientation marks your ownership.";
     /* no mirrored description band (same duplication reasoning as spells) */
 
     /* art at 73% width, left-aligned; chevron column fills the right strip */
@@ -252,9 +250,15 @@ window.MysticCards = (function () {
     el("h4", "mcard__artname", lfig).textContent = biome.name;
     chevrons(el("div", "mcard__strip", mid));
 
-    var rules = el("div", "mcard__rules mcard__rules--plain", inner);
-    el("strong", null, rules).textContent = "Land";
-    rules.appendChild(document.createTextNode(landText));
+    /* the biome's match/mismatch pair — run-in effect lines, no "LAND"
+       heading (the chip and mirrored biome name already carry identity);
+       the harvest coin top right keeps the yield */
+    var rules = el("div", "mcard__rules mcard__rules--plain mcard__rules--biome", inner);
+    [["Match", biome.buff, "match"], ["Mismatch", biome.debuff, "mismatch"]].forEach(function (row) {
+      var p = el("p", "fxline fxline--" + row[2], rules);
+      el("span", "fxline__tag", p).textContent = row[0] + " · " + row[1].name + " — ";
+      p.appendChild(document.createTextNode(row[1].text));
+    });
 
     return finishShell(card, opts && opts.tilt);
   }

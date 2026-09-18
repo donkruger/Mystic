@@ -10,15 +10,17 @@ window.MYSTIC_DATA = (function () {
   /* --- Biomes (Biomes_tbl) ------------------------------------------------
      id, name, slug, debuff [name, text] (mismatch), buff [name, text] (match) */
   var biomes = [
-    { id: 1, name: "Desert",   slug: "desert",    debuff: { name: "Scorched",     text: "Lose 1 gold whenever a creature enters this biome. Applies to summonings as well." }, buff: { name: "Conditioned",  text: "Gain 1 gold whenever a creature enters this biome. Applies to summonings as well." } },
-    { id: 2, name: "Forest",   slug: "forest",    debuff: { name: "Entangled",    text: "Creature can not enter and leave this tile on the same turn." },                        buff: { name: "Camouflaged",  text: "+2 to strength on defense." } },
-    { id: 3, name: "Plain",    slug: "plains",    debuff: { name: "Exposed",      text: "-1 to all rolls." },                                                                    buff: { name: "Ranged",       text: "Can attack creatures from an additional tile away. No roll penalty." } },
-    { id: 4, name: "Tundra",   slug: "tundra",    debuff: { name: "Frostbitten",  text: "-2 to strength." },                                                                     buff: { name: "Acclimatized", text: "+2 to strength." } },
-    { id: 5, name: "Mountain", slug: "mountains", debuff: { name: "Isolated",     text: "Spell cards and abilities do not work on creatures occupying this tile." },             buff: { name: "Resourceful",  text: "+2 gold when harvesting. Spell cards and abilities do work on this creature." } },
-    { id: 6, name: "Town",     slug: "town",      debuff: { name: "Bartering",    text: "+1 gold for each adjacent allied creature and -2 gold for each adjacent enemy creature when harvested." }, buff: { name: "Negotiator", text: "+2 gold for each adjacent allied creature. -1 gold for each adjacent enemy creature when harvested." } },
-    { id: 7, name: "Swamp",    slug: "swamp",     debuff: { name: "Stuck",        text: "Costs 2 actions to move into or out of this tile." },                                   buff: { name: "Evolved",      text: "Completely skip swamp tiles. Only costs 1 action to move into or out of." } },
-    { id: 8, name: "Ocean",    slug: "ocean",     debuff: { name: "Unlucky",      text: "When you enter, roll a die. If the outcome is 1, discard two non-land cards from your hand." }, buff: { name: "Lucky", text: "When you enter, roll a die. If the outcome is 6, draw two cards from either deck." } },
-    { id: 9, name: "Cave",     slug: "cave",      debuff: { name: "Trapped",      text: "A creature may only exit this tile from the direction they entered." },                 buff: { name: "Nocturnal",    text: "A creature can navigate out of a cave in any direction." } }
+    /* buff/debuff follow the authoritative effects table (site biome section),
+       texts tightened for card space — supersedes the XLSX wording */
+    { id: 1, name: "Desert",   slug: "desert",    debuff: { name: "Scorched",     text: "Lose 1 gold when your creature enters or leaves." }, buff: { name: "Conditioned",  text: "Gain 1 gold when your creature enters or leaves." } },
+    { id: 2, name: "Forest",   slug: "forest",    debuff: { name: "Tangled",      text: "Cannot enter and leave this tile on the same turn." }, buff: { name: "Hidden",       text: "+2 strength when defending." } },
+    { id: 3, name: "Plain",    slug: "plains",    debuff: { name: "Exposed",      text: "−1 to all rolls." },                                     buff: { name: "Ranged",       text: "Attack from an additional tile away; on success, move there without changing the skipped tile's ownership." } },
+    { id: 4, name: "Tundra",   slug: "tundra",    debuff: { name: "Frostbitten",  text: "−2 strength." },                                         buff: { name: "Acclimatized", text: "+2 strength." } },
+    { id: 5, name: "Mountain", slug: "mountains", debuff: { name: "Isolated",     text: "Spells and abilities that directly affect this creature do not work." }, buff: { name: "Resourceful", text: "+2 gold when harvested." } },
+    { id: 6, name: "Town",     slug: "town",      debuff: { name: "Haggled",      text: "+1 gold per adjacent ally, −2 per adjacent enemy when harvested." }, buff: { name: "Negotiator", text: "+2 gold per adjacent ally, −1 per adjacent enemy when harvested." } },
+    { id: 7, name: "Swamp",    slug: "swamp",     debuff: { name: "Stuck",        text: "Costs 2 actions to move in or out of this tile." },    buff: { name: "Evolved",      text: "Skip swamp tiles for 1 action; only 1 action to move in or out." } },
+    { id: 8, name: "Ocean",    slug: "ocean",     debuff: { name: "Unlucky",      text: "On entering, roll a die — on a 1, discard two non-land cards." }, buff: { name: "Lucky", text: "On entering, roll a die — on a 6, gain 4 gold." } },
+    { id: 9, name: "Cave",     slug: "cave",      debuff: { name: "Trapped",      text: "Exit only from the direction entered; spells and abilities unaffected." }, buff: { name: "Nocturnal", text: "Navigate out of a cave in any direction." } }
   ];
 
   /* --- Classes (Class_tbl) ------------------------------------------------ */

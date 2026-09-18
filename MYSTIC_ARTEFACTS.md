@@ -313,6 +313,7 @@ Component-relevant facts from the Rules sheet:
 | --- | --- | --- |
 | Biome | `Biomes_tbl` via `BiomeID` | Biome icon, top left |
 | Harvest yield | `Lands_tbl.Harvest amount` | Numeral badge, top right (assumed) |
+| Biome effects | `Biomes_tbl` buff/debuff | Match/mismatch run-in lines, bottom panel (no "LAND" heading) |
 | Land image | asset pipeline (per biome) | Center art |
 
 ### 5.3 Spell card
@@ -358,7 +359,10 @@ Component-relevant facts from the Rules sheet:
    (`MYSTIC_MECHANICS.md`): Ocean match is "draw two cards" (workbook) vs "gain 4 gold"
    (site); Forest match "Camouflaged" vs "Hidden"; Town mismatch "Bartering" vs "Haggled";
    Mountain match adds "spells and abilities do work"; Plain match adds "no roll penalty";
-   Desert explicitly applies to summonings. The workbook appears newer — reconcile.
+   Desert explicitly applies to summonings. **Resolved in favor of the published table** —
+   it is the player-facing wording, and the land card now prints the match/mismatch pair
+   from it (`card-data.js` synced, texts tightened for card space). The XLSX wording is
+   superseded.
 8. **AbilityID 23 is missing** from `Abilities_tbl` (sequence jumps 22 to 24). Retired
    ability or accidental deletion?
 9. **Example-render content is not data-accurate** (Dune's printed ability vs its

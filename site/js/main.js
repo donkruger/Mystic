@@ -279,6 +279,17 @@
 
   /* Keep triggers honest once media has loaded */
   window.addEventListener("load", function () { ScrollTrigger.refresh(); });
+
+  /* TEMP-QA: headless scroll hook */
+  var qaJump = new URLSearchParams(location.search).get("jump");
+  if (qaJump) {
+    setTimeout(function () {
+      if (lenis && lenis.destroy) lenis.destroy();
+      var t = null;
+      try { t = document.querySelector(qaJump); } catch (e) { t = null; }
+      window.scrollTo(0, t ? t.getBoundingClientRect().top + window.pageYOffset : parseInt(qaJump, 10) || 0);
+    }, 500);
+  }
 })();
 
 /* ============================================================

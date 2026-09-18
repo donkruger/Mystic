@@ -253,6 +253,23 @@
 .mcard__rules--plain { padding-top: 1%; }
 .mcard__rules--plain strong { color: var(--ink); }
 
+/* land card: the biome's match/mismatch pair as run-in effect lines */
+.mcard__rules--biome {
+  font-size: calc(var(--card-w) * 0.034);
+  line-height: 1.38;
+}
+.fxline { margin: 0; }
+.fxline + .fxline { margin-top: 0.5em; }
+.fxline__tag {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.86em;
+}
+.fxline--match .fxline__tag { color: var(--gold-deep); }
+.fxline--mismatch .fxline__tag { color: var(--muted); }
+
 /* ---------- footer: strength numeral, class icon ---------- */
 .mcard__foot {
   position: relative;
