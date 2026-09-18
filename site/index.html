@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=55">
-  <link rel="stylesheet" href="css/cards.css?v=55">
+  <link rel="stylesheet" href="css/style.css?v=56">
+  <link rel="stylesheet" href="css/cards.css?v=56">
 </head>
 <body>
 
@@ -399,13 +399,18 @@
 
       <!-- Deck explorer -->
       <div class="deck" data-deck data-reveal>
-        <button class="deck__pile" data-deck-draw type="button" aria-label="Draw a random card from the deck">
-          <span class="deck__hint">Draw a card</span>
+        <button class="deck__pile" data-deck-draw="creature" type="button" aria-label="Draw a random creature card">
+          <span class="deck__tag" aria-hidden="true"><span>Creatures</span><span>Creatures</span></span>
+          <span class="deck__hint">Creature deck</span>
         </button>
         <div>
           <div class="deck__stage" data-deck-stage></div>
-          <p class="deck__meta" data-deck-meta>Every card in the game is rendered live from the master tables — draw from the deck and see.</p>
+          <p class="deck__meta" data-deck-meta>Two decks — creatures in one, land and spells in the other. Draw from either and see.</p>
         </div>
+        <button class="deck__pile" data-deck-draw="landspell" type="button" aria-label="Draw a random land or spell card">
+          <span class="deck__tag" aria-hidden="true"><span>Land + Spells</span><span>Land + Spells</span></span>
+          <span class="deck__hint">Land + spell deck</span>
+        </button>
       </div>
     </section>
 
@@ -423,9 +428,9 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
-  <script src="js/icons.js?v=55"></script>
-  <script src="js/card-data.js?v=55"></script>
-  <script src="js/cards.js?v=55"></script>
-  <script src="js/main.js?v=55"></script>
+  <script src="js/icons.js?v=56"></script>
+  <script src="js/card-data.js?v=56"></script>
+  <script src="js/cards.js?v=56"></script>
+  <script src="js/main.js?v=56"></script>
 </body>
 </html>

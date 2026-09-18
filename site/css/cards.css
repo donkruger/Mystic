@@ -682,7 +682,7 @@
 .deck {
   margin-top: 2rem;
   display: grid;
-  grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr) minmax(0, auto);
   gap: clamp(1.6rem, 5vw, 4rem);
   align-items: center;
   background: var(--surface);
@@ -706,6 +706,32 @@
 .deck__pile .mcard:nth-child(2) { transform: rotate(3deg) translate(4px, -2px); }
 .deck__pile .mcard:nth-child(3) { transform: rotate(-1deg); }
 .deck__pile:hover .mcard:nth-child(3) { transform: rotate(-1deg) translateY(-6px); transition: transform 0.3s var(--ease-out); }
+/* mirrored deck label — the same gold-ringed parchment pill as the cards,
+   once upright and once rotated 180° so both seats read the deck's name */
+.deck__tag {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-content: center;
+  gap: 0.45em;
+  pointer-events: none;
+}
+.deck__tag span {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  background: rgba(247, 241, 227, 0.94);
+  border: 1.5px solid var(--gold);
+  border-radius: 999px;
+  padding: 0.32em 0.9em;
+  text-align: center;
+  white-space: nowrap;
+}
+.deck__tag span:last-child { transform: rotate(180deg); }
 .deck__hint {
   position: absolute;
   left: 50%;

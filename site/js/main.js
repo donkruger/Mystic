@@ -1932,28 +1932,29 @@
     }
   }
 
-  /* ---------- deck explorer ---------- */
+  /* ---------- deck explorer — two decks: creatures | land + spells ---------- */
   var deck = document.querySelector("[data-deck]");
   if (deck) {
-    var pile = deck.querySelector("[data-deck-draw]");
     var stageEl = deck.querySelector("[data-deck-stage]");
     var meta = deck.querySelector("[data-deck-meta]");
 
-    for (var b = 0; b < 3; b++) pile.insertBefore(C.back(), pile.firstChild);
+    deck.querySelectorAll("[data-deck-draw]").forEach(function (pile) {
+      for (var b = 0; b < 3; b++) pile.insertBefore(C.back(), pile.firstChild);
+    });
 
     var drawing = false;
-    function pickRandom() {
-      var roll = Math.random();
-      if (roll < 0.55) {
-        var c = D.creatures[(Math.random() * D.creatures.length) | 0];
-        var ab = D.ability[c.abilityId];
-        return {
-          node: C.creature(c.id),
-          meta: "<strong>" + c.name + "</strong> — " + D.biome[c.biomeId].name + " " + D.cls[c.classId].name +
-                " · Strength " + c.strength + " · " + ab.name + (ab.reaction ? " (reaction)" : "")
-        };
-      }
-      if (roll < 0.85) {
+    function pickCreature() {
+      var c = D.creatures[(Math.random() * D.creatures.length) | 0];
+      var ab = D.ability[c.abilityId];
+      return {
+        node: C.creature(c.id),
+        meta: "<strong>" + c.name + "</strong> — " + D.biome[c.biomeId].name + " " + D.cls[c.classId].name +
+              " · Strength " + c.strength + " · " + ab.name + (ab.reaction ? " (reaction)" : "")
+      };
+    }
+    function pickLandSpell() {
+      /* the real deck is 36 lands + 35 spells — a coin flip, near enough */
+      if (Math.random() < 0.5) {
         var s = D.spells[(Math.random() * D.spells.length) | 0];
         return {
           node: C.spell(s.name),
@@ -1967,10 +1968,11 @@
       };
     }
 
-    pile.addEventListener("click", function () {
-      if (drawing) return;
-      drawing = true;
-      var pick = pickRandom();
+    deck.querySelectorAll("[data-deck-draw]").forEach(function (pile) {
+      pile.addEventListener("click", function () {
+        if (drawing) return;
+        drawing = true;
+        var pick = pile.getAttribute("data-deck-draw") === "creature" ? pickCreature() : pickLandSpell();
       var old = stageEl.querySelector(".mcard");
       stageEl.appendChild(pick.node);
       meta.innerHTML = pick.meta;
@@ -1987,6 +1989,7 @@
         if (old) old.remove();
         drawing = false;
       }
+      });
     });
   }
 
