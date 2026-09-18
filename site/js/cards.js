@@ -70,12 +70,11 @@ window.MysticCards = (function () {
     return c;
   }
   function strength(value, parent) {
-    /* crossed-swords device + bare gold "+N" numeral — no housing
+    /* crossed-swords device + bare gold numeral — no housing, no plus
        (the die roll adds to it) */
     var d = el("span", "mcard__str", parent);
     d.title = "Strength " + value;
     el("span", "mcard__stricon", d).innerHTML = window.MYSTIC_ICONS.swords;
-    el("span", "plus", d).textContent = "+";
     d.appendChild(document.createTextNode(value));
     return d;
   }
@@ -169,7 +168,7 @@ window.MysticCards = (function () {
 
     var head = el("header", "mcard__head", inner);
     biomeChip(c.biomeId, head);
-    mirror("+" + c.strength + " · " + ab.name, head, window.MYSTIC_ICONS.swords);
+    mirror(c.strength + " · " + ab.name, head, window.MYSTIC_ICONS.swords);
     /* NOTE: summoning cost is not yet a data field (MYSTIC_ARTEFACTS.md
        §6.1) — the coin shows strength as a placeholder until costs land. */
     coin(c.strength, "Summoning cost (placeholder: strength)", head);
@@ -190,7 +189,7 @@ window.MysticCards = (function () {
     var rules = el("div", "mcard__rules", inner);
     rules.appendChild(document.createTextNode(ab.text));
 
-    /* footer lockup echoes the top strip ("+N · ability") in normal orientation */
+    /* footer lockup echoes the top strip ("N · ability") in normal orientation */
     var foot = el("footer", "mcard__foot", inner);
     var lock = el("div", "mcard__lockup", foot);
     strength(c.strength, lock);

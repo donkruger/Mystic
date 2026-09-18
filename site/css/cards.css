@@ -274,14 +274,10 @@
   color: var(--gold-deep);
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
 }
-.mcard__str .plus {
-  font-size: 0.72em;
-  vertical-align: 0.08em;
-}
 /* crossed-swords device — em-sized so it tracks the numeral at any card
    scale; slightly under cap height for optical balance */
 .mcard__stricon {
-  width: 0.72em;
+  width: 0.864em;
   flex: 0 0 auto;
   display: inline-flex;
 }
@@ -290,7 +286,7 @@
 /* the same device leading the mirrored opponent strip */
 .mcard__miricon {
   display: inline-block;
-  width: 0.95em;
+  width: 1.14em;
   vertical-align: -0.12em;
   margin-right: 0.3em;
 }

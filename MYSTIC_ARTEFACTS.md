@@ -48,7 +48,7 @@ Design notes (current iteration):
   parchment + gold circle badge). Same vector treatment can follow in a later pass.
 - **Rounded hexes** — the land tile and its biome marker clip to `#hexRound`, an inline
   SVG `clipPath` with subtly rounded vertices (polygon fallback kept).
-- **Strength** — rendered as a bare gold **"+N" numeral** at bottom left (no diamond
+- **Strength** — rendered as a crossed-swords device + bare gold **numeral** at bottom left (no diamond
   housing); the die roll adds to it in battle.
 - **Art window** — 50% of the card height; on creature and land cards it narrows to
   **73% width, left-aligned**, with the chevron column filling the strip to its right
@@ -59,7 +59,7 @@ Design notes (current iteration):
 - **Opponent index** — the top edge of every card carries a **mirrored strip** (rotated
   180°) so players across the table can read it: creatures show strength + ability name,
   spells their name, lands their biome. The creature **footer echoes the strip upright**
-  as a "+N · ability" lockup beside the strength numeral. On **creature and spell
+  as an "N · ability" lockup beside the strength numeral. On **creature and spell
   cards** the rules text also repeats in a muted, two-line-clamped mirrored band
   directly above the art — bare rules text in both orientations (the name never heads
   the description, so nothing reads as a run-on). Land cards carry **no mirrored
@@ -296,7 +296,7 @@ Component-relevant facts from the Rules sheet:
 | Subtitle (flavor title) | **not in data — gap** | Gold italic script |
 | Biome badge | `Biomes_tbl` via `BiomeID` | Hex medallion; top center (render) / top left (Components) — pick one, see §6 |
 | Summoning cost | **not in `Creatures_tbl` — gap** | Coin badge, top right (Components) |
-| Strength | `Creatures_tbl.Strength` | Crossed-swords device + gold "+N" numeral + ability-name lockup, bottom left (echoes the top strip) |
+| Strength | `Creatures_tbl.Strength` | Crossed-swords device + gold numeral + ability-name lockup, bottom left (echoes the top strip) |
 | Ability name | `Abilities_tbl.Name` | In the top mirror strip and the footer lockup — not repeated in the rules panels |
 | Ability rules text | `Abilities_tbl.Description` | Ivory body, bottom panel (bare text, no heading) |
 | Ability cost | `Abilities_tbl.Cost` | Unused in render — see §6 |
