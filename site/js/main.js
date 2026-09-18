@@ -271,6 +271,17 @@
 
   /* Keep triggers honest once media has loaded */
   window.addEventListener("load", function () { ScrollTrigger.refresh(); });
+
+  /* TEMP-QA: headless scroll hook */
+  var qaJump = new URLSearchParams(location.search).get("jump");
+  if (qaJump) {
+    setTimeout(function () {
+      if (lenis && lenis.destroy) lenis.destroy();
+      var t = null;
+      try { t = document.querySelector(qaJump); } catch (e) { t = null; }
+      window.scrollTo(0, t ? t.getBoundingClientRect().top + window.pageYOffset : parseInt(qaJump, 10) || 0);
+    }, 500);
+  }
 })();
 
 /* ============================================================
@@ -364,6 +375,9 @@
   function makeToken(cls, label, r) {
     var g = document.createElementNS(ns, "g");
     g.setAttribute("class", "sim-token " + cls);
+    /* ownership orientation: the Demon's card is rotated 60° — cards face
+       their owner, so the two battle cards must read as different players */
+    g.__rot = cls.indexOf("demon") !== -1 ? 60 : 0;
     if (cls.indexOf("blocker") !== -1) {
       /* blockers stay simple pips */
       var cir = document.createElementNS(ns, "circle");
@@ -402,7 +416,7 @@
       /* set the transform origin ONCE — changing it later (e.g. after a
          scale:0 hide) leaves GSAP's SVG transform cache with a stale
          compensation offset and the token renders off-centre */
-      gsap.set(g, { transformOrigin: "50% 50%" });
+      gsap.set(g, { transformOrigin: "50% 50%", rotation: g.__rot });
     }
     return g;
   }
@@ -415,7 +429,7 @@
     if (hasGsap && !reduceMotion) {
       gsap.set(token, { x: cell.cx, y: cell.cy, scale: 1, opacity: 1 });
     } else {
-      token.setAttribute("transform", "translate(" + cell.cx + "," + cell.cy + ")");
+      token.setAttribute("transform", "translate(" + cell.cx + "," + cell.cy + ")" + (token.__rot ? " rotate(" + token.__rot + ")" : ""));
     }
   }
   function hideToken(token) {
