@@ -658,6 +658,15 @@ a { color: inherit; text-decoration: none; }
   .gallery { overflow-x: auto; -webkit-overflow-scrolling: touch; }
   .example__versus { grid-template-columns: 1fr; }
   .example__vs { padding: 0.2rem 0; }
+  /* scorecard becomes an in-flow dark panel below the art — nothing clips */
+  .example__overlay {
+    position: static;
+    background: #141009;
+    padding: 1.2rem 1rem 1.4rem;
+  }
+  .example__artwrap::after { content: none; } /* scrim only needed over art */
+  .example__title { margin-bottom: 0.9rem; }
+  .example__side { padding: 0.85rem 1rem; }
   .battle-sim__dice { height: 140px; }
 }
 @media (max-width: 560px) {
