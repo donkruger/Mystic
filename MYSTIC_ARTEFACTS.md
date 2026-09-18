@@ -12,6 +12,19 @@ and is intended to serve two downstream purposes:
 Companion document: `MYSTIC_MECHANICS.md` (gameplay rules). This document covers **what the
 pieces are and what they carry**; the mechanics doc covers **how they are used**.
 
+## Code-generated cards (design master)
+
+The card designs are maintained as **code, not static files**:
+
+- `site/js/card-data.js` — the master data (this document's appendices, as JS)
+- `site/css/cards.css` — the design system; geometry tokens follow Premium-Print-Formats
+  §4.3 (poker 63.5×88.9mm trim, ~3mm corner radius, ~3mm safe zone, symmetric backs)
+- `site/js/cards.js` — the renderer (`creature` / `spell` / `land` / `tile`)
+
+The website's "Artefacts" section renders live from these modules, so design iteration
+happens in one place. Print export (PDF/X-1a with spot foil layers per Premium-Print-Formats
+Part 6) is future work built on the same modules.
+
 ---
 
 ## 1. Sources and authority

@@ -1829,3 +1829,135 @@
     playAll();
   }
 })();
+
+/* ==========================================================================
+   THE ARTEFACTS — code-compiled card explainer + deck explorer.
+   Cards are built by MysticCards from MYSTIC_DATA; hotspots annotate each
+   element; the pile deals random cards (after fanki's Card Randomizer);
+   pointer-tracked gold foil + tilt after simeydotme's holo cards.
+   ========================================================================== */
+(function () {
+  var section = document.querySelector(".artefacts");
+  if (!section || !window.MysticCards || !window.MYSTIC_DATA) return;
+
+  var C = window.MysticCards;
+  var D = window.MYSTIC_DATA;
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var hasGsap = typeof gsap !== "undefined";
+
+  /* ---------- annotated panels ---------- */
+  var EXAMPLES = {
+    creature: function () { return C.creature(6); },    /* Bruna Sandtinkerer — reaction ability, shows the shield */
+    spell: function () { return C.spell("Fireball"); }, /* reaction spell */
+    land: function () { return C.land(3); },            /* Desert, harvest 4 */
+    tile: function () { return C.tile(1, 4, { tilt: false }); }
+  };
+  /* hotspot positions (% of the artefact face), keyed to the legend order */
+  var HOTSPOTS = {
+    creature: [[13, 10], [87, 10], [15, 86], [50, 71], [90, 55], [85, 86]],
+    spell: [[87, 10], [50, 71], [90, 55]],
+    land: [[13, 10], [87, 10], [50, 46]],
+    tile: [[77, 39], [77, 59], [38, 50], [89, 50]]
+  };
+
+  document.querySelectorAll("[data-artefact-panel]").forEach(function (panel) {
+    var kind = panel.getAttribute("data-artefact-panel");
+    var stage = panel.querySelector("[data-artefact-stage]");
+    var card = EXAMPLES[kind] && EXAMPLES[kind]();
+    if (!stage || !card) return;
+    stage.appendChild(card);
+    var host = card.querySelector(".mcard__inner") || card;
+    (HOTSPOTS[kind] || []).forEach(function (pos, i) {
+      var dot = document.createElement("span");
+      dot.className = "artefact-hot";
+      dot.textContent = i + 1;
+      dot.style.left = pos[0] + "%";
+      dot.style.top = pos[1] + "%";
+      host.appendChild(dot);
+    });
+  });
+
+  /* ---------- deck explorer ---------- */
+  var deck = document.querySelector("[data-deck]");
+  if (deck) {
+    var pile = deck.querySelector("[data-deck-draw]");
+    var stageEl = deck.querySelector("[data-deck-stage]");
+    var meta = deck.querySelector("[data-deck-meta]");
+
+    for (var b = 0; b < 3; b++) pile.insertBefore(C.back(), pile.firstChild);
+
+    var drawing = false;
+    function pickRandom() {
+      var roll = Math.random();
+      if (roll < 0.55) {
+        var c = D.creatures[(Math.random() * D.creatures.length) | 0];
+        var ab = D.ability[c.abilityId];
+        return {
+          node: C.creature(c.id),
+          meta: "<strong>" + c.name + "</strong> — " + D.biome[c.biomeId].name + " " + D.cls[c.classId].name +
+                " · Strength " + c.strength + " · " + ab.name + (ab.reaction ? " (reaction)" : "")
+        };
+      }
+      if (roll < 0.85) {
+        var s = D.spells[(Math.random() * D.spells.length) | 0];
+        return {
+          node: C.spell(s.name),
+          meta: "<strong>" + s.name + "</strong> — Spell" + (s.reaction ? " · reaction" : "") + " · costs 1 gold"
+        };
+      }
+      var l = D.lands[(Math.random() * D.lands.length) | 0];
+      return {
+        node: C.land(l.id),
+        meta: "<strong>" + D.biome[l.biomeId].name + " land</strong> — yields " + l.harvest + " gold when harvested"
+      };
+    }
+
+    pile.addEventListener("click", function () {
+      if (drawing) return;
+      drawing = true;
+      var pick = pickRandom();
+      var old = stageEl.querySelector(".mcard");
+      stageEl.appendChild(pick.node);
+      meta.innerHTML = pick.meta;
+      if (hasGsap && !reduceMotion) {
+        gsap.fromTo(pick.node,
+          { rotationY: -95, x: -140, opacity: 0, scale: 0.82 },
+          { rotationY: 0, x: 0, opacity: 1, scale: 1, duration: 0.75, ease: "power3.out",
+            onComplete: function () { drawing = false; } });
+        if (old) {
+          gsap.to(old, { rotationY: 55, x: 110, opacity: 0, scale: 0.9, duration: 0.5, ease: "power2.in",
+            onComplete: function () { old.remove(); } });
+        }
+      } else {
+        if (old) old.remove();
+        drawing = false;
+      }
+    });
+  }
+
+  /* ---------- gold-foil tilt (pointer-fine devices only) ---------- */
+  if (window.matchMedia("(pointer: fine)").matches && !reduceMotion) {
+    var active = null;
+    var reset = function (card) {
+      card.style.setProperty("--rx", "0deg");
+      card.style.setProperty("--ry", "0deg");
+      card.style.setProperty("--hover", "0");
+    };
+    document.addEventListener("pointermove", function (e) {
+      var card = e.target && e.target.closest ? e.target.closest("[data-tilt]") : null;
+      if (card !== active) { if (active) reset(active); active = card; }
+      if (!card) return;
+      var r = card.getBoundingClientRect();
+      var px = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
+      var py = Math.min(1, Math.max(0, (e.clientY - r.top) / r.height));
+      card.style.setProperty("--mx", (px * 100).toFixed(1));
+      card.style.setProperty("--my", (py * 100).toFixed(1));
+      card.style.setProperty("--ry", ((px - 0.5) * 14).toFixed(2) + "deg");
+      card.style.setProperty("--rx", ((0.5 - py) * 10).toFixed(2) + "deg");
+      card.style.setProperty("--hover", "1");
+    });
+    document.addEventListener("pointerout", function (e) {
+      if (active && !active.contains(e.relatedTarget)) { reset(active); active = null; }
+    });
+  }
+})();

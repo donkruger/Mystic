@@ -1,0 +1,546 @@
+/* ==========================================================================
+   MYSTIC — code-compiled artefact cards (design system)
+
+   Screen master for the print pipeline. Geometry tokens follow
+   Premium-Print-Formats §4.3 (board game & playing cards):
+     - trim      poker 63.5 x 88.9mm   -> aspect-ratio 63.5/88.9
+     - corners   3-3.5mm radius        -> ~4.7% of card width
+     - safe zone 3mm inside trim       -> --mcard-safe
+     - bleed     3mm beyond trim       -> added at export, not on screen
+     - backs     single symmetric file -> .mcard--back is mirror-symmetric
+     - register  +/-0.2mm front/back   -> keep badges inset of the safe zone
+   Finishes referenced for later export: gold = hot foil (烫金) spot layer,
+   card face = CMYK, linen texture = laminate. See Part 6 layer naming.
+   ========================================================================== */
+
+.mcard {
+  /* geometry */
+  --card-w: 250px;
+  --card-ratio: 63.5 / 88.9;          /* poker trim, PPF §4.3 */
+  --card-radius: 4.7%;                /* ~3mm at poker width */
+  --mcard-safe: 5%;                   /* ~3mm safe zone inside trim */
+
+  /* palette (site theme) */
+  --face: #fffef9;
+  --face-edge: #f3ead2;
+  --gold: #c9a24b;
+  --gold-deep: #8a6a25;
+  --gold-bright: #e8cf8f;
+  --ink: #221d12;
+  --muted: #6f6858;
+
+  /* interaction state (set by JS, pointer-fine only) */
+  --rx: 0deg;
+  --ry: 0deg;
+  --mx: 50;                           /* pointer x, % */
+  --my: 50;                           /* pointer y, % */
+  --hover: 0;                         /* 0..1 pointer presence */
+
+  position: relative;
+  width: var(--card-w);
+  aspect-ratio: var(--card-ratio);
+  font-family: var(--font-display, "Comfortaa", sans-serif);
+  color: var(--ink);
+  perspective: 720px;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.mcard__inner {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--card-radius);
+  background:
+    linear-gradient(160deg, var(--face) 0%, var(--face-edge) 130%);
+  border: 1px solid rgba(201, 162, 75, 0.55);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 18px 34px -22px rgba(34, 29, 18, 0.45);
+  transform: rotateX(var(--rx)) rotateY(var(--ry));
+  transform-style: preserve-3d;
+  transition: transform 0.45s var(--ease-out, ease), box-shadow 0.45s ease;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: var(--mcard-safe);
+  gap: 3.2%;
+}
+
+.mcard[data-tilt]:hover .mcard__inner {
+  transition: transform 0.08s linear, box-shadow 0.3s ease;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 30px 48px -24px rgba(34, 29, 18, 0.55);
+}
+
+/* hairline inner rule — echoes the north-star double border, minimal */
+.mcard__inner::before {
+  content: "";
+  position: absolute;
+  inset: calc(var(--mcard-safe) * 0.55);
+  border: 1px solid rgba(201, 162, 75, 0.35);
+  border-radius: calc(var(--card-radius) * 0.7);
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* ---------- header: biome chip, name, cost coin ---------- */
+.mcard__head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 11%;
+  position: relative;
+  z-index: 5;
+}
+
+.mcard__chip {
+  flex: 0 0 auto;
+  width: 12.5%;
+  aspect-ratio: 1;
+  clip-path: polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%);
+  background: linear-gradient(150deg, var(--gold-bright), var(--gold));
+  display: grid;
+  place-items: center;
+  box-shadow: 0 2px 6px -2px rgba(138, 106, 37, 0.6);
+}
+.mcard__chip img {
+  width: 62%;
+  height: 62%;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.35));
+}
+
+.mcard__name {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: calc(var(--card-w) * 0.062);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.15;
+  color: var(--ink);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.mcard__coin {
+  flex: 0 0 auto;
+  width: 12.5%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 32% 28%, #f6e7bd 0%, var(--gold) 58%, var(--gold-deep) 100%);
+  color: #fffdf4;
+  font-weight: 700;
+  font-size: calc(var(--card-w) * 0.066);
+  display: grid;
+  place-items: center;
+  box-shadow:
+    0 2px 6px -2px rgba(138, 106, 37, 0.65),
+    0 0 0 1.5px rgba(255, 250, 235, 0.65) inset;
+  text-shadow: 0 1px 1px rgba(90, 66, 18, 0.55);
+}
+
+/* ---------- art window ---------- */
+.mcard__art {
+  position: relative;
+  z-index: 3;
+  flex: 0 0 44%;
+  border-radius: calc(var(--card-radius) * 0.55);
+  overflow: hidden;
+  border: 1px solid rgba(201, 162, 75, 0.5);
+  box-shadow: 0 6px 14px -10px rgba(34, 29, 18, 0.5);
+  background: #e9e2cf;
+}
+.mcard__art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---------- rules zone ---------- */
+.mcard__rules {
+  position: relative;
+  z-index: 5;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 0 2%;
+  font-size: calc(var(--card-w) * 0.041);
+  line-height: 1.42;
+  color: var(--ink);
+  overflow: hidden;
+}
+.mcard__rules strong {
+  display: block;
+  color: var(--gold-deep);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  font-size: calc(var(--card-w) * 0.045);
+  margin-bottom: 0.15em;
+}
+.mcard__rules--plain { padding-top: 1%; }
+.mcard__rules--plain strong { color: var(--ink); }
+
+/* ---------- footer: strength diamond, class icon ---------- */
+.mcard__foot {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  min-height: 10%;
+}
+
+.mcard__diamond {
+  flex: 0 0 auto;
+  width: 13.5%;
+  aspect-ratio: 1;
+  transform: rotate(45deg);
+  border-radius: 18%;
+  background: linear-gradient(150deg, #fffdf4, #f0e3c0);
+  border: 1.5px solid var(--gold);
+  box-shadow: 0 3px 8px -3px rgba(138, 106, 37, 0.55);
+  display: grid;
+  place-items: center;
+  margin: 0 3% 1.5% 3%;
+}
+.mcard__diamond span {
+  transform: rotate(-45deg);
+  font-weight: 700;
+  font-size: calc(var(--card-w) * 0.072);
+  color: var(--gold-deep);
+}
+
+.mcard__class {
+  flex: 0 0 auto;
+  width: 12.5%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid rgba(201, 162, 75, 0.6);
+  padding: 8%;
+  box-shadow: 0 2px 6px -3px rgba(34, 29, 18, 0.4);
+}
+.mcard__class img { width: 100%; height: 100%; object-fit: contain; }
+
+.mcard__tag {
+  flex: 1 1 auto;
+  text-align: center;
+  font-size: calc(var(--card-w) * 0.036);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding-bottom: 2%;
+}
+
+/* ---------- reaction shield (golden, right edge) ---------- */
+.mcard__shield {
+  position: absolute;
+  z-index: 6;
+  right: calc(var(--mcard-safe) * 0.8);
+  top: 55%;
+  width: 11%;
+  aspect-ratio: 0.86;
+  filter: drop-shadow(0 2px 4px rgba(138, 106, 37, 0.5));
+}
+.mcard__shield svg { width: 100%; height: 100%; display: block; }
+
+/* ---------- holo foil + glare (after simeydotme, gold-brand) ---------- */
+.mcard__foil,
+.mcard__glare {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--card-radius);
+  pointer-events: none;
+  z-index: 8;
+  opacity: var(--hover);
+  transition: opacity 0.4s ease;
+}
+
+/* gold-foil shimmer — brand adaptation of the rainbow holo gradient */
+.mcard__foil {
+  background:
+    linear-gradient(115deg,
+      transparent 18%,
+      rgba(201, 162, 75, 0.28) 36%,
+      rgba(255, 243, 205, 0.6) 47%,
+      rgba(201, 162, 75, 0.28) 58%,
+      transparent 76%);
+  background-size: 230% 230%;
+  background-position: calc(var(--mx) * 1%) calc(var(--my) * 1%);
+  mix-blend-mode: soft-light;
+}
+
+/* cursor-tracked glare */
+.mcard__glare {
+  background: radial-gradient(circle at calc(var(--mx) * 1%) calc(var(--my) * 1%),
+    rgba(255, 252, 238, 0.55) 0%,
+    rgba(255, 252, 238, 0.12) 34%,
+    transparent 62%);
+  mix-blend-mode: screen;
+}
+
+/* faint card stock texture */
+.mcard__inner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+}
+
+/* ---------- card back (single symmetric file — PPF §4.3) ---------- */
+.mcard--back .mcard__inner {
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(201, 162, 75, 0.16), transparent 58%),
+    linear-gradient(160deg, var(--face) 0%, var(--face-edge) 130%);
+}
+.mcard--back img {
+  width: 46%;
+  opacity: 0.9;
+  filter: drop-shadow(0 4px 10px rgba(138, 106, 37, 0.35));
+}
+
+/* ---------- land tile (hexagonal board piece) ---------- */
+.mtile {
+  --tile-w: 300px;
+  position: relative;
+  width: var(--tile-w);
+  aspect-ratio: 1;
+  font-family: var(--font-display, "Comfortaa", sans-serif);
+  clip-path: polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%);
+  background: #e9e2cf;
+  overflow: hidden;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.mtile__art { position: absolute; inset: 0; }
+.mtile__art img { width: 100%; height: 100%; object-fit: cover; }
+.mtile__veil {                       /* legibility wash behind markers */
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 55%, rgba(20, 16, 8, 0.38) 100%);
+}
+.mtile__chip {
+  position: absolute;
+  right: 9%;
+  top: 50%;
+  transform: translateY(-118%);
+  width: 15%;
+  aspect-ratio: 1;
+  clip-path: polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%);
+  background: linear-gradient(150deg, var(--gold-bright), var(--gold));
+  display: grid;
+  place-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+.mtile__chip img { width: 62%; height: 62%; object-fit: contain; }
+.mtile__yield {
+  position: absolute;
+  right: 10.5%;
+  top: 50%;
+  transform: translateY(18%);
+  width: 12%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 28%, #f6e7bd 0%, var(--gold) 58%, var(--gold-deep) 100%);
+  color: #fffdf4;
+  font-weight: 700;
+  font-size: calc(var(--tile-w) * 0.055);
+  display: grid;
+  place-items: center;
+  text-shadow: 0 1px 1px rgba(90, 66, 18, 0.55);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+.mtile__diamond {                    /* orientation marker (Rules: right side) */
+  position: absolute;
+  right: 7.5%;                       /* kept inside the hex clip at mid-height */
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+  width: 5.5%;
+  aspect-ratio: 1;
+  border-radius: 22%;
+  background: #fffdf4;
+  border: 1.5px solid var(--gold-deep);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+}
+
+/* foil/glare shared with tiles */
+.mtile .mcard__foil,
+.mtile .mcard__glare { border-radius: 0; }
+
+/* ==========================================================================
+   Artefacts section + explainer panels
+   ========================================================================== */
+.artefacts {
+  padding: 7rem 1.5rem 6rem;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+.artefacts__eyebrow {
+  text-align: center;
+  color: var(--gold-deep);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  margin-bottom: 0.9rem;
+}
+.artefacts__title {
+  text-align: center;
+  font-size: clamp(2rem, 4.6vw, 3.2rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  margin-bottom: 1.1rem;
+}
+.artefacts__lede {
+  text-align: center;
+  max-width: 620px;
+  margin: 0 auto 4rem;
+  color: var(--muted);
+}
+
+.artefact-panel {
+  display: grid;
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+  gap: clamp(1.6rem, 5vw, 4rem);
+  align-items: center;
+  margin-bottom: 4.5rem;
+}
+.artefact-panel:nth-child(even) { grid-template-columns: minmax(0, 1fr) minmax(0, auto); }
+.artefact-panel:nth-child(even) .artefact-panel__stage { order: 2; }
+.artefact-panel:nth-child(even) .artefact-panel__notes { order: 1; }
+
+.artefact-panel__stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: 1.2rem;
+}
+.artefact-panel__stage .mcard { --card-w: 240px; }
+.artefact-panel__stage .mtile { --tile-w: 270px; }
+
+/* numbered hotspots overlaid on the card */
+.artefact-hot {
+  position: absolute;
+  z-index: 20;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.9), 0 4px 10px -3px rgba(34, 29, 18, 0.5);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.artefact-panel__notes h3 {
+  font-size: 1.35rem;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.35rem;
+}
+.artefact-panel__notes .artefact-panel__sub {
+  color: var(--muted);
+  font-size: 0.92rem;
+  margin-bottom: 1.2rem;
+}
+.artefact-legend { display: grid; gap: 0.65rem; }
+.artefact-legend li {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  gap: 0.7rem;
+  align-items: start;
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+.artefact-legend li strong { color: var(--ink); font-weight: 700; }
+.artefact-legend .n {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid var(--gold);
+  color: var(--gold-deep);
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  margin-top: 0.1em;
+}
+
+/* ---------- deck explorer (after fanki's Card Randomizer) ---------- */
+.deck {
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+  gap: clamp(1.6rem, 5vw, 4rem);
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--gold-faint);
+  border-radius: 18px;
+  box-shadow: 0 24px 54px -34px rgba(34, 29, 18, 0.25);
+  padding: clamp(1.4rem, 4vw, 2.6rem);
+}
+.deck__pile {
+  position: relative;
+  width: 190px;
+  aspect-ratio: 63.5 / 88.9;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+}
+.deck__pile .mcard { --card-w: 180px; position: absolute; inset: 0; margin: auto; }
+.deck__pile .mcard:nth-child(1) { transform: rotate(-5deg) translate(-4px, 3px); }
+.deck__pile .mcard:nth-child(2) { transform: rotate(3deg) translate(4px, -2px); }
+.deck__pile .mcard:nth-child(3) { transform: rotate(-1deg); }
+.deck__pile:hover .mcard:nth-child(3) { transform: rotate(-1deg) translateY(-6px); transition: transform 0.3s var(--ease-out); }
+.deck__hint {
+  position: absolute;
+  left: 50%;
+  bottom: -2.1rem;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 0.8rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+}
+.deck__stage {
+  display: grid;
+  place-items: center;
+  min-height: 300px;
+  perspective: 900px;
+}
+.deck__stage .mcard { --card-w: 250px; }
+.deck__meta {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.88rem;
+  margin-top: 1rem;
+  min-height: 1.6em;
+}
+.deck__meta strong { color: var(--ink); }
+
+@media (max-width: 860px) {
+  .artefact-panel,
+  .artefact-panel:nth-child(even) { grid-template-columns: 1fr; }
+  .artefact-panel:nth-child(even) .artefact-panel__stage { order: 0; }
+  .artefact-panel:nth-child(even) .artefact-panel__notes { order: 1; }
+  .deck { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mcard__inner { transition: none; transform: none !important; }
+  .mcard__foil, .mcard__glare { display: none; }
+}

@@ -9,7 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=16">
+  <link rel="stylesheet" href="css/style.css?v=17">
+  <link rel="stylesheet" href="css/cards.css?v=17">
 </head>
 <body>
 
@@ -310,6 +311,84 @@
       </div>
     </section>
 
+    <!-- ============ THE ARTEFACTS ============ -->
+    <section class="artefacts" id="artefacts">
+      <p class="artefacts__eyebrow" data-reveal>The artefacts</p>
+      <h2 class="artefacts__title" data-split>Reading the cards</h2>
+      <p class="artefacts__lede" data-reveal>Every artefact is a small system of signs. Learn to read them once, and the whole board speaks. These cards are rendered by code from the game's master data — the very designs bound for the print run.</p>
+
+      <!-- Creature card -->
+      <div class="artefact-panel" data-artefact-panel="creature" data-reveal>
+        <div class="artefact-panel__stage" data-artefact-stage></div>
+        <div class="artefact-panel__notes">
+          <h3>The creature card</h3>
+          <p class="artefact-panel__sub">White-backed. Your agents on the board — summoned with gold, a matching land card, and a free tile.</p>
+          <ol class="artefact-legend">
+            <li><span class="n">1</span><span><strong>Native biome</strong> — the hex chip, top left. On matching tiles the creature gains its biome's buff; elsewhere it suffers the debuff.</span></li>
+            <li><span class="n">2</span><span><strong>Summoning cost</strong> — the gold coin, top right. Paid when the creature enters play.</span></li>
+            <li><span class="n">3</span><span><strong>Strength</strong> — the diamond, bottom left. Add a die roll to it in every battle.</span></li>
+            <li><span class="n">4</span><span><strong>Ability</strong> — the rules panel. Usable once per turn, free of actions.</span></li>
+            <li><span class="n">5</span><span><strong>Reaction shield</strong> — a golden shield on the right edge means the ability can answer another player's move.</span></li>
+            <li><span class="n">6</span><span><strong>Creature type</strong> — the class icon, bottom right. Dragon, Orc, Elite, Undead, Elemental, Angel, Demon, Giant, Mermaid or Dwarf.</span></li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- Spell card -->
+      <div class="artefact-panel" data-artefact-panel="spell" data-reveal>
+        <div class="artefact-panel__stage" data-artefact-stage></div>
+        <div class="artefact-panel__notes">
+          <h3>The spell card</h3>
+          <p class="artefact-panel__sub">Black-backed. Held in hand, played for one gold — no action required.</p>
+          <ol class="artefact-legend">
+            <li><span class="n">1</span><span><strong>Cost</strong> — the coin, top right. Every spell costs a single gold.</span></li>
+            <li><span class="n">2</span><span><strong>Effect</strong> — the rules panel, bottom center. What the spell does, and when it may be played.</span></li>
+            <li><span class="n">3</span><span><strong>Reaction shield</strong> — when present, the spell may be cast in response to another player's action.</span></li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- Land card -->
+      <div class="artefact-panel" data-artefact-panel="land" data-reveal>
+        <div class="artefact-panel__stage" data-artefact-stage></div>
+        <div class="artefact-panel__notes">
+          <h3>The land card</h3>
+          <p class="artefact-panel__sub">Black-backed. The deed to a tile — and the seat of every summoning.</p>
+          <ol class="artefact-legend">
+            <li><span class="n">1</span><span><strong>Biome</strong> — the hex chip, top left. Pairs the card with its matching tiles on the board.</span></li>
+            <li><span class="n">2</span><span><strong>Harvest yield</strong> — the coin, top right. Gold gained when one of your creatures harvests here.</span></li>
+            <li><span class="n">3</span><span><strong>Land image</strong> — the terrain portrait. On the board, the card's <em>orientation</em> marks whose realm it belongs to.</span></li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- Land tile -->
+      <div class="artefact-panel" data-artefact-panel="tile" data-reveal>
+        <div class="artefact-panel__stage" data-artefact-stage></div>
+        <div class="artefact-panel__notes">
+          <h3>The land tile</h3>
+          <p class="artefact-panel__sub">Hexagonal. Thirty-six of them become the board — a different realm every game.</p>
+          <ol class="artefact-legend">
+            <li><span class="n">1</span><span><strong>Biome marker</strong> — middle right. Which of the nine biomes this tile belongs to.</span></li>
+            <li><span class="n">2</span><span><strong>Harvest yield</strong> — the coin, middle right. Gold this tile grants per harvest.</span></li>
+            <li><span class="n">3</span><span><strong>Land image</strong> — full-bleed terrain art; the biome at a glance.</span></li>
+            <li><span class="n">4</span><span><strong>Orientation diamond</strong> — the right edge. Align every tile's diamond the same way when building the map.</span></li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- Deck explorer -->
+      <div class="deck" data-deck data-reveal>
+        <button class="deck__pile" data-deck-draw type="button" aria-label="Draw a random card from the deck">
+          <span class="deck__hint">Draw a card</span>
+        </button>
+        <div>
+          <div class="deck__stage" data-deck-stage></div>
+          <p class="deck__meta" data-deck-meta>Every card in the game is rendered live from the master tables — draw from the deck and see.</p>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <!-- ============ FOOTER ============ -->
@@ -324,6 +403,8 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
-  <script src="js/main.js?v=16"></script>
+  <script src="js/card-data.js?v=17"></script>
+  <script src="js/cards.js?v=17"></script>
+  <script src="js/main.js?v=17"></script>
 </body>
 </html>
