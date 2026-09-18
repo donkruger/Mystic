@@ -54,9 +54,11 @@ Design notes (current iteration):
   rules text.
 - **Opponent index** — the top edge of every card carries a **mirrored strip** (rotated
   180°) so players across the table can read it: creatures show strength + ability name,
-  spells their name, lands their biome. The **description also repeats** in a muted,
-  two-line-clamped mirrored band directly above the art — key elements reflect with
-  alternative placement, never the whole card.
+  spells their name, lands their biome. The creature **footer echoes the strip upright**
+  as a "+N · ability" lockup beside the strength numeral. The **description also repeats**
+  in a muted, two-line-clamped mirrored band directly above the art — bare rules text in
+  both orientations (the name never heads the description, so nothing reads as a run-on).
+  Key elements reflect with alternative placement, never the whole card.
 - **Tile symmetry** — the land tile repeats its biome marker + harvest yield, side by
   side, on **every edge** — six pairs rotated 60° apart, pushed to the rim — so the tile
   reads identically from each of the six seats (6-fold rotational symmetry). Tiles have
@@ -288,9 +290,9 @@ Component-relevant facts from the Rules sheet:
 | Subtitle (flavor title) | **not in data — gap** | Gold italic script |
 | Biome badge | `Biomes_tbl` via `BiomeID` | Hex medallion; top center (render) / top left (Components) — pick one, see §6 |
 | Summoning cost | **not in `Creatures_tbl` — gap** | Coin badge, top right (Components) |
-| Strength | `Creatures_tbl.Strength` | Bare gold "+N" numeral, bottom left |
-| Ability name | `Abilities_tbl.Name` | Gold caps heading, bottom panel |
-| Ability rules text | `Abilities_tbl.Description` | Ivory body, bottom panel |
+| Strength | `Creatures_tbl.Strength` | Gold "+N" numeral + ability-name lockup, bottom left (echoes the top strip) |
+| Ability name | `Abilities_tbl.Name` | In the top mirror strip and the footer lockup — not repeated in the rules panels |
+| Ability rules text | `Abilities_tbl.Description` | Ivory body, bottom panel (bare text, no heading) |
 | Ability cost | `Abilities_tbl.Cost` | Unused in render — see §6 |
 | Reaction shield | `Abilities_tbl.Reaction?` | Golden shield below the chevron column (right strip), shown when 1 |
 | Creature type | `Class_tbl` via `ClassID` | Class icon, bottom right |
@@ -322,7 +324,7 @@ Component-relevant facts from the Rules sheet:
 | Land image | asset pipeline (per biome) | Full-bleed hex art |
 | Biome marker | `Biomes_tbl` via `BiomeID` | Icon, middle right (per Components) |
 | Harvest yield | `Lands_tbl.Harvest amount` | Numeral, middle right (per Components) |
-| Biome marker + harvest yield ×6 | `Biomes_tbl` icon + `Lands_tbl.Harvest amount` | Every edge, rotated 60° apart, at the rim — reads the same from each of the six seats; no facing/ownership (supersedes the Rules' orientation diamond) |
+| Biome marker + harvest yield ×6 | `Biomes_tbl` icon + `Lands_tbl.Harvest amount` | Every edge, rotated 60° apart, at the rim — reads the same from each of the six seats; no facing/ownership (supersedes the Rules' orientation diamond). Yield coin sized to match the land card's coin |
 
 ---
 

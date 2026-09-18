@@ -102,12 +102,11 @@ window.MysticCards = (function () {
       'stroke-linecap="round" stroke-linejoin="round">' + paths + '</g></svg>';
     return s;
   }
-  function mirrorRules(strongText, text, parent) {
-    /* mirrored description band above the art — the opponent reads the card's
-       essence upside down; key elements reflect, never the whole card */
+  function mirrorRules(text, parent) {
+    /* mirrored description band above the art — bare rules text, upside down;
+       the name/number live in the top strip, so nothing repeats here */
     var mr = el("div", "mcard__rules mcard__rules--mirror", parent);
     mr.setAttribute("aria-hidden", "true");
-    el("strong", null, mr).textContent = strongText;
     mr.appendChild(document.createTextNode(text));
     return mr;
   }
@@ -171,7 +170,7 @@ window.MysticCards = (function () {
        §6.1) — the coin shows strength as a placeholder until costs land. */
     coin(c.strength, "Summoning cost (placeholder: strength)", head);
 
-    mirrorRules(ab.name, ab.text, inner);
+    mirrorRules(ab.text, inner);
 
     /* art at 73% width, left-aligned; right strip holds the chevron column
        with the reaction shield directly below it */
@@ -183,12 +182,15 @@ window.MysticCards = (function () {
     chevrons(strip);
     if (ab.reaction) reactionShield(strip);
 
+    /* bare rules text — the name lives in the top strip and footer lockup */
     var rules = el("div", "mcard__rules", inner);
-    el("strong", null, rules).textContent = ab.name;
     rules.appendChild(document.createTextNode(ab.text));
 
+    /* footer lockup echoes the top strip ("+N · ability") in normal orientation */
     var foot = el("footer", "mcard__foot", inner);
-    strength(c.strength, foot);
+    var lock = el("div", "mcard__lockup", foot);
+    strength(c.strength, lock);
+    el("span", "mcard__strname", lock).textContent = ab.name;
 
     return finishShell(card, opts && opts.tilt);
   }
@@ -209,7 +211,7 @@ window.MysticCards = (function () {
     mirror(s.name, head);
     coin(1, "Cost: 1 gold (Rules: all spells cost 1 gold)", head);
 
-    mirrorRules("Spell" + (s.reaction ? " · Reaction" : ""), s.text, inner);
+    mirrorRules(s.text, inner);
 
     var sfig = artWindow(spellArt(s.name), s.name, inner);
     el("h4", "mcard__artname", sfig).textContent = s.name;
@@ -238,7 +240,7 @@ window.MysticCards = (function () {
 
     var landText = "Yields " + l.harvest + " gold when harvested. Place on a matching " +
       biome.name + " tile to summon; its orientation marks your ownership.";
-    mirrorRules("Land", landText, inner);
+    mirrorRules(landText, inner);
 
     /* art at 73% width, left-aligned; chevron column fills the right strip */
     var mid = el("div", "mcard__mid", inner);

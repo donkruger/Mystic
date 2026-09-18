@@ -226,9 +226,18 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
-/* the -webkit-box clamp inlines the heading — keep it attached with a dash */
-.mcard__rules--mirror strong { display: inline; font-size: inherit; margin: 0; }
-.mcard__rules--mirror strong::after { content: " — "; color: var(--gold); }
+/* footer lockup — strength numeral + ability name, echoing the top strip */
+.mcard__lockup { display: flex; align-items: baseline; gap: 0.4em; }
+.mcard__strname {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: calc(var(--card-w) * 0.038);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  margin-bottom: 1%;
+}
+.mcard__strname::before { content: "·"; margin-right: 0.4em; color: var(--gold); }
 }
 .mcard__rules strong {
   display: block;
@@ -452,13 +461,14 @@
   display: block;
 }
 .mtile__yield {
-  width: calc(var(--tile-w) * 0.12);
+  /* sized to match the land card's coin (12.5% / 6.6% of the 240px panel card) */
+  width: calc(var(--tile-w) * 0.111);
   aspect-ratio: 1;
   border-radius: 50%;
   background: radial-gradient(circle at 32% 28%, #f6e7bd 0%, var(--gold) 58%, var(--gold-deep) 100%);
   color: #fffdf4;
   font-weight: 700;
-  font-size: calc(var(--tile-w) * 0.055);
+  font-size: calc(var(--tile-w) * 0.0587);
   display: grid;
   place-items: center;
   text-shadow: 0 1px 1px rgba(90, 66, 18, 0.55);
