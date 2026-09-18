@@ -119,7 +119,7 @@
 /* mirrored opponent index — rotated 180° so the strength + ability name
    read correctly from across the table */
 .mcard__mirror {
-  flex: 0 1 auto;
+  flex: 1 1 auto;
   min-width: 0;
   text-align: center;
   transform: rotate(180deg);
@@ -131,13 +131,6 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  /* parchment nameplate so the strip reads cleanly over the frame's
-     top-center ornament (sun / moon / fan) */
-  background: var(--parchment, #f7f1e3);
-  border: 1px solid var(--gold);
-  border-radius: 999px;
-  padding: 0.35em 0.9em;
-  margin: 0 auto;
 }
 
 .mcard__coin {
@@ -210,35 +203,18 @@
   z-index: 3;
 }
 
-/* ---------- ornate tarot frame (per card type) ---------- */
-/* gold linework overlay just inside the hairline border; all content sits
-   above it (content elements carry position/z-index of their own) */
-.mcard__frame {
-  position: absolute;
-  inset: 1.6%;
-  z-index: 2;
-  pointer-events: none;
-  color: var(--gold);
-  opacity: 0.9;
-}
-.mcard__frame svg { width: 100%; height: 100%; display: block; }
-
 /* ---------- rules zone ---------- */
 .mcard__rules {
   position: relative;
   z-index: 5;
   flex: 1 1 auto;
   min-height: 0;
-  padding: 1.5% 3%;
+  padding: 0 2%;
   font-family: var(--font-body);
   font-size: calc(var(--card-w) * 0.041);
   line-height: 1.42;
   color: var(--ink);
   overflow: hidden;
-  /* soft parchment veil keeps the rules legible over the frame's
-     bottom scrollwork */
-  background: rgba(253, 250, 241, 0.88);
-  border-radius: calc(var(--card-w) * 0.02);
 }
 /* mirrored description band above the art — muted, clamped, for opponents */
 .mcard__rules--mirror {

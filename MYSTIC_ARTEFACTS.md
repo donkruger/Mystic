@@ -50,16 +50,6 @@ Design notes (current iteration):
   Same vector treatment can follow in a later pass.
 - **Rounded hexes** — the land tile and its biome marker clip to `#hexRound`, an inline
   SVG `clipPath` with subtly rounded vertices (polygon fallback kept).
-- **Tarot frames** — every card carries an ornate vector border extracted from the gold
-  tarot frame set (EPS source), one motif per card type: **creature = radiant sun**
-  header with scrollwork corners, **spell = crescent moon + star** with constellation,
-  **land = art-deco fan** with diamond-star corners. Recolored to single-color gold
-  linework (`currentColor`; web source `site/js/frames.js`, print masters
-  `site/assets/frames/<type>.svg`) — a designated **hot-foil (烫金) spot separation**
-  per Premium-Print-Formats §1.8 / Part 6. The frame overlays the parchment just inside
-  the hairline border; the mirrored strip wears a parchment **nameplate pill** and the
-  rules panel a soft parchment veil so text stays legible over the ornament. Land
-  tiles are excluded (hexagonal).
 - **Strength** — rendered as a crossed-swords device + bare gold **numeral** at bottom left (no diamond
   housing); the die roll adds to it in battle.
 - **Art window** — 50% of the card height; on creature and land cards it narrows to
@@ -316,7 +306,6 @@ Component-relevant facts from the Rules sheet:
 | Creature type | `Class_tbl` via `ClassID` | Class icon, bottom right |
 | Flavor text | **not in data — gap** | Italic line, bottom |
 | Art | asset pipeline (per creature) | Rounded-rect window, center |
-| Frame | — | Tarot border, radiant-sun motif (gold foil linework) |
 
 ### 5.2 Land card
 
@@ -325,7 +314,6 @@ Component-relevant facts from the Rules sheet:
 | Biome | `Biomes_tbl` via `BiomeID` | Biome icon, top left |
 | Harvest yield | `Lands_tbl.Harvest amount` | Numeral badge, top right (assumed) |
 | Land image | asset pipeline (per biome) | Center art |
-| Frame | — | Tarot border, art-deco fan motif (gold foil linework) |
 
 ### 5.3 Spell card
 
@@ -337,7 +325,6 @@ Component-relevant facts from the Rules sheet:
 | Effect | `Spells_tbl.Effect` | Rules text below the art, headed only "Spell" (reaction status lives on the shield, not the heading) |
 | Reaction shield | `Spells_tbl.Reaction?` | Golden shield, right edge, shown when 1 |
 | Art | asset pipeline (per spell) | Art window |
-| Frame | — | Tarot border, crescent-moon motif (gold foil linework) |
 
 ### 5.4 Land tile
 
