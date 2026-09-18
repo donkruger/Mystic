@@ -390,9 +390,14 @@ a { color: inherit; text-decoration: none; }
 .sim-token text {
   font-family: var(--font-display); font-weight: 700; font-size: 14px; text-anchor: middle;
 }
-.sim-token--demon circle { fill: #2a2118; stroke: var(--gold); }
+/* creature tokens are miniature cards (rect + hex pip + initial) */
+.sim-token__card { stroke-width: 2; }
+.sim-token__pip { fill: none; stroke-width: 1.3; }
+.sim-token--demon .sim-token__card { fill: #2a2118; stroke: var(--gold); }
+.sim-token--demon .sim-token__pip { stroke: #e8cf8f; }
 .sim-token--demon text { fill: #e8cf8f; }
-.sim-token--elite circle { fill: #f6ecc9; stroke: var(--gold-deep); }
+.sim-token--elite .sim-token__card { fill: #f6ecc9; stroke: var(--gold-deep); }
+.sim-token--elite .sim-token__pip { stroke: var(--gold-deep); }
 .sim-token--elite text { fill: var(--gold-deep); }
 .sim-token--blocker circle { fill: rgba(34,29,18,0.55); stroke: none; }
 .sim-token--blocker text { fill: #fff; font-size: 11px; }

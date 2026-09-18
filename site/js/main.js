@@ -364,13 +364,39 @@
   function makeToken(cls, label, r) {
     var g = document.createElementNS(ns, "g");
     g.setAttribute("class", "sim-token " + cls);
-    var cir = document.createElementNS(ns, "circle");
-    cir.setAttribute("r", r || 16);
-    var t = document.createElementNS(ns, "text");
-    t.setAttribute("y", 5);
-    t.textContent = label;
-    g.appendChild(cir);
-    g.appendChild(t);
+    if (cls.indexOf("blocker") !== -1) {
+      /* blockers stay simple pips */
+      var cir = document.createElementNS(ns, "circle");
+      cir.setAttribute("r", r || 13);
+      var bt = document.createElementNS(ns, "text");
+      bt.setAttribute("y", 5);
+      bt.textContent = label;
+      g.appendChild(cir);
+      g.appendChild(bt);
+    } else {
+      /* creature tokens are miniature cards — the same visual language as
+         the setup/action sims: rounded rect, hex pip up top, initial below */
+      var W = 24, H = 32;
+      var rect = document.createElementNS(ns, "rect");
+      rect.setAttribute("x", -W / 2); rect.setAttribute("y", -H / 2);
+      rect.setAttribute("width", W); rect.setAttribute("height", H);
+      rect.setAttribute("rx", 4);
+      rect.setAttribute("class", "sim-token__card");
+      g.appendChild(rect);
+      var pp = [];
+      for (var k = 0; k < 6; k++) {
+        var ang = Math.PI / 180 * (60 * k);
+        pp.push((3.6 * Math.cos(ang)).toFixed(1) + "," + (-9 + 3.6 * Math.sin(ang)).toFixed(1));
+      }
+      var pip = document.createElementNS(ns, "polygon");
+      pip.setAttribute("points", pp.join(" "));
+      pip.setAttribute("class", "sim-token__pip");
+      g.appendChild(pip);
+      var t = document.createElementNS(ns, "text");
+      t.setAttribute("y", 8.5);
+      t.textContent = label;
+      g.appendChild(t);
+    }
     board.appendChild(g);
     if (hasGsap && !reduceMotion) {
       /* set the transform origin ONCE — changing it later (e.g. after a
