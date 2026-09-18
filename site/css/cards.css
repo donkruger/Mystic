@@ -153,6 +153,7 @@
 .mcard__cur {
   font-family: var(--font-body), system-ui, sans-serif;
   font-size: 1em;
+  font-weight: 400; /* regular against the bold numeral */
   margin-right: 0.1em;
 }
 
