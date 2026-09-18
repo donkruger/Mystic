@@ -18,6 +18,7 @@ window.MysticCards = (function () {
     classArt: function (slug) { return "assets/creature-" + slug + ".jpg"; },
     hexSymbol: "assets/hex-symbol.png",
     potion: "assets/potion.png",
+    qrSite: "assets/qr-site.png",
     /* curated per-creature art (biome-class), optimized into assets/art/.
        Falls back to class art when no curated piece exists yet. */
     creatureArt: {
@@ -79,6 +80,18 @@ window.MysticCards = (function () {
     d.appendChild(document.createTextNode(value));
     return d;
   }
+  function mirror(text, parent) {
+    /* opponent index — rotated 180° so it reads from across the table */
+    var m = el("span", "mcard__mirror", parent);
+    m.textContent = text;
+    return m;
+  }
+  function qr(parent) {
+    var q = el("span", "mcard__qr", parent);
+    q.title = "mysticmaneuvers.com — the living rules";
+    img(ART.qrSite, "QR code linking to mysticmaneuvers.com", q);
+    return q;
+  }
   function classIcon(classId, parent) {
     var c = D.cls[classId];
     var wrap = el("span", "mcard__class", parent);
@@ -134,12 +147,15 @@ window.MysticCards = (function () {
 
     var head = el("header", "mcard__head", inner);
     biomeChip(c.biomeId, head);
-    el("h4", "mcard__name", head).textContent = c.name;
+    mirror("+" + c.strength + " · " + ab.name, head);
     /* NOTE: summoning cost is not yet a data field (MYSTIC_ARTEFACTS.md
        §6.1) — the coin shows strength as a placeholder until costs land. */
     coin(c.strength, "Summoning cost (placeholder: strength)", head);
 
-    artWindow(creatureArt(biome.slug, cls.slug), c.name + " — " + cls.name + " of the " + biome.name, inner);
+    /* name overlaid on the art; class medallion set into the art (SuperAI-style) */
+    var fig = artWindow(creatureArt(biome.slug, cls.slug), c.name + " — " + cls.name + " of the " + biome.name, inner);
+    el("h4", "mcard__artname", fig).textContent = c.name;
+    classIcon(c.classId, fig);
 
     var rules = el("div", "mcard__rules", inner);
     el("strong", null, rules).textContent = ab.name;
@@ -147,8 +163,7 @@ window.MysticCards = (function () {
 
     var foot = el("footer", "mcard__foot", inner);
     strength(c.strength, foot);
-    el("span", "mcard__tag", foot).textContent = cls.name + " · " + biome.name;
-    classIcon(c.classId, foot);
+    qr(foot);
 
     if (ab.reaction) reactionShield(inner);
     return finishShell(card, opts && opts.tilt);
@@ -167,17 +182,18 @@ window.MysticCards = (function () {
     chip.title = "Spell card";
     /* the spell-mark: raw potion medallion, same treatment as biome chips */
     img(ART.potion, "Spell", chip);
-    el("h4", "mcard__name", head).textContent = s.name;
+    mirror(s.name, head);
     coin(1, "Cost: 1 gold (Rules: all spells cost 1 gold)", head);
 
-    artWindow(spellArt(s.name), s.name, inner);
+    var sfig = artWindow(spellArt(s.name), s.name, inner);
+    el("h4", "mcard__artname", sfig).textContent = s.name;
 
     var rules = el("div", "mcard__rules mcard__rules--plain", inner);
     el("strong", null, rules).textContent = "Spell" + (s.reaction ? " · Reaction" : "");
     rules.appendChild(document.createTextNode(s.text));
 
     var foot = el("footer", "mcard__foot", inner);
-    el("span", "mcard__tag", foot).textContent = "Spell card";
+    qr(foot);
 
     if (s.reaction) reactionShield(inner);
     return finishShell(card, opts && opts.tilt);
@@ -194,10 +210,11 @@ window.MysticCards = (function () {
 
     var head = el("header", "mcard__head", inner);
     biomeChip(l.biomeId, head);
-    el("h4", "mcard__name", head).textContent = biome.name;
+    mirror(biome.name, head);
     coin(l.harvest, "Harvest yield: " + l.harvest + " gold", head);
 
-    artWindow(ART.biomeArt(biome.slug), biome.name + " land", inner);
+    var lfig = artWindow(ART.biomeArt(biome.slug), biome.name + " land", inner);
+    el("h4", "mcard__artname", lfig).textContent = biome.name;
 
     var rules = el("div", "mcard__rules mcard__rules--plain", inner);
     el("strong", null, rules).textContent = "Land";
@@ -206,7 +223,7 @@ window.MysticCards = (function () {
       biome.name + " tile to summon; its orientation marks your ownership."));
 
     var foot = el("footer", "mcard__foot", inner);
-    el("span", "mcard__tag", foot).textContent = "Land card";
+    qr(foot);
 
     return finishShell(card, opts && opts.tilt);
   }

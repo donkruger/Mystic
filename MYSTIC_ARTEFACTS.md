@@ -37,8 +37,16 @@ Design notes (current iteration):
   SVG `clipPath` with subtly rounded vertices (polygon fallback kept).
 - **Strength** — rendered as a bare gold **"+N" numeral** at bottom left (no diamond
   housing); the die roll adds to it in battle.
-- **Art window** — enlarged to 52% of the card height so the art crops less; card titles
-  are set at the same size as the rules text.
+- **Art window** — enlarged to 50% of the card height so the art crops less; the card's
+  **name is overlaid on the art's bottom edge** over an ivory scrim (SuperAI-style), and the
+  class medallion is set into the art's bottom-right corner. Card titles are set at the same
+  size as the rules text.
+- **Opponent index** — the top edge of every card carries a **mirrored strip** (rotated
+  180°) so players across the table can read it: creatures show strength + ability name,
+  spells their name, lands their biome.
+- **QR zone** — the footer center reserves a QR square (currently linking to
+  mysticmaneuvers.com). For print it should be **at least 15 mm** at final size; per-card
+  deep-link QRs are future work.
 - **Annotation pattern** — the explainer panels are unified diagrams: numbered labels flank
   the artefact (vanlent.dev-style `01.` numerals fused with the text) and dashed connector
   lines, measured from the live DOM, point to each element's edge. No markers sit on the

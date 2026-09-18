@@ -1856,7 +1856,7 @@
   var ANCHORS = {
     chip: ".mcard__chip", coin: ".mcard__coin", strength: ".mcard__str",
     rules: ".mcard__rules", shield: ".mcard__shield", "class": ".mcard__class",
-    art: ".mcard__art",
+    art: ".mcard__art", mirror: ".mcard__mirror", qr: ".mcard__qr",
     tchip: ".mtile__chip", tyield: ".mtile__yield", tart: ".mtile__art",
     tdiamond: ".mtile__diamond"
   };
