@@ -74,12 +74,13 @@ Core loop: summon creatures onto land tiles, manoeuvre them across a hex map, cl
 
 ## 4. Setup
 
-1. **Build the map:** Place one land tile down randomly. Players then take turns placing the remaining land tiles in whatever configuration they desire. *Constraint: the map must be connected as a single continent.*
-2. **Build the decks:** Divide the cards into two decks — the **Creature deck** and the **Lands and Spells deck**.
-3. **Choose first player:** Roll the die to see who starts.
-4. **Opening hands:** Each player draws **1 creature card** and **2 land/spell cards**.
-5. **Starting gold:** Each player receives **4 gold pieces**.
-6. **Orientation:** All players choose an orientation on the board for their cards; orientation signifies ownership of cards on the board. Orientation follows seating — each player's cards are placed readable from where they sit (up to six players, one per side of the hexagon).
+1. **Share the tiles:** Divide the land tiles as evenly as possible among the players — each player's pile is what they will build the map from.
+2. **Build the map:** Place one land tile down randomly. Players then take turns placing tiles from their own pile in whatever configuration they desire. *Constraint: the map must be connected as a single continent.*
+3. **Build the decks:** Divide the cards into two decks — the **Creature deck** and the **Lands and Spells deck**.
+4. **Choose first player:** Roll the die to see who starts.
+5. **Opening hands:** Each player draws **1 creature card** and **2 land/spell cards**.
+6. **Starting gold:** Each player receives **4 gold pieces** from the shared supply.
+7. **Orientation:** All players choose an orientation on the board for their cards; orientation signifies ownership of cards on the board. Orientation follows seating — each player's cards are placed readable from where they sit (up to six players, one per side of the hexagon).
 
 **Safety net rule:** At the end of each turn, if you do not have a creature on the board, you receive 1 gold piece.
 

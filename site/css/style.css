@@ -207,87 +207,37 @@ a { color: inherit; text-decoration: none; }
 .panel p { color: var(--ink); }
 .panel strong, .mech strong { color: var(--gold-deep); font-weight: 600; }
 
-.how__actions-title {
-  max-width: 1100px; margin: clamp(3rem,6vw,4.5rem) auto 1.8rem;
-  font-family: var(--font-display); font-size: clamp(1.3rem, 2.6vw, 1.9rem);
-  font-weight: 700; color: var(--ink); letter-spacing: 0.04em; text-align: center;
-}
-.actions {
-  max-width: 1240px; margin: 0 auto;
-  display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem;
-}
-.action-card {
+/* ---------- actions simulator (same chrome as setup/battle sims) ---------- */
+.actions-sim {
+  max-width: 720px; margin: clamp(2rem, 4vw, 3rem) auto 0;
   background: var(--surface);
   border: 1px solid var(--gold-faint);
-  border-radius: 16px;
-  text-align: center;
-  padding-top: 1.6rem;
-  transition: transform 0.5s var(--ease-out), border-color 0.5s var(--ease-out), box-shadow 0.5s var(--ease-out);
+  border-radius: 18px;
+  box-shadow: 0 24px 54px -34px rgba(34,29,18,0.25);
+  padding: 1.2rem 1.4rem 1.3rem;
 }
-.action-card:hover {
-  transform: translateY(-8px);
-  border-color: var(--gold-soft);
-  box-shadow: 0 26px 48px -24px rgba(34,29,18,0.28);
-}
-.action-card__icon {
-  display: grid; place-items: center;
-  width: 84px; height: 84px;
-  margin: 0 auto 1rem;
-  border-radius: 50%;
-  background: rgba(201,162,75,0.10);
-  border: 1px solid var(--gold-faint);
-  color: var(--gold-deep);
-  transition: transform 0.5s var(--ease-out), box-shadow 0.5s var(--ease-out);
-}
-.action-card:hover .action-card__icon {
-  transform: scale(1.06);
-  box-shadow: 0 12px 26px -10px rgba(201,162,75,0.55);
-}
-.action-card__icon svg { width: 44px; height: 44px; }
-.action-card h4 {
-  font-family: var(--font-display); font-weight: 700;
-  font-size: 1rem; letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--gold-deep);
-  padding: 0 1rem 0.4rem;
-}
-.action-card p { padding: 0 1.1rem 1.4rem; font-size: 0.86rem; color: var(--muted); line-height: 1.55; }
+.actions-sim .panel__title { text-align: center; margin-bottom: 0.9rem; }
 
-/* ---------- orientation visual ---------- */
-.orient {
-  margin-top: clamp(3rem, 6vw, 5rem);
-  display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-  gap: clamp(2rem, 5vw, 4rem); align-items: center;
-  background: var(--surface);
-  border: 1px solid var(--gold-faint);
-  border-radius: 20px;
-  padding: clamp(1.8rem, 4vw, 3rem);
+/* action scene pieces */
+.actions-icon-badge circle { fill: rgba(201,162,75,0.12); stroke: var(--gold-faint); }
+.actions-icon-badge svg { color: var(--gold-deep); }
+.actions-cost {
+  font-family: var(--font-display); font-weight: 700; font-size: 10px; letter-spacing: 0.14em;
+  fill: rgba(34,29,18,0.5); text-anchor: middle;
 }
-.orient__visual svg { width: 100%; max-width: 320px; margin: 0 auto; display: block; }
-.orient-hex { fill: none; stroke: rgba(201,162,75,0.4); stroke-width: 1.5; }
-.orient-hex--empty { stroke: rgba(201,162,75,0.28); stroke-dasharray: 4 5; }
-.orient-card-land { fill: #fff; stroke: var(--gold-deep); stroke-width: 1.5; }
-.orient-card-creature { fill: rgba(201,162,75,0.16); stroke: var(--gold-deep); stroke-width: 1.5; }
-.orient-mark { fill: none; stroke: var(--gold-deep); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
-.orient-label {
-  fill: var(--gold-deep);
-  font-family: var(--font-display); font-size: 12px; font-weight: 700;
-  letter-spacing: 0.35em; text-anchor: middle;
+.actions-tile--harvested { stroke-dasharray: 4 4; }
+.actions-tick {
+  font-family: var(--font-display); font-weight: 700; font-size: 14px;
+  fill: var(--gold-deep); text-anchor: middle;
 }
-.orient__eyebrow {
-  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.28em; text-transform: uppercase;
-  color: var(--gold-deep); margin-bottom: 0.7rem;
-}
-.orient__title {
-  font-family: var(--font-display); font-weight: 700;
-  font-size: clamp(1.4rem, 2.6vw, 1.9rem); margin-bottom: 0.9rem;
-}
-.orient__copy p { color: var(--muted); line-height: 1.7; margin-bottom: 0.9rem; }
-.orient__copy p:last-child { margin-bottom: 0; }
-.orient__note { font-size: 0.8rem; font-style: italic; opacity: 0.85; }
-@media (max-width: 860px) {
-  .orient { grid-template-columns: 1fr; }
-  .orient__visual svg { max-width: 260px; }
-}
+.actions-goldcount { font-family: var(--font-display); font-weight: 700; font-size: 15px; fill: var(--gold-deep); }
+.actions-pawn { pointer-events: none; }
+.actions-pawn circle { stroke-width: 2; }
+.actions-pawn polygon { fill: none; stroke-width: 1.2; }
+.actions-pawn--you circle { fill: #f6ecc9; stroke: var(--gold-deep); }
+.actions-pawn--you polygon { stroke: var(--gold-deep); }
+.actions-pawn--foe circle { fill: #2a2118; stroke: var(--gold); }
+.actions-pawn--foe polygon { stroke: #e8cf8f; }
 
 /* ---------- mechanics ---------- */
 .mechanics__grid {
@@ -673,7 +623,6 @@ a { color: inherit; text-decoration: none; }
 
 /* ---------- responsive ---------- */
 @media (max-width: 1024px) {
-  .actions { grid-template-columns: repeat(3, 1fr); }
   .biome-grid { grid-template-columns: repeat(2, 1fr); }
   .how__grid { grid-template-columns: 1fr; }
 }
@@ -688,7 +637,6 @@ a { color: inherit; text-decoration: none; }
   .battle-sim__dice { height: 140px; }
 }
 @media (max-width: 560px) {
-  .actions { grid-template-columns: 1fr 1fr; }
   .biome-grid { grid-template-columns: 1fr; }
   .stats__list { grid-template-columns: repeat(2, 1fr); }
   .stat + .stat { border-left: none; }
