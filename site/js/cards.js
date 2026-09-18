@@ -153,6 +153,14 @@ window.MysticCards = (function () {
     el("div", "mcard__inner", card);
     return card;
   }
+  function frame(kind, parent) {
+    /* ornate tarot border — gold linework overlay, one motif per card type;
+       first child of the inner face so all content sits above it */
+    var f = el("span", "mcard__frame", parent);
+    f.setAttribute("aria-hidden", "true");
+    f.innerHTML = (window.MYSTIC_FRAMES && window.MYSTIC_FRAMES[kind]) || "";
+    return f;
+  }
 
   /* ---------- creature card ----------------------------------------------- */
   function creature(id, opts) {
@@ -164,6 +172,7 @@ window.MysticCards = (function () {
 
     var card = shell("creature");
     var inner = card.firstChild;
+    frame("creature", inner);
 
     var head = el("header", "mcard__head", inner);
     biomeChip(c.biomeId, head);
@@ -204,6 +213,7 @@ window.MysticCards = (function () {
 
     var card = shell("spell");
     var inner = card.firstChild;
+    frame("spell", inner);
 
     var head = el("header", "mcard__head", inner);
     /* the spell-mark: vector flask glyph, same system as the biome marks */
@@ -236,6 +246,7 @@ window.MysticCards = (function () {
 
     var card = shell("land");
     var inner = card.firstChild;
+    frame("land", inner);
 
     var head = el("header", "mcard__head", inner);
     biomeChip(l.biomeId, head);
