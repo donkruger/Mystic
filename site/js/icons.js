@@ -75,7 +75,18 @@ window.MYSTIC_ICONS = (function () {
       'M9.3 20.5 V15.6 Q9.3 13.4 12 13.4 Q14.7 13.4 14.7 15.6 V20.5 Z"/></svg>'
   };
 
+  /* Crossed swords — strength / battle. Two full diagonal blades crossing at
+     center, short crossguards near each handle; 180°-symmetric so the mark
+     survives the mirrored opponent strip intact. */
+  var swords =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    '<path d="M4.6 19.4 L19.4 4.6"/>' +
+    '<path d="M19.4 19.4 L4.6 4.6"/>' +
+    '<path d="M5.1 16.3 L7.7 18.9"/>' +
+    '<path d="M16.3 18.9 L18.9 16.3"/></svg>';
+
   return {
-    biome: function (slug) { return biome[slug] || ""; }
+    biome: function (slug) { return biome[slug] || ""; },
+    swords: swords
   };
 })();

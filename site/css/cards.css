@@ -261,9 +261,12 @@
   min-height: 8%;
 }
 
-/* strength — a bare gold numeral, no housing */
+/* strength — crossed-swords device + bare gold numeral, no housing */
 .mcard__str {
   flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.18em;
   margin: 0 3% 1% 3%;
   font-weight: 700;
   font-size: calc(var(--card-w) * 0.075);
@@ -275,6 +278,23 @@
   font-size: 0.72em;
   vertical-align: 0.08em;
 }
+/* crossed-swords device — em-sized so it tracks the numeral at any card
+   scale; slightly under cap height for optical balance */
+.mcard__stricon {
+  width: 0.72em;
+  flex: 0 0 auto;
+  display: inline-flex;
+}
+.mcard__stricon svg { width: 100%; height: auto; display: block; }
+
+/* the same device leading the mirrored opponent strip */
+.mcard__miricon {
+  display: inline-block;
+  width: 0.95em;
+  vertical-align: -0.12em;
+  margin-right: 0.3em;
+}
+.mcard__miricon svg { width: 100%; height: auto; display: block; }
 
 /* creature type = the same circular medallion as the creature gallery
    (.medallion in style.css): circle crop, gold rim, art edge-to-edge */

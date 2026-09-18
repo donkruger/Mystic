@@ -39,6 +39,10 @@ Design notes (current iteration):
   slate, Town `#A85A4A` brick, Swamp `#5F7A68` jade, Ocean `#3F6E8E` deep sea, Cave
   `#68586A` dusk violet. On cards the mark is a raw glyph (no housing); on tiles it sits
   in a parchment-inset gold hex; on the site medallions it keeps the parchment + gold ring.
+  A tenth mark joins the set for strength: **crossed swords** (`MysticIcons.swords`,
+  master `site/assets/icons/swords.svg`) — two diagonal blades, 180°-symmetric so it
+  survives the mirrored opponent strip; it leads the creature's strength numeral in the
+  footer lockup and the top strip.
 - **Type marks remain raster** — the creature-type (`type-*`) icons and the spell-mark
   potion (`assets/potion.png`) still ship as transparent cutouts (type medallion keeps its
   parchment + gold circle badge). Same vector treatment can follow in a later pass.
@@ -292,7 +296,7 @@ Component-relevant facts from the Rules sheet:
 | Subtitle (flavor title) | **not in data — gap** | Gold italic script |
 | Biome badge | `Biomes_tbl` via `BiomeID` | Hex medallion; top center (render) / top left (Components) — pick one, see §6 |
 | Summoning cost | **not in `Creatures_tbl` — gap** | Coin badge, top right (Components) |
-| Strength | `Creatures_tbl.Strength` | Gold "+N" numeral + ability-name lockup, bottom left (echoes the top strip) |
+| Strength | `Creatures_tbl.Strength` | Crossed-swords device + gold "+N" numeral + ability-name lockup, bottom left (echoes the top strip) |
 | Ability name | `Abilities_tbl.Name` | In the top mirror strip and the footer lockup — not repeated in the rules panels |
 | Ability rules text | `Abilities_tbl.Description` | Ivory body, bottom panel (bare text, no heading) |
 | Ability cost | `Abilities_tbl.Cost` | Unused in render — see §6 |
