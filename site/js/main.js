@@ -257,23 +257,30 @@
       }
       return out;
     };
-    /* a 12-card stream drawn from the full reference data (90 creatures,
-       35 spells, 36 lands) — interleaved for art/biome variety */
+    /* a 24-card stream drawn from the full reference data (90 creatures,
+       35 spells, 36 lands) — round-robin interleave keeps the stream
+       mixed even as pools run out */
     var pools = {
-      creature: spread(FD.creatures, 5, function (d) { return d.name; }),
-      spell:    spread(FD.spells, 4, function (d) { return d.name; }),
-      land:     spread(FD.lands, 3, function (d) { return d.biomeId; })
+      creature: spread(FD.creatures, 10, function (d) { return d.name; }),
+      spell:    spread(FD.spells, 8, function (d) { return d.name; }),
+      land:     spread(FD.lands, 6, function (d) { return d.biomeId; })
     };
     var mk = {
       creature: function (d) { return FC.creature(d.id, { tilt: false }); },
       spell:    function (d) { return FC.spell(d.name, { tilt: false }); },
       land:     function (d) { return FC.land(d.id, { tilt: false }); }
     };
-    var order = ["creature","spell","land","creature","spell","creature",
-                 "land","spell","creature","spell","creature","land"];
+    var order = [], kinds = ["creature", "spell", "land"], ki = 0;
+    var remaining = {
+      creature: pools.creature.length, spell: pools.spell.length, land: pools.land.length
+    };
+    while (remaining.creature || remaining.spell || remaining.land) {
+      var kind = kinds[ki++ % kinds.length];
+      if (remaining[kind] > 0) { order.push(kind); remaining[kind]--; }
+    }
     var flyCards = [];
     order.forEach(function (kind, i) {
-      if (window.innerWidth <= 720 && i >= 6) return; /* lighter cast on mobile */
+      if (window.innerWidth <= 720 && i >= 8) return; /* lighter cast on mobile */
       var d = pools[kind].shift();
       if (!d) return;
       var node = mk[kind](d);
@@ -311,10 +318,10 @@
             start: "top " + startPct + "%", end: "bottom " + endPct + "%", scrub: 0.8
           }
         });
-        /* three flight lanes sharing one gentle crest shape — cards trace
+        /* four flight lanes sharing one gentle crest shape — cards trace
            similar arcs and follow each other closely, like a caravan */
-        var lanes = [0.30, 0.52, 0.72];
-        var gap = 0.34; /* tight stagger: each card chases the previous */
+        var lanes = [0.22, 0.42, 0.62, 0.82];
+        var gap = 0.30; /* tight stagger: each card chases the previous */
         flyCards.forEach(function (card, i) {
           var lane = lanes[i % lanes.length];
           var jit = function () { return (Math.random() - 0.5) * 0.07; };
