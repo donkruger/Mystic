@@ -412,17 +412,24 @@
   text-shadow: 0 1px 1px rgba(90, 66, 18, 0.55);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
-.mtile__diamond {                    /* orientation marker (Rules: right side) */
+.mtile__mirror {                     /* opponent index — biome + yield, rotated 180° */
   position: absolute;
-  right: 7.5%;                       /* kept inside the hex clip at mid-height */
-  top: 50%;
-  transform: translateY(-50%) rotate(45deg);
-  width: 5.5%;
-  aspect-ratio: 1;
-  border-radius: 22%;
-  background: #fffdf4;
-  border: 1.5px solid var(--gold-deep);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+  top: 7.5%;
+  left: 50%;
+  transform: translateX(-50%) rotate(180deg);
+  display: flex;
+  align-items: center;
+  gap: 0.35em;
+  color: #f6e7bd;
+  font-weight: 700;
+  font-size: calc(var(--tile-w) * 0.052);
+  text-shadow: 0 1px 3px rgba(20, 16, 8, 0.85);
+  z-index: 2;
+}
+.mtile__mirror img {
+  width: calc(var(--tile-w) * 0.055);
+  height: auto;
+  filter: drop-shadow(0 1px 2px rgba(20, 16, 8, 0.8));
 }
 
 /* foil/glare shared with tiles */

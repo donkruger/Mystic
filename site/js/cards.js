@@ -254,7 +254,11 @@ window.MysticCards = (function () {
     img(ART.biomeIcon(biome.slug), "", chipWin);
 
     el("span", "mtile__yield", t).textContent = harvestYield;
-    el("span", "mtile__diamond", t).title = "Orientation marker — align diamonds when building the map";
+
+    var tm = el("span", "mtile__mirror", t);
+    tm.title = "Mirrored index — biome and yield, readable from across the table";
+    img(ART.biomeIcon(biome.slug), "", tm);
+    tm.appendChild(document.createTextNode("+" + harvestYield));
 
     el("div", "mcard__foil", t);
     el("div", "mcard__glare", t);
