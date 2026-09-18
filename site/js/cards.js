@@ -84,17 +84,17 @@ window.MysticCards = (function () {
     return m;
   }
   function chevrons(parent) {
-    /* column of nine stacked upward chevrons beside the art = the card's
+    /* column of six stacked upward chevrons beside the art = the card's
        facing direction; gold-foil spot element in print (PPF §1.8 / Part 6) */
     var s = el("span", "mcard__chev", parent);
     s.title = "Orientation — the card faces the way the chevrons point";
     var paths = "";
-    for (var i = 0; i < 9; i++) {
+    for (var i = 0; i < 6; i++) {
       var y = 20 + i * 30;
       paths += '<path d="M4.5 ' + y + ' L12 ' + (y - 8) + ' L19.5 ' + y + '"/>';
     }
     s.innerHTML =
-      '<svg viewBox="0 0 24 270" aria-hidden="true">' +
+      '<svg viewBox="0 0 24 180" aria-hidden="true">' +
       '<defs><linearGradient id="mchev-g" x1="0" y1="0" x2="1" y2="1">' +
       '<stop offset="0" stop-color="#f6e7bd"/><stop offset="0.55" stop-color="#c9a24b"/>' +
       '<stop offset="1" stop-color="#8a6a25"/></linearGradient></defs>' +
@@ -173,12 +173,15 @@ window.MysticCards = (function () {
 
     mirrorRules(ab.name, ab.text, inner);
 
-    /* art at 73% width, left-aligned; nine-chevron column fills the strip */
+    /* art at 73% width, left-aligned; right strip holds the chevron column
+       with the reaction shield directly below it */
     var mid = el("div", "mcard__mid", inner);
     var fig = artWindow(creatureArt(biome.slug, cls.slug), c.name + " — " + cls.name + " of the " + biome.name, mid);
     el("h4", "mcard__artname", fig).textContent = c.name;
     classIcon(c.classId, fig);
-    chevrons(mid);
+    var strip = el("div", "mcard__strip", mid);
+    chevrons(strip);
+    if (ab.reaction) reactionShield(strip);
 
     var rules = el("div", "mcard__rules", inner);
     el("strong", null, rules).textContent = ab.name;
@@ -187,7 +190,6 @@ window.MysticCards = (function () {
     var foot = el("footer", "mcard__foot", inner);
     strength(c.strength, foot);
 
-    if (ab.reaction) reactionShield(inner);
     return finishShell(card, opts && opts.tilt);
   }
 
@@ -238,11 +240,11 @@ window.MysticCards = (function () {
       biome.name + " tile to summon; its orientation marks your ownership.";
     mirrorRules("Land", landText, inner);
 
-    /* art at 73% width, left-aligned; nine-chevron column fills the strip */
+    /* art at 73% width, left-aligned; chevron column fills the right strip */
     var mid = el("div", "mcard__mid", inner);
     var lfig = artWindow(ART.biomeArt(biome.slug), biome.name + " land", mid);
     el("h4", "mcard__artname", lfig).textContent = biome.name;
-    chevrons(mid);
+    chevrons(el("div", "mcard__strip", mid));
 
     var rules = el("div", "mcard__rules mcard__rules--plain", inner);
     el("strong", null, rules).textContent = "Land";

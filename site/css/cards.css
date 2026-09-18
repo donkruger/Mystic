@@ -226,6 +226,9 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
+/* the -webkit-box clamp inlines the heading — keep it attached with a dash */
+.mcard__rules--mirror strong { display: inline; font-size: inherit; margin: 0; }
+.mcard__rules--mirror strong::after { content: " — "; color: var(--gold); }
 }
 .mcard__rules strong {
   display: block;
@@ -286,14 +289,31 @@
 
 
 /* ---------- orientation chevrons (gold, bottom right) ---------- */
-.mcard__chev {
+/* right strip beside the art: chevron column on top, reaction shield below */
+.mcard__strip {
   flex: 1 1 auto;
   min-width: 0;
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5%;
+  padding: 2% 0;
+}
+.mcard__chev {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;           /* top-aligned, clear of the shield */
   filter: drop-shadow(0 1px 2px rgba(138, 106, 37, 0.4));
 }
-.mcard__chev svg { height: 94%; width: auto; max-width: 100%; display: block; }
+.mcard__chev svg { height: 100%; width: auto; max-width: 100%; display: block; }
+.mcard__strip .mcard__shield {
+  position: static;
+  flex: 0 0 auto;
+  width: 55%;
+}
 
 /* ---------- reaction shield (golden, right edge) ---------- */
 .mcard__shield {

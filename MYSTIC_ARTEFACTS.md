@@ -62,11 +62,12 @@ Design notes (current iteration):
   reads identically from each of the six seats (6-fold rotational symmetry). Tiles have
   no facing and mark no ownership — orientation/ownership lives on the cards only
   (chevrons + mirrored index).
-- **Orientation chevrons** — a column of **nine** smooth-edged upward chevrons beside
-  the art (roughly twice the original mark's size) signifies the facing direction of
-  creature and land cards. Designated **hot-foil (烫金) spot element**: at export it
-  becomes a named "Foil Gold" separation flagged overprint per Premium-Print-Formats
-  §1.8 / Part 6 — same treatment as the reaction shield.
+- **Orientation chevrons** — a top-aligned column of **six** smooth-edged upward
+  chevrons beside the art signifies the facing direction of creature and land cards.
+  On reaction creatures the golden shield sits in the same strip, directly below the
+  chevrons (spells keep the shield on the right edge). Both are designated
+  **hot-foil (烫金) spot elements**: at export they become a named "Foil Gold"
+  separation flagged overprint per Premium-Print-Formats §1.8 / Part 6.
 - **Annotation pattern** — the explainer panels are unified diagrams: numbered labels flank
   the artefact (vanlent.dev-style `01.` numerals fused with the text) and dashed connector
   lines, measured from the live DOM, point to each element's edge. No markers sit on the
@@ -291,7 +292,7 @@ Component-relevant facts from the Rules sheet:
 | Ability name | `Abilities_tbl.Name` | Gold caps heading, bottom panel |
 | Ability rules text | `Abilities_tbl.Description` | Ivory body, bottom panel |
 | Ability cost | `Abilities_tbl.Cost` | Unused in render — see §6 |
-| Reaction shield | `Abilities_tbl.Reaction?` | Golden shield, middle right, shown when 1 |
+| Reaction shield | `Abilities_tbl.Reaction?` | Golden shield below the chevron column (right strip), shown when 1 |
 | Creature type | `Class_tbl` via `ClassID` | Class icon, bottom right |
 | Flavor text | **not in data — gap** | Italic line, bottom |
 | Art | asset pipeline (per creature) | Rounded-rect window, center |
@@ -311,7 +312,7 @@ Component-relevant facts from the Rules sheet:
 | Title | `Spells_tbl.Name` | Gold serif small-caps |
 | Cost | flat 1 (Rules) vs per-spell coin (render) — see §6 | Coin badge |
 | Effect | `Spells_tbl.Effect` | Rules text, bottom center |
-| Reaction shield | `Spells_tbl.Reaction?` | Golden shield, middle right, shown when 1 |
+| Reaction shield | `Spells_tbl.Reaction?` | Golden shield, right edge, shown when 1 |
 | Art | asset pipeline (per spell) | Art window |
 
 ### 5.4 Land tile
