@@ -283,7 +283,9 @@ window.MysticCards = (function () {
       chip.title = biome.name + " biome";
       var chipWin = el("span", "mtile__chipin", chip);
       chipWin.innerHTML = window.MYSTIC_ICONS.biome(biome.slug);
-      el("span", "mtile__yield", mark).textContent = harvestYield;
+      var y = el("span", "mtile__yield", mark);
+      el("span", "mtile__cur", y).textContent = "₲";
+      y.appendChild(document.createTextNode(harvestYield));
     }
 
     el("div", "mcard__foil", t);

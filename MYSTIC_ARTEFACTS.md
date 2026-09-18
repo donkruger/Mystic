@@ -335,7 +335,7 @@ Component-relevant facts from the Rules sheet:
 | Land image | asset pipeline (per biome) | Full-bleed hex art |
 | Biome marker | `Biomes_tbl` via `BiomeID` | Icon, middle right (per Components) |
 | Harvest yield | `Lands_tbl.Harvest amount` | Numeral, middle right (per Components) |
-| Biome marker + harvest yield ×6 | `Biomes_tbl` icon + `Lands_tbl.Harvest amount` | Every edge, rotated 60° apart, at the rim — reads the same from each of the six seats; no facing/ownership (supersedes the Rules' orientation diamond). Yield is a flat parchment disc with a gold ring and bare numeral (too small for the ₲ mark, which cards carry) |
+| Biome marker + harvest yield ×6 | `Biomes_tbl` icon + `Lands_tbl.Harvest amount` | Every edge, rotated 60° apart, at the rim and left-aligned along each edge plane — reads the same from each of the six seats; no facing/ownership (supersedes the Rules' orientation diamond). Yield is a small flat parchment pill with a gold ring carrying the ₲ mark + numeral (same currency language as the cards) |
 
 ---
 

@@ -477,11 +477,13 @@
   position: absolute;
   left: var(--mx);
   top: var(--my);
-  transform: translate(-50%, -50%) rotate(var(--mr));
+  /* translateX after the rotate shifts the pair to the left end of its own
+     edge plane (local axes), preserving the 6-fold symmetry */
+  transform: translate(-50%, -50%) rotate(var(--mr)) translateX(calc(var(--tile-w) * -0.13));
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: calc(var(--tile-w) * 0.02);
+  gap: calc(var(--tile-w) * 0.013);
   z-index: 2;
 }
 .mtile__mark--0 { --mx: 67%; --my: 20.6%; --mr: 30deg; }
@@ -491,7 +493,7 @@
 .mtile__mark--4 { --mx: 16%; --my: 50%;   --mr: 270deg; }
 .mtile__mark--5 { --mx: 33%; --my: 20.6%; --mr: 330deg; }
 .mtile__chip {
-  width: calc(var(--tile-w) * 0.15);
+  width: calc(var(--tile-w) * 0.10);
   aspect-ratio: 1;
   clip-path: polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%);
   clip-path: url(#hexRound);
@@ -516,18 +518,24 @@
   display: block;
 }
 .mtile__yield {
-  /* flat parchment disc, gold ring — bare numeral (too small for the ₲ mark) */
-  width: calc(var(--tile-w) * 0.111);
-  aspect-ratio: 1;
-  border-radius: 50%;
+  /* small flat parchment pill carrying the ₲ mark + numeral */
+  display: inline-flex;
+  align-items: baseline;
+  padding: 0.12em 0.4em;
+  border-radius: 999px;
   background: var(--parchment, #f7f1e3);
   border: 1.5px solid var(--gold);
   color: var(--gold-deep);
   font-weight: 700;
-  font-size: calc(var(--tile-w) * 0.0587);
-  display: grid;
-  place-items: center;
+  font-size: calc(var(--tile-w) * 0.039);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
+}
+/* ₲ on the tile — same treatment as the card's .mcard__cur */
+.mtile__cur {
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 1em;
+  font-weight: 400;
+  margin-right: 0.08em;
 }
 
 /* foil/glare shared with tiles */
