@@ -298,8 +298,8 @@ Component-relevant facts from the Rules sheet:
 | Title | `Creatures_tbl.Name` | Gold serif small-caps, top |
 | Subtitle (flavor title) | **not in data — gap** | Gold italic script |
 | Biome badge | `Biomes_tbl` via `BiomeID` | Hex medallion; top center (render) / top left (Components) — pick one, see §6 |
-| Summoning cost | **not in `Creatures_tbl` — gap** | ₲ pill (flat parchment, gold ring), top right |
-| Strength | `Creatures_tbl.Strength` | Crossed-swords device + gold numeral + ability name in a gold-ringed parchment pill, bottom center (echoes the mirrored pill above) |
+| Summoning cost | **not in `Creatures_tbl` — gap** | ₲ mark + numeral, bare flat gold text, top right (no housing) |
+| Strength | `Creatures_tbl.Strength` | Crossed-swords device + gold numeral + ability name in a gold-ringed parchment pill, bottom center — identical typography to the mirrored pill above, just upright |
 | Ability name | `Abilities_tbl.Name` | In the top mirror strip and the footer lockup — not repeated in the rules panels |
 | Ability rules text | `Abilities_tbl.Description` | Ivory body, bottom panel (bare text, no heading) |
 | Ability cost | `Abilities_tbl.Cost` | Unused in render — see §6 |
@@ -313,7 +313,7 @@ Component-relevant facts from the Rules sheet:
 | Slot | Data source | Treatment |
 | --- | --- | --- |
 | Biome | `Biomes_tbl` via `BiomeID` | Biome icon, top left |
-| Harvest yield | `Lands_tbl.Harvest amount` | ₲ pill (flat parchment, gold ring), top right |
+| Harvest yield | `Lands_tbl.Harvest amount` | ₲ mark + numeral, bare flat gold text, top right (no housing) |
 | Biome effects | `Biomes_tbl` buff/debuff | Match/mismatch run-in lines, bottom panel (no "LAND" heading) |
 | Land image | asset pipeline (per biome) | Center art |
 
@@ -323,7 +323,7 @@ Component-relevant facts from the Rules sheet:
 | --- | --- | --- |
 | Title | `Spells_tbl.Name` | Gold serif small-caps |
 | Spell mark | — | Vector flask glyph, top left (gold ink) |
-| Cost | flat 1 (Rules) vs per-spell coin (render) — see §6 | ₲ pill (flat parchment, gold ring), top right |
+| Cost | flat 1 (Rules) vs per-spell coin (render) — see §6 | ₲ mark + numeral, bare flat gold text, top right (no housing) |
 | Effect | `Spells_tbl.Effect` | Rules text below the art, headed only "Spell" (reaction status lives on the shield, not the heading) |
 | Reaction shield | `Spells_tbl.Reaction?` | Flat gold shield (single-color, ivory bolt), right edge, shown when 1 |
 | Art | asset pipeline (per spell) | Art window |
