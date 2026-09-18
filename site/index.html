@@ -226,12 +226,16 @@
               <polygon class="diag-hex diag-hex--elite" points="120,0 105,26 75,26 60,0 75,-26 105,-26"/>
               <text class="diag-hexletter diag-hexletter--light" x="0" y="5">D</text>
               <text class="diag-hexletter" x="90" y="5">E</text>
-              <path class="diag-arrow" d="M3,-11 Q22.5,-37 42,-11"/>
-              <path class="diag-arrow" d="M42,-11 L35,-14.5 M42,-11 L39.5,-4"/>
-              <path class="diag-arrow" d="M48,-11 Q67.5,-37 87,-11"/>
-              <path class="diag-arrow" d="M87,-11 L80,-14.5 M87,-11 L84.5,-4"/>
-              <text class="diag-arclabel" x="22.5" y="-42">advances</text>
-              <text class="diag-arclabel" x="67.5" y="-42">retreats</text>
+              <defs>
+                <marker id="diagTip" viewBox="0 0 10 10" refX="7.5" refY="5"
+                        markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                  <path class="diag-tip" d="M1,1 L9,5 L1,9"/>
+                </marker>
+              </defs>
+              <path class="diag-arrow" d="M3,-11 Q22.5,-37 42,-11" marker-end="url(#diagTip)"/>
+              <path class="diag-arrow" d="M48,-11 Q67.5,-37 87,-11" marker-end="url(#diagTip)"/>
+              <text class="diag-arclabel" transform="translate(8,-28) rotate(-34)">advances</text>
+              <text class="diag-arclabel" transform="translate(82,-28) rotate(34)">retreats</text>
               <text class="diag-hexlabel" x="0" y="42">Demon</text>
               <text class="diag-hexlabel" x="45" y="42">vacated</text>
               <text class="diag-hexlabel" x="90" y="42">Elite</text>
