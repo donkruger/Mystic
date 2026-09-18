@@ -714,6 +714,12 @@ a { color: inherit; text-decoration: none; }
   transition: border-color 0.3s;
 }
 .footer__top:hover { border-color: var(--gold-deep); }
+.footer__maths {
+  margin-top: 0.9rem; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--muted); border-bottom: 1px solid transparent;
+  transition: color 0.3s, border-color 0.3s;
+}
+.footer__maths:hover { color: var(--gold-deep); border-color: var(--gold-deep); }
 
 /* ---------- reveal defaults (JS enhances) ---------- */
 [data-reveal] { opacity: 0; transform: translateY(36px); }

@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Insane Mathematics of Mystic</title>
+  <meta name="description" content="A creator's dossier: every battle odd, economy rate and biome imbalance in Mystic, computed live from the master data — with recommendations for the designers.">
+  <link rel="icon" type="image/png" href="assets/hex-symbol.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=62">
+  <link rel="stylesheet" href="css/maths.css?v=1">
+</head>
+<body class="maths-page">
+
+  <!-- Scroll progress -->
+  <div class="progress" aria-hidden="true"><span class="progress__bar" data-progress></span></div>
+
+  <!-- ============ HEADER ============ -->
+  <header class="mhero">
+    <a class="mhero__back" href="index.html">&larr; Back to the game</a>
+    <p class="mhero__eyebrow">A creator&rsquo;s dossier</p>
+    <h1 class="mhero__title">The Insane Mathematics of Mystic</h1>
+    <p class="mhero__lede">
+      Every figure on this page is computed live from the master data
+      (<code>card-data.js</code>) and from an exact enumeration of the dice &mdash;
+      no screenshots, no stale spreadsheets. Change the data and this page re-derives itself.
+    </p>
+    <ul class="mhero__chips">
+      <li><span data-v="nCreatures">90</span> creatures</li>
+      <li><span data-v="nTiles">36</span> land tiles</li>
+      <li><span data-v="nAbilities">27</span> abilities</li>
+      <li><span data-v="nSpells">35</span> spells</li>
+      <li>1 &times; d6</li>
+      <li>3&ndash;7 tile chain</li>
+    </ul>
+  </header>
+
+  <main>
+
+    <!-- ============ 1. THE DIE IS CAST ============ -->
+    <section class="msection" id="dice">
+      <div class="msection__head" data-mreveal>
+        <p class="msection__eyebrow">Battle resolution</p>
+        <h2 class="msection__title">The Die Is Cast</h2>
+        <p class="msection__lede">
+          Every battle is two six-sided dice: <strong>overall strength = strength modifier + roll</strong>,
+          highest total wins. That is 36 equally likely outcomes &mdash; few enough that we can simply
+          count them. No simulation anywhere on this page: every probability is exact.
+        </p>
+      </div>
+
+      <div class="mpanel mpanel--wide" data-mreveal>
+        <h3 class="mpanel__title">The 36 outcomes, at equal strength</h3>
+        <p class="mpanel__text">
+          Rows are the attacker&rsquo;s roll, columns the defender&rsquo;s. Win by
+          <strong>4 or more</strong> and the loser is destroyed; win by less and the defender
+          retreats (the attacker must advance). Notice how much of the grid is <em>not</em> lethal.
+        </p>
+        <div class="mchart mchart--matrix" data-chart="matrix"></div>
+        <ul class="mlegend" data-legend="matrix"></ul>
+      </div>
+
+      <div class="mgrid mgrid--2">
+        <div class="mpanel" data-mreveal>
+          <h3 class="mpanel__title">A triangular battlefield</h3>
+          <p class="mpanel__text">
+            The margin of victory (attacker roll &minus; defender roll) follows a triangular
+            distribution: a dead heat is six times likelier than a rout. The coloured tails are
+            the only cells where anyone dies at equal strength.
+          </p>
+          <div class="mchart" data-chart="diffdist"></div>
+        </div>
+        <div class="mpanel" data-mreveal>
+          <h3 class="mpanel__title">Three uncomfortable facts</h3>
+          <ul class="mfacts">
+            <li><strong data-v="killParity">8.3%</strong><span>of equal-strength battles destroy anything. The kill line (margin &ge; 4) sits near the edge of the dice.</span></li>
+            <li><strong data-v="tieParity">16.7%</strong><span>of equal-strength battles tie &mdash; an outcome the rulebook never defines.</span></li>
+            <li><strong data-v="retreatParity">33.3%</strong><span>end in a retreat: the most common decisive result is a shuffle, not a kill.</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mpanel mpanel--wide" data-mreveal>
+        <h3 class="mpanel__title">The ladder of advantage</h3>
+        <p class="mpanel__text">
+          What a strength edge is worth, from &minus;3 to +4. Each +1 shifts the whole triangular
+          distribution one step sideways &mdash; which is why biome buffs are really dice surgery.
+        </p>
+        <div class="mchart" data-chart="ladder"></div>
+        <ul class="mlegend" data-legend="ladder"></ul>
+      </div>
+    </section>
+
+    <!-- ============ 2. THE ROSTER ============ -->
+    <section class="msection" id="roster">
+      <div class="msection__head" data-mreveal>
+        <p class="msection__eyebrow">Ninety creatures</p>
+        <h2 class="msection__title">The Roster, Weighed</h2>
+        <p class="msection__lede">
+          The roster is a perfect <strong>9 &times; 10 matrix</strong>: each of the 9 biomes contributes
+          exactly 10 creatures, covering each of the 10 classes once. But the strength budget
+          each biome spends is anything but equal.
+        </p>
+      </div>
+
+      <div class="mgrid mgrid--2">
+        <div class="mpanel" data-mreveal>
+          <h3 class="mpanel__title">Strength distribution</h3>
+          <p class="mpanel__text">
+            A bell-ish curve from 1 to 6, summing to <strong data-v="strSum">311</strong> &mdash;
+            mean <strong data-v="strMean">3.46</strong>. Only four creatures in the game reach strength 6.
+          </p>
+          <div class="mchart" data-chart="strhist"></div>
+        </div>
+        <div class="mpanel" data-mreveal>
+          <h3 class="mpanel__title">Class averages</h3>
+          <p class="mpanel__text">
+            Nine creatures per class. Dragons and Giants are the heavyweights; Undead are
+            cannon fodder by design &mdash; fitting, for a class with its own resurrection spells.
+          </p>
+          <div class="mchart" data-chart="classmeans"></div>
+        </div>
+      </div>
+
+      <div class="mpanel mpanel--wide" data-mreveal>
+        <h3 class="mpanel__title">The biome budgets</h3>
+        <p class="mpanel__text">
+          Total strength per biome (10 creatures each). Mountain and Tundra field armies
+          <strong>57% stronger</strong> than Desert and Forest. Remember this chart when we get
+          to biome buffs &mdash; one of these biomes also holds the strongest combat buff in the game.
+        </p>
+        <div class="mchart" data-chart="biomebudget"></div>
+      </div>
+    </section>
+
+    <!-- ============ 3. BIOME EQUITY ============ -->
+    <section class="msection" id="equity">
+      <div class="msection__head" data-mreveal>
+        <p class="msection__eyebrow">Nine realms, nine deals</p>
+        <h2 class="msection__title">Biome Equity</h2>
+        <p class="msection__lede">
+          Every biome pays its natives and taxes its visitors &mdash; but in three different
+          currencies: <strong>dice</strong> (strength), <strong>gold</strong> (economy) and
+          <strong>actions</strong> (tempo). Here is each deal, priced out.
+        </p>
+      </div>
+
+      <div class="mpanel mpanel--wide" data-mreveal>
+        <h3 class="mpanel__title">What a buff is worth</h3>
+        <p class="mpanel__text">
+          Combat buffs, measured as the shift in an even-strength battle; economic buffs,
+          measured in gold per trigger. Tundra&rsquo;s <em>Acclimatized</em> is the outlier:
+          the largest dice shift in the game, active on attack <em>and</em> defence, with no trigger condition.
+        </p>
+        <div class="mchart" data-chart="buffpower"></div>
+      </div>
+
+      <div class="mtable-wrap" data-mreveal>
+        <table class="mtable" data-table="biomes">
+          <thead>
+            <tr><th>Biome</th><th>Match buff</th><th>Buff value</th><th>Mismatch debuff</th><th>Debuff value</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <p class="mtable-note">Swamp and Cave deal in tempo, which resists pricing: <em>Stuck</em> can eat two-thirds of a turn; <em>Trapped</em> can turn a retreat into a death sentence.</p>
+      </div>
+    </section>
+
+    <!-- ============ 4. THE ECONOMY ============ -->
+    <section class="msection" id="economy">
+      <div class="msection__head" data-mreveal>
+        <p class="msection__eyebrow">Gold flow</p>
+        <h2 class="msection__title">The Economy</h2>
+        <p class="msection__lede">
+          Gold enters through harvesting, biome tricks and selling creatures; it leaves through
+          summoning and spells. Every player starts with <strong>4 gold</strong> and a safety net
+          of 1 gold for any turn ended creature-less.
+        </p>
+      </div>
+
+      <div class="mgrid mgrid--2">
+        <div class="mpanel" data-mreveal>
+          <h3 class="mpanel__title">Harvest yields by biome</h3>
+          <p class="mpanel__text">
+            Four tiles per biome. Eight biomes run 1&ndash;4 gold (mean
+            <strong data-v="otherYieldMean">2.5</strong>); Desert alone runs 2&ndash;5 (mean
+            <strong data-v="desertYieldMean">3.5</strong>) &mdash; the richest soil in the game,
+            before its &plusmn;1 gold crossing effect is even counted.
+          </p>
+          <div class="mchart" data-chart="harvest"></div>
+        </div>
+        <div class="mpanel" data-mreveal>
+          <h3 class="mpanel__title">The price of power</h3>
+          <p class="mpanel__text">
+            Ability costs from the master tables (mean
+            <strong data-v="abilityCostMean">3.3</strong> gold) &mdash; against a mean harvest of
+            <strong data-v="harvestMean">2.61</strong> gold per action. Selling a creature returns
+            its strength in gold: mean <strong data-v="strMean2">3.46</strong>.
+          </p>
+          <div class="mchart" data-chart="abilitycost"></div>
+        </div>
+      </div>
+
+      <div class="mpanel mpanel--wide" data-mreveal>
+        <h3 class="mpanel__title">Exchange rates</h3>
+        <ul class="mfacts mfacts--row">
+          <li><strong>1 action</strong><span>&asymp; <span data-v="harvestMean2">2.61</span> gold when harvesting an average tile</span></li>
+          <li><strong>1 spell</strong><span>= 1 gold, no action &mdash; the cheapest tempo in the game</span></li>
+          <li><strong>1 creature</strong><span>= its strength in gold when sold (mean <span data-v="strMean3">3.46</span>)</span></li>
+          <li><strong>1 Ocean entry</strong><span>= <span data-v="oceanEV">0.67</span> gold in expectation for a native; a 1-in-6 double discard for a stranger</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ 5. DECK & DRAW MATH ============ -->
+    <section class="msection" id="deck">
+      <div class="msection__head" data-mreveal>
+        <p class="msection__eyebrow">The shuffle</p>
+        <h2 class="msection__title">Deck &amp; Draw Math</h2>
+        <p class="msection__lede">
+          Two decks: <strong data-v="nCreatures2">90</strong> creatures, and a Lands &amp; Spells
+          deck of <strong data-v="nLS">71</strong> &mdash; <span data-v="nLands">36</span> lands against
+          only <span data-v="nSpells2">35</span> spells. Every draw from it is a coin flip.
+        </p>
+      </div>
+
+      <div class="mgrid mgrid--2">
+        <div class="mpanel" data-mreveal>
+          <h3 class="mpanel__title">The Lands &amp; Spells deck</h3>
+          <p class="mpanel__text">
+            <strong data-v="pLand">50.7%</strong> of the deck is land. Your opening hand holds two of
+            these cards, so the chance you can summon at all on turn one (gold permitting) is
+            <strong data-v="pOpenLand">76.1%</strong>. Nearly a quarter of players open without a deed.
+          </p>
+          <div class="mchart" data-chart="decksplit"></div>
+        </div>
+        <div class="mpanel" data-mreveal>
+          <h3 class="mpanel__title">Reactions &amp; triggers</h3>
+          <p class="mpanel__text">
+            Lightning-bolt density: <strong data-v="reactAb">12 of 27</strong> abilities and
+            <strong data-v="reactSp">8 of 35</strong> spells can be played in response.
+            Most triggered abilities ask for a roll above 3 &mdash; a coin flip &mdash; or above 4 &mdash; one in three.
+          </p>
+          <div class="mchart" data-chart="reactions"></div>
+        </div>
+      </div>
+
+      <div class="mpanel mpanel--wide" data-mreveal>
+        <h3 class="mpanel__title">The biome lottery</h3>
+        <p class="mpanel__text">
+          Pair a random creature with a random land card and the biomes match only
+          <strong data-v="pBiomeMatch">11.1%</strong> of the time. Eight times out of nine, a summoning
+          sends a creature into hostile terrain &mdash; the debuff chart is not an edge case, it is
+          the default state of the board.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ 6. THE CHAIN ============ -->
+    <section class="msection" id="chain">
+      <div class="msection__head" data-mreveal>
+        <p class="msection__eyebrow">The win condition</p>
+        <h2 class="msection__title">The Chain</h2>
+        <p class="msection__lede">
+          Control <strong>3&ndash;7 connected tiles</strong>, in any configuration, and hold them for a
+          full round. &ldquo;Any configuration&rdquo; hides a combinatorial explosion &mdash; this page
+          enumerates every free polyhex (winning shapes, up to rotation and reflection) live:
+        </p>
+      </div>
+
+      <div class="mpanel mpanel--wide" data-mreveal>
+        <h3 class="mpanel__title">Every winning shape, sizes 3 and 4</h3>
+        <p class="mpanel__text">
+          Three trihexes and seven tetrahexes &mdash; drawn exactly as enumerated. By size 7 there are
+          <strong data-v="poly7">333</strong> distinct winning silhouettes.
+        </p>
+        <div class="mchart" data-chart="polyhex"></div>
+      </div>
+
+      <div class="mgrid mgrid--2">
+        <div class="mpanel" data-mreveal>
+          <h3 class="mpanel__title">The growth of choice</h3>
+          <p class="mpanel__text">
+            Free polyhexes by chain size. Longer chains are not just slower to build &mdash; the
+            shape space explodes, which is why large-N games sprawl.
+          </p>
+          <div class="mchart" data-chart="polycount"></div>
+        </div>
+        <div class="mpanel" data-mreveal>
+          <h3 class="mpanel__title">Holding the line</h3>
+          <p class="mpanel__text">
+            An attack at equal strength flips a tile <strong data-v="flipParity">41.7%</strong> of the time
+            (kill or retreat &mdash; the attacker must advance either way). Survival of a chain through
+            a round of <em>k</em> such attacks is 0.583<sup>k</sup> &mdash; unless you defend on buffed
+            ground, where Forest/Tundra&rsquo;s +2 cuts the flip rate to
+            <strong data-v="flipVsBuff">16.7%</strong>.
+          </p>
+          <div class="mchart" data-chart="survival"></div>
+        </div>
+      </div>
+
+      <p class="mnote" data-mreveal>
+        The recommended chain length is <strong>8 &minus; players</strong> &mdash; a rule of thumb that dips
+        below the 3-tile minimum at six players (8 &minus; 6 = 2). Creators: consider
+        <em>max(3, 8 &minus; n)</em> in the next rulebook pass.
+      </p>
+    </section>
+
+    <!-- ============ 7. BATTLE-ODDS CALCULATOR ============ -->
+    <section class="msection" id="calculator">
+      <div class="msection__head" data-mreveal>
+        <p class="msection__eyebrow">Try it yourself</p>
+        <h2 class="msection__title">The Battle-Odds Calculator</h2>
+        <p class="msection__lede">
+          Pick any two creatures from the real roster and the tile they fight over.
+          Biome effects are applied from the master data; the odds are the exact count of the
+          36 outcomes. Spells and abilities are excluded &mdash; they are the wildcard.
+        </p>
+      </div>
+
+      <div class="calc" data-calc data-mreveal>
+        <div class="calc__controls">
+          <div class="calc__side">
+            <h4 class="calc__heading">Attacker</h4>
+            <label class="calc__label">Creature
+              <select data-calc="attacker"></select>
+            </label>
+            <div class="calc__custom" data-calc="attacker-custom" hidden>
+              <label class="calc__label">Strength
+                <select data-calc="attacker-str"></select>
+              </label>
+              <label class="calc__label">Native biome
+                <select data-calc="attacker-biome"></select>
+              </label>
+            </div>
+            <p class="calc__stat" data-calc="attacker-readout"></p>
+          </div>
+
+          <div class="calc__tile">
+            <span class="calc__vs">vs</span>
+            <label class="calc__label">Battle tile
+              <select data-calc="tile"></select>
+            </label>
+            <p class="calc__hint">Only Tundra (&plusmn;2), Forest (+2, defender only) and Plains (&minus;1, non-natives) move the numbers.</p>
+          </div>
+
+          <div class="calc__side">
+            <h4 class="calc__heading">Defender</h4>
+            <label class="calc__label">Creature
+              <select data-calc="defender"></select>
+            </label>
+            <div class="calc__custom" data-calc="defender-custom" hidden>
+              <label class="calc__label">Strength
+                <select data-calc="defender-str"></select>
+              </label>
+              <label class="calc__label">Native biome
+                <select data-calc="defender-biome"></select>
+              </label>
+            </div>
+            <p class="calc__stat" data-calc="defender-readout"></p>
+          </div>
+        </div>
+
+        <div class="calc__results">
+          <div class="calc__bars" data-calc="bars"></div>
+          <div class="calc__matrixwrap">
+            <div class="mchart mchart--matrix mchart--matrix-sm" data-calc="matrix"></div>
+            <p class="calc__hint">All 36 roll pairs, coloured by outcome.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 8. RECOMMENDATIONS ============ -->
+    <section class="msection" id="recommendations">
+      <div class="msection__head" data-mreveal>
+        <p class="msection__eyebrow">For the creators</p>
+        <h2 class="msection__title">Recommendations</h2>
+        <p class="msection__lede">
+          Six adjustments, each motivated by the numbers above. Daniel, Don &mdash; the dice have spoken.
+        </p>
+      </div>
+
+      <div class="recs">
+        <article class="rec" data-mreveal>
+          <p class="rec__num">R1</p>
+          <h3 class="rec__title">Tundra: Acclimatized +2 &rarr; +1</h3>
+          <p>
+            At equal base strength, +2 turns a battle into <strong data-v="winPlus2">72.2%</strong> wins with a
+            <strong data-v="killPlus2">27.8%</strong> kill rate &mdash; <strong>3.3&times;</strong> the baseline kill rate &mdash;
+            and a flat <strong>0%</strong> chance of being destroyed. Worse, it stacks on the roster&rsquo;s
+            second-largest strength budget (<strong data-v="tundraBudget">43</strong>, mean
+            <strong data-v="tundraMean">4.3</strong>): a Tundra native on home ice fights at an effective
+            <strong data-v="tundraEff">6.3</strong> against a world average of
+            <strong data-v="worldMean">3.46</strong> &mdash; roughly a +3 differential, or
+            <strong data-v="winPlus3">83.3%</strong> wins and <strong data-v="killPlus3">41.7%</strong> kills before spells enter the chat.
+          </p>
+          <p class="rec__action">
+            At +1 the buff stays the best combat deal in the game (<strong data-v="winPlus1">58.3%</strong> wins,
+            <strong data-v="killPlus1">16.7%</strong> kills) without making home ice unwinnable for visitors.
+            Alternative: keep +2 but pull Tundra&rsquo;s strength budget down toward the 33&ndash;34 median.
+          </p>
+        </article>
+
+        <article class="rec" data-mreveal>
+          <p class="rec__num">R2</p>
+          <h3 class="rec__title">Define the tie</h3>
+          <p>
+            <strong data-v="tieParity2">16.7%</strong> of equal-strength battles &mdash; and
+            <strong data-v="tieRange">5.6&ndash;16.7%</strong> across the typical differential range &mdash; land on
+            equal overall strength, an outcome the rulebook never rules on. That is roughly one battle in six
+            paused for a table argument.
+          </p>
+          <p class="rec__action">
+            Suggested ruling: <em>a tie is a deadlock &mdash; the defender holds, the attacker does not advance.</em>
+            It costs nothing, favours the defender slightly, and matches the retreat-heavy spirit of the kill line.
+          </p>
+        </article>
+
+        <article class="rec" data-mreveal>
+          <p class="rec__num">R3</p>
+          <h3 class="rec__title">Mind the kill line (margin &ge; 4)</h3>
+          <p>
+            On two d6, a 4-point kill margin means equal creatures destroy each other only
+            <strong data-v="killParity2">8.3%</strong> of the time; <strong data-v="retreatParity2">33.3%</strong> of battles end in a
+            retreat. The game is positional by design &mdash; creatures die to buffs and focus-fire, not to fair fights.
+          </p>
+          <p class="rec__action">
+            If that grind is the intent, keep it &mdash; it is elegant. If you want bloodier battles,
+            margin &ge; 3 doubles the parity kill rate to <strong data-v="killMargin3">16.7%</strong>. Do not do both this and keep Tundra at +2.
+          </p>
+        </article>
+
+        <article class="rec" data-mreveal>
+          <p class="rec__num">R4</p>
+          <h3 class="rec__title">Watch the Desert economy</h3>
+          <p>
+            Desert holds the richest tiles (mean <strong data-v="desertYieldMean2">3.5</strong> gold,
+            <strong>+40%</strong> over any other biome) <em>and</em> pays natives 1 gold every time a creature
+            enters or leaves. A native crossing in and out nets +2 gold before harvesting &mdash;
+            nearly a free harvest action (mean yield <strong data-v="harvestMean3">2.61</strong>).
+          </p>
+          <p class="rec__action">
+            Consider triggering Conditioned/Scorched on entry only, or once per creature per turn,
+            so the desert pays for risk rather than for pacing back and forth.
+          </p>
+        </article>
+
+        <article class="rec" data-mreveal>
+          <p class="rec__num">R5</p>
+          <h3 class="rec__title">Balance Ocean in one currency</h3>
+          <p>
+            <em>Lucky</em> pays gold (EV <strong data-v="oceanEV2">+0.67</strong> per entry); <em>Unlucky</em> taxes
+            cards (1-in-6 chance to discard two). Buff and debuff live in different economies, so the
+            matchup is impossible to price and feels swingy rather than risky.
+          </p>
+          <p class="rec__action">
+            Mirror the currencies: either both gold (e.g. Unlucky: on a 1, lose 2 gold) or both cards.
+            The current EV asymmetry also makes Ocean the only biome whose debuff can be wholly avoided
+            by simply having no cards &mdash; a perverse incentive to empty your hand.
+          </p>
+        </article>
+
+        <article class="rec" data-mreveal>
+          <p class="rec__num">R6</p>
+          <h3 class="rec__title">Close the data gaps</h3>
+          <p>
+            Some questions no amount of enumeration can answer, because the data is not in the tables:
+            creature <strong>summoning costs</strong> are specced on the card face but absent from
+            <code>Creatures_tbl</code> (so cost-efficiency &mdash; the single most important balance
+            metric &mdash; is uncomputable); <code>Abilities_tbl.Cost</code> contradicts the rulebook
+            (&ldquo;abilities cost no gold&rdquo;); AbilityID 23 is missing; spell cost is flat-1 in the
+            rules but per-spell in the renders.
+          </p>
+          <p class="rec__action">
+            Add a summoning-cost column keyed to strength (we suggest cost &asymp; strength &minus; 1,
+            mean <strong data-v="suggestCost">2.46</strong> gold, as a starting point for playtesting) and
+            resolve the three contradictions &mdash; then re-run this page.
+          </p>
+        </article>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <img src="assets/hex-symbol.png" alt="" class="footer__hex" width="295" height="338">
+    <p class="footer__title">Mystic</p>
+    <p class="footer__credit">A game by <strong>Daniel Schormann</strong> &amp; <strong>Don Kruger</strong></p>
+    <p class="footer__credit">This page computes itself from <code>card-data.js</code> &mdash; the single source of truth.</p>
+    <a href="index.html" class="footer__top">&larr; Back to the game</a>
+  </footer>
+
+  <script src="js/icons.js?v=62"></script>
+  <script src="js/card-data.js?v=62"></script>
+  <script src="js/maths.js?v=1"></script>
+</body>
+</html>
