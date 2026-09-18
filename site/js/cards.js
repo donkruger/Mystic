@@ -279,17 +279,20 @@ window.MysticCards = (function () {
     img(ART.biomeArt(biome.slug), "", art);
     el("div", "mtile__veil", t);
 
-    /* marker pair (biome chip + yield coin) repeated on every edge,
-       rotated 60° apart — one pair per seat around the hex */
-    for (var i = 0; i < 6; i++) {
+    /* marker pair (biome chip + yield hex) on alternating edges,
+       rotated 120° apart — equally spaced, 3-fold symmetry */
+    for (var i = 0; i < 6; i += 2) {
       var mark = el("span", "mtile__mark mtile__mark--" + i, t);
       var chip = el("span", "mtile__chip bicon--" + biome.slug, mark);
       chip.title = biome.name + " biome";
       var chipWin = el("span", "mtile__chipin", chip);
       chipWin.innerHTML = window.MYSTIC_ICONS.biome(biome.slug);
+      /* yield hex — the same two-layer hexagon as the biome chip */
       var y = el("span", "mtile__yield", mark);
-      el("span", "mtile__cur", y).textContent = "₲";
-      y.appendChild(document.createTextNode(harvestYield));
+      y.title = "Harvest yield: " + harvestYield + " gold";
+      var yin = el("span", "mtile__yieldin", y);
+      el("span", "mtile__cur", yin).textContent = "₲";
+      yin.appendChild(document.createTextNode(harvestYield));
     }
 
     el("div", "mcard__foil", t);

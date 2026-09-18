@@ -69,8 +69,8 @@ Design notes (current iteration):
   **match/mismatch pair** in the same band — flattened into one text run with a
   four-line clamp so both effects survive for the opponent's read.
 - **Tile symmetry** — the land tile repeats its biome marker + harvest yield, side by
-  side, on **every edge** — six pairs rotated 60° apart, pushed to the rim — so the tile
-  reads identically from each of the six seats (6-fold rotational symmetry). Tiles have
+  side, on **alternating edges** — three pairs rotated 120° apart, pushed to the rim —
+  equally spaced around the hex (3-fold rotational symmetry). Tiles have
   no facing and mark no ownership — orientation/ownership lives on the cards only
   (chevrons + mirrored index).
 - **Orientation chevrons** — a top-aligned column of **six** smooth-edged upward
@@ -335,7 +335,7 @@ Component-relevant facts from the Rules sheet:
 | Land image | asset pipeline (per biome) | Full-bleed hex art |
 | Biome marker | `Biomes_tbl` via `BiomeID` | Icon, middle right (per Components) |
 | Harvest yield | `Lands_tbl.Harvest amount` | Numeral, middle right (per Components) |
-| Biome marker + harvest yield ×6 | `Biomes_tbl` icon + `Lands_tbl.Harvest amount` | Every edge, rotated 60° apart, at the rim and left-aligned along each edge plane — reads the same from each of the six seats; no facing/ownership (supersedes the Rules' orientation diamond). Yield is a small flat parchment pill with a gold ring carrying the ₲ mark + numeral (same currency language as the cards) |
+| Biome marker + harvest yield ×3 | `Biomes_tbl` icon + `Lands_tbl.Harvest amount` | Alternating edges, rotated 120° apart, at the rim and left-aligned along each edge plane — equally spaced, 3-fold symmetry; no facing/ownership (supersedes the Rules' orientation diamond). Yield is a hexagon chip identical to the biome marker (gold rim, parchment inset) carrying the ₲ mark + numeral |
 
 ---
 

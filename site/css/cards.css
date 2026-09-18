@@ -492,12 +492,12 @@
   z-index: 2;
 }
 .mtile__mark--0 { --mx: 67%; --my: 20.6%; --mr: 30deg; }
-.mtile__mark--1 { --mx: 84%; --my: 50%;   --mr: 90deg; }
 .mtile__mark--2 { --mx: 67%; --my: 79.4%; --mr: 150deg; }
-.mtile__mark--3 { --mx: 33%; --my: 79.4%; --mr: 210deg; }
 .mtile__mark--4 { --mx: 16%; --my: 50%;   --mr: 270deg; }
-.mtile__mark--5 { --mx: 33%; --my: 20.6%; --mr: 330deg; }
-.mtile__chip {
+/* biome chip and yield hex are the same component: gold-rimmed hexagon
+   with a parchment inset */
+.mtile__chip,
+.mtile__yield {
   width: calc(var(--tile-w) * 0.10);
   aspect-ratio: 1;
   clip-path: polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%);
@@ -507,7 +507,8 @@
   place-items: center;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
-.mtile__chipin {
+.mtile__chipin,
+.mtile__yieldin {
   width: 84%;
   aspect-ratio: 1;
   clip-path: polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%);
@@ -517,23 +518,19 @@
   place-items: center;
   background: #ece4cd;               /* parchment inset — colored glyph reads over art */
 }
+/* yield inset carries the ₲ mark + numeral as text instead of a glyph */
+.mtile__yieldin {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  font-size: calc(var(--tile-w) * 0.032);
+  font-weight: 700;
+  color: var(--gold-deep);
+}
 .mtile__chipin svg {
   width: 68%;
   height: 68%;
   display: block;
-}
-.mtile__yield {
-  /* small flat parchment pill carrying the ₲ mark + numeral */
-  display: inline-flex;
-  align-items: baseline;
-  padding: 0.12em 0.4em;
-  border-radius: 999px;
-  background: var(--parchment, #f7f1e3);
-  border: 1.5px solid var(--gold);
-  color: var(--gold-deep);
-  font-weight: 700;
-  font-size: calc(var(--tile-w) * 0.039);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
 }
 /* ₲ on the tile — same treatment as the card's .mcard__cur */
 .mtile__cur {
