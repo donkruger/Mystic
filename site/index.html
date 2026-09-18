@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=8">
+  <link rel="stylesheet" href="css/style.css?v=9">
 </head>
 <body>
 
@@ -55,22 +55,25 @@
         <p class="section__lede">Build the map, summon your creatures, and carve out a realm — before your rivals carve out yours.</p>
       </div>
 
-      <div class="how__grid">
-        <article class="panel" data-reveal>
-          <h3 class="panel__title">Setting up</h3>
-          <ol class="panel__list">
-            <li>Place one land tile down randomly, then take turns placing tiles in any configuration — the map must remain a single connected continent.</li>
-            <li>Divide the cards into two decks: the <strong>Creature deck</strong> and the <strong>Lands &amp; Spells deck</strong>.</li>
-            <li>Roll the die to decide who starts.</li>
-            <li>Draw your opening hand: <strong>1 creature card</strong> and <strong>2 land/spell cards</strong>, plus <strong>4 gold</strong>.</li>
-            <li>Choose your card orientation — it marks everything you own on the board.</li>
-          </ol>
-          <p class="panel__note">Safety net: end a turn with no creature on the board and you receive 1 gold.</p>
-        </article>
+      <div class="setup-sim" data-setup-sim data-reveal>
+        <h3 class="panel__title">Setting up</h3>
+        <div class="setup-sim__stage">
+          <svg class="setup-sim__scene" data-setup-stage role="img" aria-label="Animated walkthrough of the five setup steps"></svg>
+        </div>
+        <p class="setup-sim__caption" data-setup-caption></p>
+        <div class="setup-sim__controls">
+          <button type="button" class="battle-sim__btn" data-setup-prev aria-label="Previous step">&larr;</button>
+          <div class="battle-sim__dots" data-setup-dots></div>
+          <button type="button" class="battle-sim__btn" data-setup-next aria-label="Next step">&rarr;</button>
+          <button type="button" class="battle-sim__btn battle-sim__btn--replay" data-setup-replay>Replay</button>
+        </div>
+      </div>
 
+      <div class="how__grid">
         <article class="panel" data-reveal>
           <h3 class="panel__title">Your turn</h3>
           <p>Each turn grants <strong>3 actions</strong>. Spells and abilities are free — they cost neither gold nor actions — though abilities activate only once unless stated. When your actions are spent, announce the end of your turn.</p>
+          <p class="panel__note">Safety net: end a turn with no creature on the board and you receive 1 gold.</p>
         </article>
       </div>
 
@@ -399,6 +402,6 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
-  <script src="js/main.js?v=8"></script>
+  <script src="js/main.js?v=9"></script>
 </body>
 </html>

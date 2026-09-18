@@ -798,3 +798,430 @@
     playAll();
   }
 })();
+
+/* ============================================================
+   Setup simulator — animated five-step walkthrough of setup.
+   Same stepper convention as the battle sim: async beats, dot /
+   arrow / replay chrome, auto-play on approach, static fallback.
+   ============================================================ */
+(function () {
+  "use strict";
+
+  var sim = document.querySelector("[data-setup-sim]");
+  if (!sim) return;
+
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var hasGsap = typeof window.gsap !== "undefined";
+  var ns = "http://www.w3.org/2000/svg";
+
+  var stage = sim.querySelector("[data-setup-stage]");
+  var captionEl = sim.querySelector("[data-setup-caption]");
+  var dotsWrap = sim.querySelector("[data-setup-dots]");
+  var controls = sim.querySelector(".setup-sim__controls");
+
+  var DUR = 1; /* duration scale — shrink for debugging */
+  stage.setAttribute("viewBox", "0 0 640 340");
+
+  /* ---------- helpers ---------- */
+  function el(tag, attrs, parent) {
+    var n = document.createElementNS(ns, tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) { n.setAttribute(k, attrs[k]); });
+    if (parent) parent.appendChild(n);
+    return n;
+  }
+  function hexPts(cx, cy, s) {
+    var pts = [];
+    for (var k = 0; k < 6; k++) {
+      var a = Math.PI / 180 * (60 * k);
+      pts.push((cx + s * Math.cos(a)).toFixed(1) + "," + (cy + s * Math.sin(a)).toFixed(1));
+    }
+    return pts.join(" ");
+  }
+  var PIPS = {
+    1: [[12, 12]],
+    2: [[8, 8], [16, 16]],
+    3: [[8, 8], [12, 12], [16, 16]],
+    4: [[8, 8], [16, 8], [8, 16], [16, 16]],
+    5: [[8, 8], [16, 8], [12, 12], [8, 16], [16, 16]],
+    6: [[8, 7.5], [16, 7.5], [8, 12], [16, 12], [8, 16.5], [16, 16.5]]
+  };
+  function setDieFace(svg, value) {
+    svg.querySelectorAll("circle").forEach(function (c) { c.remove(); });
+    (PIPS[value] || PIPS[1]).forEach(function (p) {
+      el("circle", { cx: p[0], cy: p[1], r: 1.9 }, svg);
+    });
+  }
+
+  /* Position a group. transformOrigin is set ONCE here and never again —
+     changing it mid-stream corrupts GSAP's SVG transform cache. */
+  function put(node, x, y, rot, scale) {
+    if (hasGsap && !reduceMotion) {
+      gsap.set(node, { x: x, y: y, rotation: rot || 0, scale: scale == null ? 1 : scale, transformOrigin: "50% 50%" });
+    } else {
+      node.setAttribute("transform", "translate(" + x + "," + y + ")" + (rot ? " rotate(" + rot + ")" : ""));
+    }
+  }
+  function show(node) {
+    if (hasGsap && !reduceMotion) gsap.set(node, { opacity: 1 });
+    else node.setAttribute("opacity", "1");
+  }
+  function hide(node) {
+    if (hasGsap && !reduceMotion) gsap.set(node, { opacity: 0 });
+    else node.setAttribute("opacity", "0");
+  }
+
+  /* card group, local coords centred on (0,0) */
+  function makeCard(kind, w, h) {
+    w = w || 44; h = h || 60;
+    var g = el("g", { "class": "setup-card setup-card--" + kind }, stage);
+    el("rect", { x: -w / 2, y: -h / 2, width: w, height: h, rx: 4 }, g);
+    if (kind === "creature") {
+      el("polygon", { "class": "setup-card__mark", points: hexPts(0, -h * 0.14, 7) }, g);
+      el("path", { "class": "setup-card__mark", d: "M" + (-w * 0.22) + "," + (h * 0.22) + " H" + (w * 0.22) + " M" + (-w * 0.22) + "," + (h * 0.22 + 4) + " H" + (w * 0.1) }, g);
+    } else {
+      el("path", { "class": "setup-card__mark", d: "M" + (-w * 0.24) + "," + (-h * 0.16) + " H" + (w * 0.24) + " M" + (-w * 0.24) + "," + (-h * 0.16 + 5) + " H" + (w * 0.24) + " M" + (-w * 0.24) + "," + (-h * 0.16 + 10) + " H" + (w * 0.05) }, g);
+    }
+    return g;
+  }
+
+  /* ---------- stepper machinery ---------- */
+  var STEP_COUNT = 5;
+  var currentStep = 0;
+  var playToken = 0;
+  var stepTl = null;
+  var shuffleIv = null;
+
+  function delay(ms) { return new Promise(function (res) { setTimeout(res, ms); }); }
+  function alive(token) { return token === playToken; }
+  function caption(html) { captionEl.innerHTML = html; }
+  function killStep() {
+    if (stepTl) { stepTl.kill(); stepTl = null; }
+    if (shuffleIv) { clearInterval(shuffleIv); shuffleIv = null; }
+  }
+  function clearStage() {
+    killStep();
+    stage.textContent = "";
+  }
+
+  /* ============ STEP 1 — Lay the land ============ */
+  var HEX = 30, SQ3 = Math.sqrt(3);
+  var MAP_C = { x: 320, y: 158 };
+  function axial(q, r) { return { x: MAP_C.x + HEX * 1.5 * q, y: MAP_C.y + HEX * SQ3 * (r + q / 2) }; }
+  /* placement order keeps every new tile adjacent to the growing continent */
+  var SLOTS = [[0, 0], [1, -1], [1, 0], [0, 1], [-1, 1], [-1, 0], [0, -1], [2, -1], [-2, 1]];
+  var BAD_SLOT = [3, 0]; /* disconnected from every slot */
+
+  function buildMapFinal() {
+    clearStage();
+    SLOTS.forEach(function (s, i) {
+      var c = axial(s[0], s[1]);
+      var cls = i === 0 ? "setup-tile setup-tile--first" : "setup-tile " + (i % 2 ? "setup-tile--p1" : "setup-tile--p2");
+      el("polygon", { "class": cls, points: hexPts(c.x, c.y, HEX - 1.5) }, stage);
+    });
+  }
+
+  async function stepMap(token) {
+    clearStage();
+    caption("One tile starts the map — then players take turns adding tiles in any shape. The continent must stay <strong>connected</strong>.");
+
+    var slots = SLOTS.map(function (s) {
+      var c = axial(s[0], s[1]);
+      var g = el("polygon", { "class": "setup-hexslot", points: hexPts(c.x, c.y, HEX - 1.5) }, stage);
+      hide(g);
+      return { c: c, ghost: g };
+    });
+    var badC = axial(BAD_SLOT[0], BAD_SLOT[1]);
+    var phantom = el("polygon", { "class": "setup-tile setup-tile--bad", points: hexPts(badC.x, badC.y, HEX - 1.5) }, stage);
+    hide(phantom);
+
+    var tiles = SLOTS.map(function (s, i) {
+      var cls = i === 0 ? "setup-tile setup-tile--first" : "setup-tile " + (i % 2 ? "setup-tile--p1" : "setup-tile--p2");
+      var t = el("polygon", { "class": cls, points: hexPts(0, 0, HEX - 1.5) }, stage);
+      put(t, 320, 430);
+      hide(t);
+      return t;
+    });
+
+    stepTl = gsap.timeline();
+    slots.forEach(function (s, i) { stepTl.to(s.ghost, { opacity: 1, duration: 0.3 * DUR }, i * 0.05 * DUR); });
+
+    /* first tile — the random seed — drops in */
+    stepTl.to(tiles[0], { opacity: 1, duration: 0.12 * DUR }, 0.5 * DUR)
+      .to(tiles[0], { x: slots[0].c.x, y: slots[0].c.y, duration: 0.55 * DUR, ease: "back.out(1.6)" }, 0.5 * DUR);
+
+    /* tiles 2–4 fly in, alternating players */
+    var t = 1.3 * DUR;
+    for (var i = 1; i <= 3; i++) {
+      stepTl.to(tiles[i], { opacity: 1, duration: 0.1 * DUR }, t)
+        .to(tiles[i], { x: slots[i].c.x, y: slots[i].c.y, duration: 0.5 * DUR, ease: "power2.out" }, t);
+      t += 0.38 * DUR;
+    }
+
+    /* teaching beat: tile 5 tries a disconnected slot and is refused */
+    var bad = 4; /* slot index [-1,1] */
+    stepTl.to(phantom, { opacity: 0.9, duration: 0.25 * DUR }, t);
+    stepTl.to(tiles[bad], { opacity: 1, duration: 0.1 * DUR }, t)
+      .to(tiles[bad], { x: badC.x, y: badC.y, duration: 0.5 * DUR, ease: "power2.out" }, t);
+    t += 0.55 * DUR;
+    for (var w = 0; w < 3; w++) {
+      stepTl.to(tiles[bad], { x: badC.x + 7, duration: 0.06 * DUR }, t + w * 0.12 * DUR)
+        .to(tiles[bad], { x: badC.x - 7, duration: 0.06 * DUR }, t + (w * 0.12 + 0.06) * DUR);
+    }
+    stepTl.to(phantom, { opacity: 0, duration: 0.3 * DUR }, t + 0.4 * DUR);
+    stepTl.to(tiles[bad], { x: slots[bad].c.x, y: slots[bad].c.y, duration: 0.55 * DUR, ease: "power2.inOut" }, t + 0.42 * DUR);
+    t += 1.05 * DUR;
+
+    /* remaining tiles complete the continent */
+    for (var j = 5; j < SLOTS.length; j++) {
+      stepTl.to(tiles[j], { opacity: 1, duration: 0.1 * DUR }, t)
+        .to(tiles[j], { x: slots[j].c.x, y: slots[j].c.y, duration: 0.5 * DUR, ease: "power2.out" }, t);
+      t += 0.38 * DUR;
+    }
+    await delay((t / DUR + 0.4) * 1000 * DUR);
+  }
+
+  /* ============ STEP 2 — Sort the cards ============ */
+  async function stepDecks(token) {
+    clearStage();
+    caption("Sort the cards into two decks — the <strong>Creature deck</strong> and the <strong>Lands &amp; Spells deck</strong>.");
+
+    var kinds = ["creature", "land", "creature", "land", "creature", "land", "creature", "land"];
+    var deckL = { x: 170, y: 150 }, deckR = { x: 470, y: 150 };
+    var li = 0, ri = 0;
+
+    var cards = kinds.map(function (kind, i) {
+      var c = makeCard(kind);
+      put(c, 320 + (i - 3.5) * 16, 152 + (i % 2 ? 4 : -4), (i - 3.5) * 5, 0);
+      return c;
+    });
+
+    var lblL = el("text", { "class": "setup-decklabel", x: deckL.x, y: 228 }, stage);
+    lblL.textContent = "CREATURE DECK";
+    var lblR = el("text", { "class": "setup-decklabel", x: deckR.x, y: 228 }, stage);
+    lblR.textContent = "LANDS & SPELLS";
+    hide(lblL); hide(lblR);
+
+    stepTl = gsap.timeline();
+    cards.forEach(function (c, i) {
+      stepTl.to(c, { scale: 1, duration: 0.3 * DUR, ease: "back.out(1.7)" }, i * 0.07 * DUR);
+    });
+    var t = 0.9 * DUR;
+    cards.forEach(function (c, i) {
+      var left = kinds[i] === "creature";
+      var tgt = left ? deckL : deckR;
+      var off = left ? li++ : ri++;
+      stepTl.to(c, { x: tgt.x + off * 2.5, y: tgt.y - off * 2.5, rotation: 0, duration: 0.55 * DUR, ease: "power2.inOut" }, t + i * 0.14 * DUR);
+    });
+    t += 8 * 0.14 * DUR + 0.6 * DUR;
+    stepTl.to([lblL, lblR], { opacity: 1, duration: 0.4 * DUR }, t);
+    await delay((t / DUR + 0.7) * 1000 * DUR);
+  }
+
+  /* ============ STEP 3 — Roll for the start ============ */
+  async function stepFirst(token) {
+    clearStage();
+    caption("Roll the die to decide who takes the <strong>first turn</strong>.");
+
+    el("text", { "class": "setup-seat", x: 320, y: 58 }, stage).textContent = "OPPONENT";
+    var you = el("text", { "class": "setup-seat", x: 320, y: 298 }, stage);
+    you.textContent = "YOU";
+
+    var dieG = el("g", { "class": "setup-die" }, stage);
+    var dieSvg = el("svg", { x: -34, y: -34, width: 68, height: 68, viewBox: "0 0 24 24" }, dieG);
+    el("rect", { x: 2, y: 2, width: 20, height: 20, rx: 4.5 }, dieSvg);
+    setDieFace(dieSvg, 1);
+    put(dieG, 320, 158, 0, 0);
+
+    var crown = el("polygon", {
+      "class": "setup-crown",
+      points: "-13,7 -13,-3 -6.5,2 0,-7 6.5,2 13,-3 13,7"
+    }, stage);
+    put(crown, 320, 262, 0, 0);
+
+    stepTl = gsap.timeline();
+    stepTl.to(dieG, { scale: 1, duration: 0.45 * DUR, ease: "back.out(1.8)" }, 0.1 * DUR);
+
+    /* tumble: pip shuffle + rotation wobble + hop */
+    shuffleIv = setInterval(function () { setDieFace(dieSvg, 1 + Math.floor(Math.random() * 6)); }, 90);
+    stepTl.to(dieG, { rotation: 14, duration: 0.16 * DUR }, 0.6 * DUR)
+      .to(dieG, { y: 138, duration: 0.16 * DUR, ease: "power2.out" }, 0.6 * DUR)
+      .to(dieG, { rotation: -12, y: 158, duration: 0.2 * DUR }, 0.78 * DUR)
+      .to(dieG, { rotation: 8, y: 144, duration: 0.18 * DUR }, 1.0 * DUR)
+      .to(dieG, { rotation: 0, y: 158, duration: 0.22 * DUR, ease: "power2.in" }, 1.2 * DUR);
+
+    await delay(1.5 * 1000 * DUR);
+    if (!alive(token)) return;
+    killStep(); /* stops the shuffle */
+    setDieFace(dieSvg, 6);
+
+    stepTl = gsap.timeline();
+    stepTl.to(dieG, { scale: 1.14, duration: 0.16 * DUR, ease: "power2.out" }, 0)
+      .to(dieG, { scale: 1, duration: 0.3 * DUR, ease: "power2.inOut" }, 0.16 * DUR)
+      .to(crown, { scale: 1, duration: 0.5 * DUR, ease: "back.out(2.2)" }, 0.4 * DUR);
+    await delay(1.1 * 1000 * DUR);
+    you.setAttribute("class", "setup-seat setup-seat--win");
+  }
+
+  /* ============ STEP 4 — Opening hand ============ */
+  async function stepHand(token) {
+    clearStage();
+    caption("Draw your opening hand — <strong>1 creature</strong> and <strong>2 land/spell cards</strong> — plus <strong>4 gold</strong>.");
+
+    /* mini decks */
+    var deckC = { x: 180, y: 82 }, deckL = { x: 460, y: 82 };
+    [[deckC, "creature"], [deckL, "land"]].forEach(function (cfg) {
+      for (var i = 2; i >= 0; i--) {
+        var c = makeCard(cfg[1], 36, 50);
+        put(c, cfg[0].x + i * 2.5, cfg[0].y - i * 2.5);
+      }
+    });
+    el("text", { "class": "setup-decklabel", x: deckC.x, y: 128 }, stage).textContent = "CREATURES";
+    el("text", { "class": "setup-decklabel", x: deckL.x, y: 128 }, stage).textContent = "LANDS & SPELLS";
+
+    /* hand fan */
+    var hand = [
+      { x: 176, y: 246, r: -14, kind: "creature", from: deckC },
+      { x: 214, y: 238, r: 0, kind: "land", from: deckL },
+      { x: 252, y: 246, r: 14, kind: "land", from: deckL }
+    ];
+    var cards = hand.map(function (h) {
+      var c = makeCard(h.kind);
+      put(c, h.from.x, h.from.y, 0, 0.82);
+      hide(c);
+      return c;
+    });
+
+    /* gold */
+    var coins = [0, 1, 2, 3].map(function (i) {
+      var c = el("circle", { "class": "setup-coin", r: 11 }, stage);
+      put(c, 420 + i * 26, 246, 0, 0);
+      return c;
+    });
+    var count = el("text", { "class": "setup-coincount", x: 446, y: 292, "text-anchor": "middle" }, stage);
+    count.textContent = "";
+    hide(count);
+
+    stepTl = gsap.timeline();
+    cards.forEach(function (c, i) {
+      var t = 0.4 * DUR + i * 0.3 * DUR;
+      stepTl.to(c, { opacity: 1, duration: 0.12 * DUR }, t)
+        .to(c, { x: hand[i].x, y: hand[i].y, rotation: hand[i].r, duration: 0.5 * DUR, ease: "power2.out" }, t);
+    });
+    var t = 1.6 * DUR;
+    coins.forEach(function (c, i) {
+      stepTl.to(c, { scale: 1, duration: 0.34 * DUR, ease: "back.out(2)" }, t + i * 0.18 * DUR);
+      stepTl.call(function () { count.textContent = "× " + (i + 1); show(count); }, null, t + i * 0.18 * DUR);
+    });
+    await delay((t / DUR + 1.1) * 1000 * DUR);
+  }
+
+  /* ============ STEP 5 — Face your seat ============ */
+  async function stepOrient(token) {
+    clearStage();
+    caption("Choose your orientation — every card you play <strong>faces where you sit</strong>, so ownership is read at a glance.");
+
+    var S = 34, cx = 320, cy = 160;
+    function ax(q, r) { return { x: cx + S * 1.5 * q, y: cy + S * SQ3 * (r + q / 2) }; }
+    var hexes = [ax(0, -1), ax(1, -1), ax(0, 1), ax(-1, 1)];
+    hexes.forEach(function (c) {
+      el("polygon", { "class": "setup-tile", points: hexPts(c.x, c.y, S - 1.5) }, stage);
+    });
+    el("text", { "class": "setup-seat", x: 320, y: 42 }, stage).textContent = "OPPONENT";
+    el("text", { "class": "setup-seat", x: 320, y: 306 }, stage).textContent = "YOU";
+
+    /* cards start sideways, then turn to face their owner */
+    var cards = [
+      { c: hexes[0], rot: 180 }, { c: hexes[1], rot: 180 }, /* opponent's */
+      { c: hexes[2], rot: 0 }, { c: hexes[3], rot: 0 }      /* yours */
+    ].map(function (cfg) {
+      var card = makeCard("creature", 30, 42);
+      put(card, cfg.c.x, cfg.c.y, 90, 0);
+      return { node: card, rot: cfg.rot };
+    });
+
+    stepTl = gsap.timeline();
+    cards.forEach(function (c, i) {
+      stepTl.to(c.node, { scale: 1, duration: 0.35 * DUR, ease: "back.out(1.7)" }, 0.3 * DUR + i * 0.12 * DUR);
+    });
+    var t = 1.4 * DUR;
+    cards.forEach(function (c) {
+      stepTl.to(c.node, { rotation: c.rot, duration: 0.7 * DUR, ease: "power2.inOut" }, t);
+    });
+    await delay((t / DUR + 1.1) * 1000 * DUR);
+  }
+
+  var STEPS = [stepMap, stepDecks, stepFirst, stepHand, stepOrient];
+
+  async function runStep(idx, token) {
+    currentStep = idx;
+    setDots(idx);
+    return STEPS[idx](token);
+  }
+  async function playAll() {
+    var token = ++playToken;
+    for (var i = 0; i < STEP_COUNT; i++) {
+      if (!alive(token)) return;
+      await runStep(i, token);
+      if (!alive(token)) return;
+      await delay(1900);
+    }
+    /* closing beat: the finished continent, inviting a replay */
+    if (!alive(token)) return;
+    buildMapFinal();
+    setDots(0);
+    caption("The realm is set — press <strong>Replay</strong> to walk through setup again.");
+  }
+  function goTo(idx) {
+    playToken++; /* halt auto-play */
+    runStep(idx, playToken);
+  }
+
+  /* ---------- controls ---------- */
+  var dots = [];
+  for (var d = 0; d < STEP_COUNT; d++) {
+    var dot = document.createElement("button");
+    dot.type = "button";
+    dot.className = "battle-sim__dot";
+    dot.setAttribute("aria-label", "Go to setup step " + (d + 1));
+    (function (idx, elBtn) {
+      elBtn.addEventListener("click", function () { goTo(idx); });
+    })(d, dot);
+    dotsWrap.appendChild(dot);
+    dots.push(dot);
+  }
+  function setDots(active) {
+    dots.forEach(function (elDot, idx) {
+      elDot.classList.toggle("battle-sim__dot--active", idx === active);
+    });
+  }
+  sim.querySelector("[data-setup-prev]").addEventListener("click", function () {
+    goTo(Math.max(0, currentStep - 1));
+  });
+  sim.querySelector("[data-setup-next]").addEventListener("click", function () {
+    goTo(Math.min(STEP_COUNT - 1, currentStep + 1));
+  });
+  sim.querySelector("[data-setup-replay]").addEventListener("click", function () {
+    playAll();
+  });
+
+  /* ---------- static fallback ---------- */
+  if (!hasGsap || reduceMotion) {
+    buildMapFinal();
+    setDots(0);
+    caption("Setup: build a connected continent, sort the two decks, roll for the first turn, draw 1 creature + 2 land/spell cards and 4 gold, then face your cards to your seat.");
+    if (controls) controls.style.display = "none";
+    return;
+  }
+
+  /* ---------- auto-play on approach ---------- */
+  if ("IntersectionObserver" in window) {
+    var player = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { player.disconnect(); playAll(); }
+      });
+    }, { threshold: 0.4 });
+    player.observe(sim);
+  } else {
+    playAll();
+  }
+})();

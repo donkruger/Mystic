@@ -451,6 +451,62 @@ a { color: inherit; text-decoration: none; }
 .sim-token--blocker circle { fill: rgba(34,29,18,0.55); stroke: none; }
 .sim-token--blocker text { fill: #fff; font-size: 11px; }
 
+/* ---------- setup simulator (same convention as the battle sim) ---------- */
+.setup-sim {
+  max-width: 720px; margin: 0 auto 2.2rem;
+  background: var(--surface);
+  border: 1px solid var(--gold-faint);
+  border-radius: 18px;
+  box-shadow: 0 24px 54px -34px rgba(34,29,18,0.25);
+  padding: 1.2rem 1.4rem 1.3rem;
+}
+.setup-sim .panel__title { text-align: center; margin-bottom: 0.9rem; }
+.setup-sim__stage {
+  border-radius: 12px;
+  background: radial-gradient(ellipse at 50% 120%, rgba(201,162,75,0.12), rgba(34,29,18,0.02) 62%);
+  border: 1px solid rgba(201,162,75,0.18);
+}
+.setup-sim__scene { width: 100%; height: clamp(260px, 42vw, 340px); display: block; }
+.setup-sim__caption {
+  min-height: 2.7em; margin: 0.7rem 0 0.2rem;
+  color: var(--ink); font-size: 0.95rem; line-height: 1.5; text-align: center;
+}
+.setup-sim__caption strong { color: var(--gold-deep); }
+.setup-sim__controls {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0.9rem; margin-top: 0.5rem;
+}
+
+/* scene pieces */
+.setup-hexslot { fill: none; stroke: rgba(34,29,18,0.18); stroke-width: 1.2; stroke-dasharray: 3 4; }
+.setup-tile { fill: #fff; stroke: rgba(201,162,75,0.55); stroke-width: 1.4; }
+.setup-tile--first { fill: rgba(201,162,75,0.16); stroke: var(--gold); }
+.setup-tile--p1 { stroke: var(--gold); }
+.setup-tile--p2 { stroke: rgba(34,29,18,0.4); }
+.setup-tile--bad { fill: rgba(34,29,18,0.06); stroke: rgba(34,29,18,0.35); stroke-dasharray: 4 4; }
+.setup-card rect { fill: #fff; stroke: var(--gold-deep); stroke-width: 1.2; }
+.setup-card--creature rect { fill: #f6ecc9; }
+.setup-card text { font-family: var(--font-display); font-weight: 700; font-size: 10px; fill: var(--gold-deep); text-anchor: middle; }
+.setup-card .setup-card__mark { fill: none; stroke: var(--gold-deep); stroke-width: 1.1; }
+.setup-decklabel {
+  font-family: var(--font-display); font-weight: 700; font-size: 11px; letter-spacing: 0.14em;
+  fill: rgba(34,29,18,0.55); text-anchor: middle;
+}
+.setup-coin { fill: #e8cf8f; stroke: var(--gold-deep); stroke-width: 1.2; }
+.setup-coincount { font-family: var(--font-display); font-weight: 700; font-size: 15px; fill: var(--gold-deep); }
+.setup-die rect { fill: #fff; stroke: var(--gold-deep); stroke-width: 1.4; }
+.setup-die circle { fill: var(--gold-deep); }
+.setup-seat {
+  font-family: var(--font-display); font-weight: 700; font-size: 12px; letter-spacing: 0.16em;
+  fill: rgba(34,29,18,0.5); text-anchor: middle;
+}
+.setup-seat--win { fill: var(--gold-deep); }
+.setup-crown { fill: var(--gold); stroke: var(--gold-deep); stroke-width: 1; }
+.setup-scene { pointer-events: none; }
+
+/* single-panel how grid */
+.how__grid { grid-template-columns: minmax(0, 620px); justify-content: center; }
+
 /* ---------- biomes ---------- */
 .biome-grid {
   max-width: 1240px; margin: 0 auto;
