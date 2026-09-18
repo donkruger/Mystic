@@ -234,6 +234,11 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
+/* land mirror band carries both match and mismatch effects — clamp deeper */
+.mcard__rules--mirror.mcard__rules--biome {
+  -webkit-line-clamp: 4;
+  max-height: 5.6em;
+}
 /* footer lockup — strength numeral + ability name in a gold-ringed pill,
    centered at the bottom, echoing the mirrored pill at the top */
 .mcard__lockup {

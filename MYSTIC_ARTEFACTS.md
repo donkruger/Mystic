@@ -65,9 +65,9 @@ Design notes (current iteration):
   strength lockup inside. On **creature and spell
   cards** the rules text also repeats in a muted, two-line-clamped mirrored band
   directly above the art — bare rules text in both orientations (the name never heads
-  the description, so nothing reads as a run-on). Land cards carry **no mirrored
-  description band**: their text is a placement instruction rather than an in-play
-  effect, so the mirrored biome-name strip is the opponent's read there.
+  the description, so nothing reads as a run-on). Land cards mirror their
+  **match/mismatch pair** in the same band — flattened into one text run with a
+  four-line clamp so both effects survive for the opponent's read.
 - **Tile symmetry** — the land tile repeats its biome marker + harvest yield, side by
   side, on **every edge** — six pairs rotated 60° apart, pushed to the rim — so the tile
   reads identically from each of the six seats (6-fold rotational symmetry). Tiles have
@@ -314,7 +314,7 @@ Component-relevant facts from the Rules sheet:
 | --- | --- | --- |
 | Biome | `Biomes_tbl` via `BiomeID` | Biome icon, top left |
 | Harvest yield | `Lands_tbl.Harvest amount` | ₲ mark + numeral, bare flat gold text, top right (no housing) |
-| Biome effects | `Biomes_tbl` buff/debuff | Match/mismatch run-in lines, bottom panel (no "LAND" heading) |
+| Biome effects | `Biomes_tbl` buff/debuff | Match/mismatch run-in lines, bottom panel (no "LAND" heading) — flattened into the mirrored band above the art |
 | Land image | asset pipeline (per biome) | Center art |
 
 ### 5.3 Spell card

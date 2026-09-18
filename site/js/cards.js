@@ -240,7 +240,11 @@ window.MysticCards = (function () {
     mirror(biome.name, head);
     coin(l.harvest, "Harvest yield: " + l.harvest + " gold", head);
 
-    /* no mirrored description band (same duplication reasoning as spells) */
+    /* mirrored description band above the art — same treatment as creature
+       and spell cards: the match/mismatch pair as one bare text run */
+    var flat = "Match · " + biome.buff.name + " — " + biome.buff.text.replace(/\.?$/, ".") +
+               " Mismatch · " + biome.debuff.name + " — " + biome.debuff.text.replace(/\.?$/, ".");
+    mirrorRules(flat, inner).classList.add("mcard__rules--biome");
 
     /* art at 73% width, left-aligned; chevron column fills the right strip */
     var mid = el("div", "mcard__mid", inner);
