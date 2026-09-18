@@ -238,7 +238,7 @@
   margin-bottom: 1%;
 }
 .mcard__strname::before { content: "·"; margin-right: 0.4em; color: var(--gold); }
-}
+
 .mcard__rules strong {
   display: block;
   font-family: var(--font-display, "Comfortaa", sans-serif); /* label stays Comfortaa */
