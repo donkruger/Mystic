@@ -23,6 +23,7 @@
   if (hasGsap) {
     gsap.registerPlugin(ScrollTrigger);
     if (typeof window.SplitText !== "undefined") gsap.registerPlugin(SplitText);
+    if (typeof window.MotionPathPlugin !== "undefined") gsap.registerPlugin(MotionPathPlugin);
   }
 
   /* Hero land tile: render a live, full-fidelity tile (random biome per
@@ -208,6 +209,11 @@
               }
             }, 0.3 + i * 0.06);
         });
+        /* the hero pin is created asynchronously (fonts.ready), AFTER other
+           triggers exist — re-sort + refresh so every trigger downstream
+           measures against the pin-spaced layout */
+        ScrollTrigger.sort();
+        ScrollTrigger.refresh();
       }
     };
     /* First build after fonts arrive so the keep-out is measured against
@@ -227,6 +233,103 @@
         buildHeroMap();
       }, 250);
     });
+  }
+
+  /* ---------- flyway: cards in flight (scroll-scrubbed) ----------
+     Cards are compiled by the SAME shared MysticCards factories as the
+     artefacts section and deck explorer — design changes propagate
+     everywhere with zero duplication. */
+  var flySection = document.querySelector(".flyway");
+  var flyStage = document.querySelector("[data-flyway]");
+  if (flySection && flyStage && window.MysticCards && window.MYSTIC_DATA) {
+    var FD = window.MYSTIC_DATA, FC = window.MysticCards;
+    var pickAt = function (arr, frac) {
+      return arr[Math.min(arr.length - 1, Math.floor(arr.length * frac))];
+    };
+    /* deterministic spread across the data for art/biome variety */
+    var castSpecs = [
+      { kind: "creature", ref: pickAt(FD.creatures, 0.15).id },
+      { kind: "spell",    ref: pickAt(FD.spells, 0.3).name },
+      { kind: "land",     ref: pickAt(FD.lands, 0.1).id },
+      { kind: "creature", ref: pickAt(FD.creatures, 0.45).id },
+      { kind: "spell",    ref: pickAt(FD.spells, 0.7).name },
+      { kind: "land",     ref: pickAt(FD.lands, 0.55).id },
+      { kind: "creature", ref: pickAt(FD.creatures, 0.8).id },
+      { kind: "land",     ref: pickAt(FD.lands, 0.9).id }
+    ];
+    var flyCards = [];
+    castSpecs.forEach(function (spec, i) {
+      if (window.innerWidth <= 720 && i >= 5) return; /* lighter cast on mobile */
+      var node = spec.kind === "creature" ? FC.creature(spec.ref, { tilt: false })
+               : spec.kind === "spell"    ? FC.spell(spec.ref, { tilt: false })
+               :                            FC.land(spec.ref, { tilt: false });
+      if (node) { flyStage.appendChild(node); flyCards.push(node); }
+    });
+
+    if (reduceMotion || !hasGsap || typeof window.MotionPathPlugin === "undefined") {
+      flySection.classList.add("flyway--static"); /* calm fan, no motion */
+    } else if (flyCards.length) {
+      var flyTl = null;
+      var lastFlyW = 0;
+      var flyEases = ["sine.inOut", "power1.inOut", "circ.inOut"];
+      var buildFlyway = function () {
+        if (flyTl) {
+          if (flyTl.scrollTrigger) flyTl.scrollTrigger.kill();
+          flyTl.kill();
+          flyTl = null;
+        }
+        var w = flyStage.offsetWidth, h = flyStage.offsetHeight;
+        if (!w || !h) return;
+        lastFlyW = w;
+        var cw = flyCards[0].offsetWidth || 200;
+        var total = 4.5; /* timeline units, mapped over the scroll distance */
+        flyCards.forEach(function (card) {
+          gsap.set(card, { clearProps: "transform,opacity" });
+        });
+        flyTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: flySection, start: "top top", end: "bottom bottom", scrub: 0.8
+          }
+        });
+        flyCards.forEach(function (card, i) {
+          /* gently curved path across the stage — the arc term guarantees
+             no strictly-horizontal trajectory */
+          var y0 = h * (0.1 + Math.random() * 0.55);
+          var y1 = h * (0.1 + Math.random() * 0.55);
+          var arc = h * (0.12 + Math.random() * 0.2) * (Math.random() < 0.5 ? -1 : 1);
+          var pts = [
+            { x: -cw,     y: y0 },
+            { x: w * 0.33, y: y0 - arc },
+            { x: w * 0.66, y: y1 + arc * 0.6 },
+            { x: w + cw,  y: y1 }
+          ];
+          /* depth: smaller cards sit further back */
+          var scale = 0.7 + Math.random() * 0.45;
+          card.style.zIndex = Math.round(scale * 100);
+          gsap.set(card, { scale: scale, rotation: Math.random() * 12 - 6 });
+          /* per-card duration + ease = variable acceleration/deceleration */
+          var dur = 1.6 + Math.random() * 1.2;
+          var at = (i / flyCards.length) * (total - dur) + Math.random() * 0.15;
+          flyTl.fromTo(card, { opacity: 0 },
+            { opacity: 1, duration: dur * 0.12, ease: "power1.out" }, at);
+          flyTl.to(card, {
+            motionPath: { path: pts, curviness: 1.25 },
+            duration: dur, ease: flyEases[i % flyEases.length]
+          }, at);
+          flyTl.to(card, { opacity: 0, duration: dur * 0.12, ease: "power1.in" },
+            at + dur * 0.88);
+        });
+      };
+      buildFlyway();
+      var flyRz = null;
+      window.addEventListener("resize", function () {
+        clearTimeout(flyRz);
+        flyRz = setTimeout(function () {
+          if (flyStage.offsetWidth === lastFlyW) return; /* width-only, like the map */
+          buildFlyway();
+        }, 250);
+      });
+    }
   }
 
   /* Graceful degradation: if CDNs fail, show everything. */
