@@ -372,6 +372,12 @@
     g.appendChild(cir);
     g.appendChild(t);
     board.appendChild(g);
+    if (hasGsap && !reduceMotion) {
+      /* set the transform origin ONCE — changing it later (e.g. after a
+         scale:0 hide) leaves GSAP's SVG transform cache with a stale
+         compensation offset and the token renders off-centre */
+      gsap.set(g, { transformOrigin: "50% 50%" });
+    }
     return g;
   }
   var demonToken = makeToken("sim-token--demon", "D");
@@ -381,13 +387,13 @@
   function place(token, q, r) {
     var cell = cellMap[key(q, r)];
     if (hasGsap && !reduceMotion) {
-      gsap.set(token, { x: cell.cx, y: cell.cy, scale: 1, opacity: 1, transformOrigin: "50% 50%" });
+      gsap.set(token, { x: cell.cx, y: cell.cy, scale: 1, opacity: 1 });
     } else {
       token.setAttribute("transform", "translate(" + cell.cx + "," + cell.cy + ")");
     }
   }
   function hideToken(token) {
-    if (hasGsap && !reduceMotion) gsap.set(token, { opacity: 0, scale: 0 });
+    if (hasGsap && !reduceMotion) gsap.set(token, { opacity: 0 }); /* opacity only — never scale */
     else token.setAttribute("display", "none");
   }
   function hideBlockers() { blockers.forEach(hideToken); }
