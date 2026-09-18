@@ -37,11 +37,11 @@
   /* ==========================================================================
      EXACT BATTLE MATH
      enumerate(modA, modB): all 36 roll pairs. margin = (rollA + modA) - (rollB + modB)
-       margin >= 4            -> attacker destroys defender ("kill")
-       1 <= margin <= 3       -> defender retreats ("retreat")
-       margin == 0            -> tie (undefined by the rulebook)
-       -3 <= margin <= -1     -> attacker repelled ("repelled")
-       margin <= -4           -> attacker destroyed ("death")
+      margin >= 4            -> attacker destroys defender ("kill")
+      1 <= margin <= 3       -> defender retreats ("retreat")
+      margin == 0            -> draw: the attack fails, defender holds
+      -3 <= margin <= -1     -> attacker repelled ("repelled")
+      margin <= -4           -> attacker destroyed ("death")
      ========================================================================== */
   function enumerate(modA, modB) {
     var r = { kill: 0, retreat: 0, tie: 0, repelled: 0, death: 0, total: 36 };
@@ -66,7 +66,7 @@
   var OUTCOMES = [
     { key: "kill",     label: "Destroy",   note: "attacker wins by 4+" },
     { key: "retreat",  label: "Retreat",   note: "attacker wins by 1–3" },
-    { key: "tie",      label: "Tie",       note: "undefined by the rules" },
+    { key: "tie",      label: "Draw",      note: "attack fails; defender holds" },
     { key: "repelled", label: "Repelled",  note: "defender wins by 1–3" },
     { key: "death",    label: "Destroyed", note: "defender wins by 4+" }
   ];
@@ -107,6 +107,22 @@
   abilities.forEach(function (a) { abilityCostDist[a.cost]++; });
   var abilityCostMean = meanOf(abilities.map(function (a) { return a.cost; }));
 
+  /* implied summoning costs: cost = strength + ability gold cost, the formula
+     implied by the north star Ice Elemental (strength 4, cost 6, Freeze = 2) */
+  var impliedCosts = creatures.map(function (c) { return c.strength + D.ability[c.abilityId].cost; });
+  var impliedCostMean = meanOf(impliedCosts);
+  var impliedCostMin = Math.min.apply(null, impliedCosts);
+  var impliedCostMax = Math.max.apply(null, impliedCosts);
+  var impliedCostDist = {};
+  impliedCosts.forEach(function (v) { impliedCostDist[v] = (impliedCostDist[v] || 0) + 1; });
+
+  /* class-targeted spells: only Alliance (Dragon) and Reanimate (Undead) */
+  var classSpells = spells.filter(function (s) {
+    return D.classes.some(function (c) {
+      return new RegExp("\\b" + c.name + "s?\\b", "i").test(s.text);
+    });
+  });
+
   var reactAbilities = abilities.filter(function (a) { return a.reaction; });
   var reactSpells = spells.filter(function (s) { return s.reaction; });
   var reactAbilityIds = {};
@@ -135,6 +151,7 @@
     worldMean: f2(strMean),
     killParity: pc(eq.kill), killParity2: pc(eq.kill),
     tieParity: pc(eq.tie), tieParity2: pc(eq.tie),
+    holdParity: pc(eq.repelled + eq.death + eq.tie),
     retreatParity: pc(eq.retreat), retreatParity2: pc(eq.retreat),
     winParity: pc(eq.win), flipParity: pc(eq.win),
     tieRange: pc(enumerate(4, 0).tie).replace("%", "") + "–" + pc(eq.tie),
@@ -147,16 +164,29 @@
     tundraEff: f1(budgetByBiome[4] / countByBiome[4] + 2),
     mountainBudget: budgetByBiome[5],
     harvestMean: f2(harvestMean), harvestMean2: f2(harvestMean), harvestMean3: f2(harvestMean),
+    harvestMean4: f2(harvestMean),
     desertYieldMean: f1(desertYieldMean), desertYieldMean2: f1(desertYieldMean),
     otherYieldMean: f1(otherYieldMean),
-    abilityCostMean: f1(abilityCostMean),
+    mountainEffMean: f1(meanOf(harvestByBiome[5]) + 2),
+    abilityCostMean: f1(abilityCostMean), abilityCostMean2: f1(abilityCostMean),
+    impliedCostMean: f2(impliedCostMean), impliedCostMean2: f2(impliedCostMean),
+    impliedCostMean3: f2(impliedCostMean),
+    impliedCostMin: impliedCostMin, impliedCostMax: impliedCostMax,
+    impliedCostRange: impliedCostMin + "–" + impliedCostMax,
+    harvestsPerSummon: f1(impliedCostMean / harvestMean),
+    harvestsPerSummon2: f1(impliedCostMean / harvestMean),
+    classSpells: classSpells.length + " of " + spells.length,
+    classesCovered: classSpells.length + " of " + D.classes.length,
+    classesOpen: (D.classes.length - classSpells.length) + " of " + D.classes.length,
     oceanEV: f2(4 / 6), oceanEV2: "+" + f2(4 / 6),
     pLand: (100 * pLand).toFixed(1) + "%",
     pOpenLand: (100 * pOpenLand).toFixed(1) + "%",
     pBiomeMatch: (100 * pBiomeMatch).toFixed(1) + "%",
     reactAb: reactAbilities.length + " of " + abilities.length,
     reactSp: reactSpells.length + " of " + spells.length,
-    suggestCost: f2(strMean - 1)
+    abilityCostMean3: f1(abilityCostMean),
+    pLand2: (100 * pLand).toFixed(1) + "%",
+    pNoLand: (100 * (1 - pOpenLand)).toFixed(1) + "%"
   };
   document.querySelectorAll("[data-v]").forEach(function (n) {
     var k = n.getAttribute("data-v");
@@ -209,8 +239,9 @@
       txt(svg, padL + i * bw + bw / 2, H - 10, d.label, "svg-label");
     });
     if (opts.meanX != null) {
-      /* vertical mean marker: category value v sits at band (v - 0.5) / n */
-      var mx = padL + plotW * (opts.meanX - 0.5) / data.length;
+      /* vertical mean marker: category value v sits at band (v - base + 0.5) / n */
+      var base = opts.base || 1;
+      var mx = padL + plotW * (opts.meanX - base + 0.5) / data.length;
       el("line", { x1: mx, x2: mx, y1: padT - 6, y2: padT + plotH, "class": "mean-line" }, svg);
       txt(svg, mx + 6, padT - 10, "mean " + f2(opts.meanX), "svg-note", "start");
     }
@@ -270,7 +301,7 @@
         sw.className = "mlegend__swatch mx-" + o.key;
         li.appendChild(sw);
         var t = document.createElement("span");
-        t.innerHTML = "<strong>" + o.label + "</strong> — " + o.note;
+        t.innerHTML = "<strong>" + o.label + "</strong>: " + o.note;
         li.appendChild(t);
         ul.appendChild(li);
       });
@@ -370,8 +401,8 @@
     var wrapB = document.createElement("div");
     wrapA.className = "mchart__half";
     wrapB.className = "mchart__half";
-    var hA = document.createElement("h4"); hA.className = "mchart__sub"; hA.textContent = "Dice — your win% in an even-base fight";
-    var hB = document.createElement("h4"); hB.className = "mchart__sub"; hB.textContent = "Gold — expected gold per trigger";
+    var hA = document.createElement("h4"); hA.className = "mchart__sub"; hA.textContent = "Dice: your win% in an even-base fight";
+    var hB = document.createElement("h4"); hB.className = "mchart__sub"; hB.textContent = "Gold: expected gold per trigger";
     m.appendChild(hA); m.appendChild(hB);
     m.appendChild(wrapA); m.appendChild(wrapB);
     hbars(wrapA, [
@@ -396,12 +427,12 @@
     var tbody = table.querySelector("tbody");
     var quant = {
       desert:   ["+1 gold per crossing (±2 per in-and-out)", "−1 gold per crossing"],
-      forest:   ["+2 str defending: attacker win " + pc(eq.win) + " → " + pc(dn2.win), "tempo — no enter-and-leave in one turn"],
+      forest:   ["+2 str defending: attacker win " + pc(eq.win) + " → " + pc(dn2.win), "tempo: no enter-and-leave in one turn"],
       tundra:   ["+2 str: win " + pc(eq.win) + " → " + pc(up2.win) + ", kill " + pc(eq.kill) + " → " + pc(up2.kill), "−2 str: win " + pc(eq.win) + " → " + pc(dn2.win) + ", death " + pc(eq.death) + " → " + pc(up2.kill)],
       plains:   ["attack from 2 tiles away (positional)", "−1 to rolls: win " + pc(eq.win) + " → " + pc(dn1.win)],
-      mountains:["+2 gold per harvest (+" + Math.round(200 / 2.5) + "% on its mean tile)", "spells & abilities blocked — cuts both ways"],
+      mountains:["+2 gold per harvest (+" + Math.round(200 / 2.5) + "% on its mean tile)", "spells & abilities blocked, which cuts both ways"],
       town:     ["+2 gold per adjacent ally, −1 per enemy", "+1 per ally, −2 per adjacent enemy"],
-      swamp:    ["1-action crossings, may skip swamps", "2-action crossings — up to ⅔ of a turn"],
+      swamp:    ["1-action crossings, may skip swamps", "2-action crossings, up to ⅔ of a turn"],
       ocean:    ["EV +0.67 gold per entry (⅙ × 4)", "⅙ chance: discard 2 non-land cards"],
       cave:     ["exit in any direction", "exit only where you entered"]
     };
@@ -453,6 +484,15 @@
     return { label: c + " gold", value: abilityCostDist[c], color: c >= 5 ? GOLD_DEEP : GOLD };
   }), { meanX: abilityCostMean, max: 8 });
 
+  /* implied summoning-cost curve: cost = strength + ability cost */
+  (function () {
+    var data = [];
+    for (var v = impliedCostMin; v <= impliedCostMax; v++) {
+      data.push({ label: v + "g", value: impliedCostDist[v] || 0, color: v >= 9 ? GOLD_DEEP : GOLD });
+    }
+    vbars(mount("costcurve"), data, { meanX: impliedCostMean, base: impliedCostMin, max: 24 });
+  })();
+
   /* ==========================================================================
      SECTION 5 — DECK & DRAW MATH
      ========================================================================== */
@@ -476,11 +516,11 @@
         x += w;
       });
     }
-    stackedBar(34, "The Lands & Spells deck — " + nLS + " cards", [
+    stackedBar(34, "The Lands & Spells deck (" + nLS + " cards)", [
       { frac: pLand, label: lands.length + " lands · " + (100 * pLand).toFixed(1) + "%", color: GOLD },
       { frac: 1 - pLand, label: spells.length + " spells · " + (100 * (1 - pLand)).toFixed(1) + "%", color: PARCHMENT, text: MUTED }
     ]);
-    stackedBar(104, "Your opening hand — 2 cards from that deck", [
+    stackedBar(104, "Your opening hand (2 cards from that deck)", [
       { frac: pOpenLand, label: "≥1 land · " + (100 * pOpenLand).toFixed(1) + "%", color: GOLD_DEEP },
       { frac: 1 - pOpenLand, label: "no land · " + (100 * (1 - pOpenLand)).toFixed(1) + "%", color: MISMATCH }
     ]);
@@ -575,7 +615,7 @@
       row.className = "polyrow";
       var cap = document.createElement("p");
       cap.className = "polyrow__cap";
-      cap.innerHTML = "<strong>" + size + " tiles</strong> — " + polyCounts[size] + " shape" + (polyCounts[size] > 1 ? "s" : "");
+      cap.innerHTML = "<strong>" + size + " tiles</strong>: " + polyCounts[size] + " shape" + (polyCounts[size] > 1 ? "s" : "");
       row.appendChild(cap);
       var strip = document.createElement("div");
       strip.className = "polyrow__strip";
@@ -680,7 +720,7 @@
           if (c.biomeId !== b.id) return;
           var o = document.createElement("option");
           o.value = c.id;
-          o.textContent = c.name + " — str " + c.strength;
+          o.textContent = c.name + " (str " + c.strength + ")";
           g.appendChild(o);
         });
         sel.appendChild(g);
@@ -749,9 +789,9 @@
       var modD = modFor(d.biomeId, tile, true);
       var effA = a.str + modA, effD = d.str + modD;
       readA.innerHTML = "<strong>" + a.name + "</strong> · " + D.biome[a.biomeId].name +
-        " — base " + a.str + ", " + effectNote(a.biomeId, tile, false) + " → effective <strong>" + effA + "</strong>";
+        ", base " + a.str + ", " + effectNote(a.biomeId, tile, false) + " → effective <strong>" + effA + "</strong>";
       readD.innerHTML = "<strong>" + d.name + "</strong> · " + D.biome[d.biomeId].name +
-        " — base " + d.str + ", " + effectNote(d.biomeId, tile, true) + " → effective <strong>" + effD + "</strong>";
+        ", base " + d.str + ", " + effectNote(d.biomeId, tile, true) + " → effective <strong>" + effD + "</strong>";
 
       var r = enumerate(a.str + modA, d.str + modD);
       barsMount.innerHTML = "";

@@ -265,7 +265,7 @@ These points are not defined in the source material and must be resolved before 
 
 | # | Topic | Question |
 | --- | --- | --- |
-| 1 | Battle ties | What happens when both creatures' overall strength is equal? (The website explainer presents a tie — or the defender winning — as a "deadlock, roll again" beat; that is a presentation choice, not a confirmed ruling.) |
+| 1 | Battle ties | **Resolved (creator ruling, 2026-09):** the attacker must *exceed* the defender's overall strength to win; on a draw the attack fails and the defender holds. |
 | 2 | Ability activation limit | "Abilities … can only be activated once unless otherwise stated" — once per turn, per round, or per game? |
 | 3 | Biome trigger timing | Which interactions trigger the biome chart — entering a tile only, or also harvesting, battling, or starting a turn on it? |
 | 4 | Harvest eligibility | "A creature can harvest multiple land tiles in one turn" — which tiles are eligible (only the tile it occupies, or adjacent tiles too)? |
@@ -277,6 +277,7 @@ These points are not defined in the source material and must be resolved before 
 | 10 | Component counts | Number of land tiles per biome, cards per deck, and gold piece inventory are not specified (needed for production). |
 | 11 | Destroyed creatures | Is the matching land card discarded, or does it remain on the tile? (Rules imply land cards remain; confirm.) |
 | 12 | Map size | Minimum/maximum continent size for 2–6 players is not specified. |
+| 13 | Summoning cost | Not stored in `Creatures_tbl`. The north-star Ice Elemental (strength 4, cost 6, *Freeze*) implies **cost = strength + ability gold cost**, pricing the unlisted *Freeze* at 2 gold; the same creature is currently assigned AOE (cost 3), which would price it at 7. Formalise the formula and add the column. |
 
 ---
 
