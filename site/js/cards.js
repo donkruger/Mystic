@@ -248,17 +248,16 @@ window.MysticCards = (function () {
     img(ART.biomeArt(biome.slug), "", art);
     el("div", "mtile__veil", t);
 
-    var chip = el("span", "mtile__chip", t);
-    chip.title = biome.name + " biome";
-    var chipWin = el("span", "mtile__chipin", chip);
-    img(ART.biomeIcon(biome.slug), "", chipWin);
-
-    el("span", "mtile__yield", t).textContent = harvestYield;
-
-    var tm = el("span", "mtile__mirror", t);
-    tm.title = "Mirrored index — biome and yield, readable from across the table";
-    img(ART.biomeIcon(biome.slug), "", tm);
-    tm.appendChild(document.createTextNode("+" + harvestYield));
+    /* marker pair (biome chip + yield coin) repeated on three alternating
+       edges, rotated 120° apart — the tile reads the same from every seat */
+    for (var i = 0; i < 3; i++) {
+      var mark = el("span", "mtile__mark mtile__mark--" + i, t);
+      var chip = el("span", "mtile__chip", mark);
+      chip.title = biome.name + " biome";
+      var chipWin = el("span", "mtile__chipin", chip);
+      img(ART.biomeIcon(biome.slug), "", chipWin);
+      el("span", "mtile__yield", mark).textContent = harvestYield;
+    }
 
     el("div", "mcard__foil", t);
     el("div", "mcard__glare", t);

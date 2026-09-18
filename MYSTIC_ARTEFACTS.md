@@ -43,9 +43,11 @@ Design notes (current iteration):
   size as the rules text.
 - **Opponent index** — the top edge of every card carries a **mirrored strip** (rotated
   180°) so players across the table can read it: creatures show strength + ability name,
-  spells their name, lands their biome. Land tiles carry the same convention as a small
-  mirrored strip (biome symbol + harvest yield) at the top vertex — this replaces the
-  Rules' orientation diamond as the tile's facing/ownership device.
+  spells their name, lands their biome.
+- **Tile symmetry** — the land tile repeats its biome marker + harvest yield on three
+  alternating edges, rotated 120° apart, so the tile reads identically from every seat
+  (3-fold rotational symmetry). Tiles have no facing and mark no ownership —
+  orientation/ownership lives on the cards only (chevrons + mirrored index).
 - **Orientation chevrons** — three stacked, smooth-edged upward chevrons at the bottom
   right of creature and land cards signify the card's facing direction. Designated
   **hot-foil (烫金) spot element**: at export it becomes a named "Foil Gold" separation
@@ -157,9 +159,10 @@ Backing data: `Spells_tbl` (name, effect, reaction flag).
 Components sheet: **3 elements** — Biome (middle right), harvest yield (middle right),
 land image (center). The Rules sheet adds: tiles carry a **diamond marker on the right
 side** used to align orientation when building the map ("aligning the diamonds on the
-right side of each tile"). The code-generated design (§5.4) satisfies this orientation
-requirement with a **mirrored index strip** (biome + yield, rotated 180°) at the top
-vertex instead of the diamond — the same opponent-index convention as the cards.
+right side of each tile"). The code-generated design (§5.4) drops the diamond: the
+biome marker + harvest yield repeat on three alternating edges, rotated 120° apart
+(3-fold symmetry), so the tile reads the same from every seat. Tiles carry no facing
+or ownership — orientation is a card property (§5.1–5.3).
 
 North-star render (Desert) shows: full-bleed painted biome scene with a subtle 3D rim —
 **no** visible biome icon, harvest numeral, or orientation diamond. These markers must be
@@ -304,7 +307,7 @@ Component-relevant facts from the Rules sheet:
 | Land image | asset pipeline (per biome) | Full-bleed hex art |
 | Biome marker | `Biomes_tbl` via `BiomeID` | Icon, middle right (per Components) |
 | Harvest yield | `Lands_tbl.Harvest amount` | Numeral, middle right (per Components) |
-| Mirrored index | `Biomes_tbl` icon + `Lands_tbl.Harvest amount` | Top vertex — biome symbol + "+N" yield, rotated 180° for opponents; facing marks ownership (supersedes the Rules' orientation diamond) |
+| Biome marker + harvest yield ×3 | `Biomes_tbl` icon + `Lands_tbl.Harvest amount` | Alternating edges, rotated 120° apart — reads the same from every seat; no facing/ownership (supersedes the Rules' orientation diamond) |
 
 ---
 

@@ -1858,7 +1858,7 @@
     rules: ".mcard__rules", shield: ".mcard__shield", "class": ".mcard__class",
     art: ".mcard__art", mirror: ".mcard__mirror", chevrons: ".mcard__chev",
     tchip: ".mtile__chip", tyield: ".mtile__yield", tart: ".mtile__art",
-    tmirror: ".mtile__mirror"
+    tmark: ".mtile__mark--2"
   };
 
   document.querySelectorAll("[data-artefact-panel]").forEach(function (panel) {

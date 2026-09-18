@@ -216,7 +216,7 @@
 .mcard__rules--plain { padding-top: 1%; }
 .mcard__rules--plain strong { color: var(--ink); }
 
-/* ---------- footer: strength diamond, class icon ---------- */
+/* ---------- footer: strength numeral, class icon ---------- */
 .mcard__foot {
   position: relative;
   z-index: 5;
@@ -362,17 +362,31 @@
 }
 .mtile__art { position: absolute; inset: 0; }
 .mtile__art img { width: 100%; height: 100%; object-fit: cover; }
-.mtile__veil {                       /* legibility wash behind markers */
+.mtile__veil {                       /* legibility wash behind each marker group */
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, transparent 55%, rgba(20, 16, 8, 0.38) 100%);
+  background:
+    linear-gradient(90deg, transparent 62%, rgba(20, 16, 8, 0.34) 100%),
+    linear-gradient(210deg, transparent 62%, rgba(20, 16, 8, 0.34) 100%),
+    linear-gradient(330deg, transparent 62%, rgba(20, 16, 8, 0.34) 100%);
 }
-.mtile__chip {
+/* marker pair (chip + coin) repeated on three alternating edges, 120° apart */
+.mtile__mark {
   position: absolute;
-  right: 9%;
-  top: 50%;
-  transform: translateY(-118%);
-  width: 15%;
+  left: var(--mx);
+  top: var(--my);
+  transform: translate(-50%, -50%) rotate(var(--mr));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--tile-w) * 0.02);
+  z-index: 2;
+}
+.mtile__mark--0 { --mx: 77%;   --my: 50%;   --mr: 90deg; }
+.mtile__mark--1 { --mx: 36.5%; --my: 73.5%; --mr: 210deg; }
+.mtile__mark--2 { --mx: 36.5%; --my: 26.5%; --mr: 330deg; }
+.mtile__chip {
+  width: calc(var(--tile-w) * 0.15);
   aspect-ratio: 1;
   clip-path: polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%);
   clip-path: url(#hexRound);
@@ -396,11 +410,7 @@
   object-fit: cover;
 }
 .mtile__yield {
-  position: absolute;
-  right: 10.5%;
-  top: 50%;
-  transform: translateY(18%);
-  width: 12%;
+  width: calc(var(--tile-w) * 0.12);
   aspect-ratio: 1;
   border-radius: 50%;
   background: radial-gradient(circle at 32% 28%, #f6e7bd 0%, var(--gold) 58%, var(--gold-deep) 100%);
@@ -411,25 +421,6 @@
   place-items: center;
   text-shadow: 0 1px 1px rgba(90, 66, 18, 0.55);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-}
-.mtile__mirror {                     /* opponent index — biome + yield, rotated 180° */
-  position: absolute;
-  top: 7.5%;
-  left: 50%;
-  transform: translateX(-50%) rotate(180deg);
-  display: flex;
-  align-items: center;
-  gap: 0.35em;
-  color: #f6e7bd;
-  font-weight: 700;
-  font-size: calc(var(--tile-w) * 0.052);
-  text-shadow: 0 1px 3px rgba(20, 16, 8, 0.85);
-  z-index: 2;
-}
-.mtile__mirror img {
-  width: calc(var(--tile-w) * 0.055);
-  height: auto;
-  filter: drop-shadow(0 1px 2px rgba(20, 16, 8, 0.8));
 }
 
 /* foil/glare shared with tiles */
