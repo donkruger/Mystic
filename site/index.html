@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=5">
+  <link rel="stylesheet" href="css/style.css?v=6">
 </head>
 <body>
 
@@ -206,43 +206,33 @@
             <div class="example__versus">
               <div class="example__side">
                 <span class="example__name">Elite</span>
-                <span class="example__math">+2 &times; <svg class="die" viewBox="0 0 24 24" aria-label="roll 4"><rect x="2" y="2" width="20" height="20" rx="4.5"/><circle cx="8" cy="8" r="1.9"/><circle cx="16" cy="8" r="1.9"/><circle cx="8" cy="16" r="1.9"/><circle cx="16" cy="16" r="1.9"/></svg></span>
-                <span class="example__total">6</span>
+                <span class="example__math">+2 &times; <svg class="die" viewBox="0 0 24 24" data-die="elite" aria-label="Elite's roll"><rect x="2" y="2" width="20" height="20" rx="4.5"/><circle cx="8" cy="8" r="1.9"/><circle cx="16" cy="8" r="1.9"/><circle cx="8" cy="16" r="1.9"/><circle cx="16" cy="16" r="1.9"/></svg></span>
+                <span class="example__total" data-total="elite">6</span>
               </div>
               <div class="example__vs">vs</div>
               <div class="example__side example__side--winner">
                 <span class="example__name">Demon</span>
-                <span class="example__math">+3 &times; <svg class="die" viewBox="0 0 24 24" aria-label="roll 5"><rect x="2" y="2" width="20" height="20" rx="4.5"/><circle cx="8" cy="8" r="1.9"/><circle cx="16" cy="8" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="8" cy="16" r="1.9"/><circle cx="16" cy="16" r="1.9"/></svg></span>
-                <span class="example__total">8</span>
+                <span class="example__math">+3 &times; <svg class="die" viewBox="0 0 24 24" data-die="demon" aria-label="Demon's roll"><rect x="2" y="2" width="20" height="20" rx="4.5"/><circle cx="8" cy="8" r="1.9"/><circle cx="16" cy="8" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="8" cy="16" r="1.9"/><circle cx="16" cy="16" r="1.9"/></svg></span>
+                <span class="example__total" data-total="demon">8</span>
               </div>
             </div>
           </div>
         </div>
-        <div class="example__aftermath">
-          <p class="example__outcome">A margin of 2 — less than 4. The Elite is <strong>not destroyed</strong>, but must retreat to an adjacent unoccupied tile that does not border the Demon — and the Demon <strong>must advance</strong> into the vacated tile.</p>
-          <figure class="example__diagram">
-            <svg viewBox="-40 -52 170 106" aria-hidden="true">
-              <polygon class="diag-hex diag-hex--demon" points="30,0 15,26 -15,26 -30,0 -15,-26 15,-26"/>
-              <polygon class="diag-hex diag-hex--vacated" points="75,0 60,26 30,26 15,0 30,-26 60,-26"/>
-              <polygon class="diag-hex diag-hex--elite" points="120,0 105,26 75,26 60,0 75,-26 105,-26"/>
-              <text class="diag-hexletter diag-hexletter--light" x="0" y="5">D</text>
-              <text class="diag-hexletter" x="90" y="5">E</text>
-              <defs>
-                <marker id="diagTip" viewBox="0 0 10 10" refX="7.5" refY="5"
-                        markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-                  <path class="diag-tip" d="M1,1 L9,5 L1,9"/>
-                </marker>
-              </defs>
-              <path class="diag-arrow" d="M3,-11 Q22.5,-37 42,-11" marker-end="url(#diagTip)"/>
-              <path class="diag-arrow" d="M48,-11 Q67.5,-37 87,-11" marker-end="url(#diagTip)"/>
-              <text class="diag-arclabel" transform="translate(8,-28) rotate(-34)">advances</text>
-              <text class="diag-arclabel" transform="translate(82,-28) rotate(34)">retreats</text>
-              <text class="diag-hexlabel" x="0" y="42">Demon</text>
-              <text class="diag-hexlabel" x="45" y="42">vacated</text>
-              <text class="diag-hexlabel" x="90" y="42">Elite</text>
-            </svg>
-            <figcaption>The retreat tile must not border the attacker.</figcaption>
-          </figure>
+        <div class="example__aftermath example__aftermath--sim">
+          <p class="example__outcome">Win by 4 or more and the defender is <strong>destroyed</strong>. Win by less and the defender must <strong>retreat</strong> to an adjacent tile further from the attacker — if no further tile exists, whether occupied or past the map&rsquo;s edge, the defender is destroyed instead. Either way, the attacker <strong>must advance</strong> into the vacated tile.</p>
+          <div class="battle-sim" data-battle-sim>
+            <div class="battle-sim__stage">
+              <div class="battle-sim__dice" data-dice-tray></div>
+              <svg class="battle-sim__board" data-battle-board role="img" aria-label="Hex diagram animating the battle outcome"></svg>
+            </div>
+            <p class="battle-sim__caption" data-step-caption></p>
+            <div class="battle-sim__controls">
+              <button type="button" class="battle-sim__btn" data-step-prev aria-label="Previous step">&larr;</button>
+              <div class="battle-sim__dots" data-step-dots></div>
+              <button type="button" class="battle-sim__btn" data-step-next aria-label="Next step">&rarr;</button>
+              <button type="button" class="battle-sim__btn battle-sim__btn--replay" data-replay>Replay</button>
+            </div>
+          </div>
         </div>
       </aside>
     </section>
@@ -409,6 +399,6 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
-  <script src="js/main.js?v=4"></script>
+  <script src="js/main.js?v=6"></script>
 </body>
 </html>

@@ -170,7 +170,7 @@ flowchart TD
 | Result | Effect |
 | --- | --- |
 | Winner leads by **more than 3** (i.e. margin ≥ 4) | The losing creature is **destroyed** and removed from the board. |
-| **Attacker** wins by **less than 4** | The defender must **retreat** to an adjacent unoccupied tile that is **not adjacent to the attacking creature**. If no such tile exists, the defender is **destroyed**. The attacker **must** move into the vacated tile. |
+| **Attacker** wins by **less than 4** | The defender must **retreat** to an adjacent unoccupied tile that is **further away from the attacking creature** than its current tile. If no such tile exists — because further tiles are **occupied** or the tile would be **past the map's edge** — the defender is **destroyed**. The attacker **must** move into the vacated tile. |
 
 **Biome interaction with retreats:** Biome movement restrictions also apply to battle outcomes. If a defending creature loses by less than 4 but cannot legally move out of its current biome due to biome restrictions, it is **destroyed regardless**, even if unoccupied adjacent tiles exist. *Exception:* this does not apply to biomes that require multiple actions to move into or out of (e.g. Swamp under *Stuck*).
 
@@ -180,7 +180,7 @@ flowchart TD
     rolls --> strength["Overall strength = strength modifier + roll (+ spells, abilities, biome effects)"]
     strength --> compare{"Compare overall strength"}
     compare -->|"Margin >= 4"| destroyed["Loser is destroyed and removed from the board"]
-    compare -->|"Attacker wins by < 4"| retreat{"Adjacent unoccupied tile NOT adjacent to attacker, and biome-legal?"}
+    compare -->|"Attacker wins by < 4"| retreat{"Adjacent unoccupied tile FURTHER from attacker, and biome-legal?"}
     retreat -->|"Yes"| defenderMoves["Defender retreats to that tile"]
     retreat -->|"No"| defenderDestroyed["Defender is destroyed"]
     defenderMoves --> attackerAdvances["Attacker must move into the vacated tile"]
@@ -191,7 +191,7 @@ flowchart TD
 
 - **Troll**: strength modifier +2; rolls a 4 → overall strength **6**.
 - **Giant Spider**: strength modifier +3; rolls a 5 → overall strength **8**.
-- Giant Spider wins by 2, which is less than 4 → the Troll is **not destroyed** but must retreat to an adjacent unoccupied tile that is not adjacent to the Giant Spider. The Giant Spider **must** move into the vacated tile.
+- Giant Spider wins by 2, which is less than 4 → the Troll is **not destroyed** but must retreat to an adjacent unoccupied tile **further away from** the Giant Spider; if no further tile exists (occupied or past the map's edge), the Troll is **destroyed** instead. The Giant Spider **must** move into the vacated tile.
 
 ---
 
@@ -264,7 +264,7 @@ These points are not defined in the source material and must be resolved before 
 
 | # | Topic | Question |
 | --- | --- | --- |
-| 1 | Battle ties | What happens when both creatures' overall strength is equal? |
+| 1 | Battle ties | What happens when both creatures' overall strength is equal? (The website explainer presents a tie — or the defender winning — as a "deadlock, roll again" beat; that is a presentation choice, not a confirmed ruling.) |
 | 2 | Ability activation limit | "Abilities … can only be activated once unless otherwise stated" — once per turn, per round, or per game? |
 | 3 | Biome trigger timing | Which interactions trigger the biome chart — entering a tile only, or also harvesting, battling, or starting a turn on it? |
 | 4 | Harvest eligibility | "A creature can harvest multiple land tiles in one turn" — which tiles are eligible (only the tile it occupies, or adjacent tiles too)? |

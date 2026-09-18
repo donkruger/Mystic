@@ -372,33 +372,80 @@ a { color: inherit; text-decoration: none; }
   text-shadow: 0 1px 8px rgba(0,0,0,0.6);
 }
 .example__aftermath {
-  display: grid; grid-template-columns: 1.1fr 0.9fr; align-items: center;
-  gap: clamp(1.5rem, 4vw, 3rem);
+  display: block; /* single column — the old two-column text|diagram split is gone */
   padding: clamp(1.6rem, 3.5vw, 2.6rem) clamp(0.5rem, 2vw, 1.5rem) 0;
 }
-.example__outcome { color: var(--muted); font-size: 0.98rem; line-height: 1.7; max-width: 52ch; }
+.example__outcome { color: var(--muted); font-size: 0.98rem; line-height: 1.7; max-width: 62ch; margin: 0 auto; text-align: center; }
 .example__outcome strong { color: var(--gold-deep); font-weight: 600; }
-.example__diagram { margin: 0; text-align: center; }
-.example__diagram svg { width: 100%; max-width: 340px; height: auto; }
-.example__diagram figcaption { color: var(--muted); font-size: 0.78rem; font-style: italic; margin-top: 0.4rem; opacity: 0.85; }
-.diag-hex { fill: #fff; stroke: var(--gold-deep); stroke-width: 1.5; }
-.diag-hex--demon { fill: var(--gold); }
-.diag-hex--vacated { fill: none; stroke: rgba(201,162,75,0.45); stroke-dasharray: 4 5; }
-.diag-hexletter {
-  font-family: var(--font-display); font-weight: 700; font-size: 15px;
-  fill: var(--gold-deep); text-anchor: middle;
+
+/* ---------- battle simulator ---------- */
+.battle-sim {
+  max-width: 660px; margin: 1.6rem auto 0;
+  background: var(--surface);
+  border: 1px solid var(--gold-faint);
+  border-radius: 18px;
+  box-shadow: 0 24px 54px -34px rgba(34,29,18,0.25);
+  padding: 1rem 1.2rem 1.2rem;
 }
-.diag-hexletter--light { fill: #fff; }
-.diag-arrow { fill: none; stroke: var(--gold-deep); stroke-width: 1.8; stroke-linecap: round; }
-.diag-tip { fill: none; stroke: var(--gold-deep); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.diag-arclabel {
-  font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase;
-  fill: var(--gold-deep); text-anchor: middle; font-weight: 700;
+.battle-sim__stage { display: flex; flex-direction: column; gap: 0.4rem; }
+.battle-sim__dice {
+  height: 190px; border-radius: 12px; overflow: hidden; position: relative;
+  background: radial-gradient(ellipse at 50% 120%, rgba(201,162,75,0.16), rgba(34,29,18,0.03) 62%);
+  pointer-events: none; /* the dice canvas is display-only */
 }
-.diag-hexlabel {
-  font-size: 8.5px; letter-spacing: 0.1em;
-  fill: var(--muted); text-anchor: middle;
+.battle-sim__dice canvas { width: 100%; height: 100%; display: block; }
+.dice-box-canvas { opacity: 1; transition: opacity 1s; }
+.dice-box-canvas--hide { opacity: 0; }
+.battle-sim__board { width: 100%; height: clamp(220px, 34vw, 300px); display: block; }
+.battle-sim__dice--flat { display: flex; align-items: center; justify-content: center; gap: 2.2rem; }
+.battle-sim__flatdie { width: 62px; height: 62px; }
+.battle-sim__flatdie rect { fill: #fff; stroke: var(--gold-deep); stroke-width: 1.2; }
+.battle-sim__flatdie circle { fill: var(--gold-deep); }
+.battle-sim__caption {
+  min-height: 2.7em; margin: 0.7rem 0 0.2rem;
+  color: var(--ink); font-size: 0.95rem; line-height: 1.5; text-align: center;
 }
+.battle-sim__caption strong { color: var(--gold-deep); }
+.battle-sim__controls {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0.9rem; margin-top: 0.5rem;
+}
+.battle-sim__btn {
+  font: 600 0.78rem/1 var(--font-body, inherit); letter-spacing: 0.08em;
+  color: var(--gold-deep); background: none; cursor: pointer;
+  border: 1px solid var(--gold-faint); border-radius: 999px; padding: 0.45rem 0.95rem;
+  transition: border-color 0.3s, background 0.3s;
+}
+.battle-sim__btn:hover { border-color: var(--gold); background: rgba(201,162,75,0.08); }
+.battle-sim__dots { display: flex; gap: 0.45rem; }
+.battle-sim__dot {
+  width: 8px; height: 8px; border-radius: 50%; padding: 0; cursor: pointer;
+  border: 1px solid var(--gold-deep); background: transparent;
+  transition: background 0.3s, transform 0.3s;
+}
+.battle-sim__dot--active { background: var(--gold); transform: scale(1.3); }
+
+/* board pieces */
+.sim-hex { fill: #fff; stroke: rgba(201,162,75,0.5); stroke-width: 1.4; }
+.sim-hex--valid { fill: rgba(201,162,75,0.3); stroke: var(--gold); }
+.sim-hex--invalid { fill: rgba(34,29,18,0.05); stroke: rgba(34,29,18,0.16); }
+.sim-hex--edge { fill: rgba(34,29,18,0.08); stroke: rgba(34,29,18,0.3); stroke-dasharray: 3 4; }
+.sim-hex--vacated { fill: none; stroke: rgba(201,162,75,0.45); stroke-dasharray: 4 5; }
+.sim-mark {
+  font-family: var(--font-display); font-size: 13px; font-weight: 700;
+  fill: rgba(34,29,18,0.42); text-anchor: middle; pointer-events: none;
+}
+.sim-token { pointer-events: none; }
+.sim-token circle { stroke-width: 2; }
+.sim-token text {
+  font-family: var(--font-display); font-weight: 700; font-size: 14px; text-anchor: middle;
+}
+.sim-token--demon circle { fill: #2a2118; stroke: var(--gold); }
+.sim-token--demon text { fill: #e8cf8f; }
+.sim-token--elite circle { fill: #f6ecc9; stroke: var(--gold-deep); }
+.sim-token--elite text { fill: var(--gold-deep); }
+.sim-token--blocker circle { fill: rgba(34,29,18,0.55); stroke: none; }
+.sim-token--blocker text { fill: #fff; font-size: 11px; }
 
 /* ---------- biomes ---------- */
 .biome-grid {
@@ -578,7 +625,7 @@ a { color: inherit; text-decoration: none; }
   .gallery { overflow-x: auto; -webkit-overflow-scrolling: touch; }
   .example__versus { grid-template-columns: 1fr; }
   .example__vs { padding: 0.2rem 0; }
-  .example__aftermath { grid-template-columns: 1fr; }
+  .battle-sim__dice { height: 140px; }
 }
 @media (max-width: 560px) {
   .actions { grid-template-columns: 1fr 1fr; }
