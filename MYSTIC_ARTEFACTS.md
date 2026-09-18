@@ -55,10 +55,12 @@ Design notes (current iteration):
 - **Opponent index** — the top edge of every card carries a **mirrored strip** (rotated
   180°) so players across the table can read it: creatures show strength + ability name,
   spells their name, lands their biome. The creature **footer echoes the strip upright**
-  as a "+N · ability" lockup beside the strength numeral. The **description also repeats**
-  in a muted, two-line-clamped mirrored band directly above the art — bare rules text in
-  both orientations (the name never heads the description, so nothing reads as a run-on).
-  Key elements reflect with alternative placement, never the whole card.
+  as a "+N · ability" lockup beside the strength numeral. On **creature cards** the
+  ability text also repeats in a muted, two-line-clamped mirrored band directly above
+  the art — bare rules text in both orientations (the name never heads the description,
+  so nothing reads as a run-on). Spell and land cards carry **no mirrored description
+  band**: their rules text is the whole card content, so repeating it read as
+  duplication — the mirrored name strip is the opponent's read there.
 - **Tile symmetry** — the land tile repeats its biome marker + harvest yield, side by
   side, on **every edge** — six pairs rotated 60° apart, pushed to the rim — so the tile
   reads identically from each of the six seats (6-fold rotational symmetry). Tiles have

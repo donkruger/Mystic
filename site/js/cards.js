@@ -211,8 +211,9 @@ window.MysticCards = (function () {
     mirror(s.name, head);
     coin(1, "Cost: 1 gold (Rules: all spells cost 1 gold)", head);
 
-    mirrorRules(s.text, inner);
-
+    /* no mirrored description band — a spell's text is its whole content,
+       so repeating it above the art reads as duplication; the mirrored
+       top strip (name) is the opponent's read */
     var sfig = artWindow(spellArt(s.name), s.name, inner);
     el("h4", "mcard__artname", sfig).textContent = s.name;
 
@@ -240,7 +241,7 @@ window.MysticCards = (function () {
 
     var landText = "Yields " + l.harvest + " gold when harvested. Place on a matching " +
       biome.name + " tile to summon; its orientation marks your ownership.";
-    mirrorRules(landText, inner);
+    /* no mirrored description band (same duplication reasoning as spells) */
 
     /* art at 73% width, left-aligned; chevron column fills the right strip */
     var mid = el("div", "mcard__mid", inner);
