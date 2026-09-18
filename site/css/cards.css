@@ -197,7 +197,7 @@
   position: absolute;
   right: 4%;
   bottom: 4%;
-  width: 15%;
+  width: 20%; /* creature type medallion, ~33% larger for legibility */
   z-index: 3;
 }
 
