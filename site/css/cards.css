@@ -716,6 +716,14 @@
   place-content: center;
   gap: 0.45em;
   pointer-events: none;
+  transition: transform 0.3s var(--ease-out);
+}
+/* the labels ride along when the top back lifts on hover */
+.deck__pile:hover .deck__tag { transform: translateY(-6px); }
+.deck__tag span { transition: border-color 0.3s var(--ease-out), background 0.3s var(--ease-out); }
+.deck__pile:hover .deck__tag span {
+  border-color: var(--gold-deep);
+  background: rgba(247, 241, 227, 1);
 }
 .deck__tag span {
   font-family: var(--font-display);

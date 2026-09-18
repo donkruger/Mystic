@@ -1972,17 +1972,22 @@
       pile.addEventListener("click", function () {
         if (drawing) return;
         drawing = true;
-        var pick = pile.getAttribute("data-deck-draw") === "creature" ? pickCreature() : pickLandSpell();
+        var fromCreatureDeck = pile.getAttribute("data-deck-draw") === "creature";
+        var pick = fromCreatureDeck ? pickCreature() : pickLandSpell();
+        /* directional draw — the creature deck sits left of the stage, the
+           land/spell deck right; the new card sweeps in from its deck's side
+           and the old card carries on out the far side */
+        var dir = fromCreatureDeck ? -1 : 1;
       var old = stageEl.querySelector(".mcard");
       stageEl.appendChild(pick.node);
       meta.innerHTML = pick.meta;
       if (hasGsap && !reduceMotion) {
         gsap.fromTo(pick.node,
-          { rotationY: -95, x: -140, opacity: 0, scale: 0.82 },
+          { rotationY: 95 * dir, x: 140 * dir, opacity: 0, scale: 0.82 },
           { rotationY: 0, x: 0, opacity: 1, scale: 1, duration: 0.75, ease: "power3.out",
             onComplete: function () { drawing = false; } });
         if (old) {
-          gsap.to(old, { rotationY: 55, x: 110, opacity: 0, scale: 0.9, duration: 0.5, ease: "power2.in",
+          gsap.to(old, { rotationY: -55 * dir, x: -110 * dir, opacity: 0, scale: 0.9, duration: 0.5, ease: "power2.in",
             onComplete: function () { old.remove(); } });
         }
       } else {
