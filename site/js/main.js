@@ -1220,11 +1220,13 @@
     await delay((t / DUR + 1.0) * 1000 * DUR);
     if (!alive(token)) return;
 
-    /* claim beat: take the centre tile and its land card turns to face you */
+    /* claim beat: take the centre tile and its land card turns to face you —
+       two 90° steps so the motion registers (180° reads as no movement) */
     caption("Take a tile and its land card <strong>turns to face you</strong> — lose it, and it turns away.");
     stepTl = gsap.timeline();
-    stepTl.to(claim, { rotation: 0, duration: 0.8 * DUR, ease: "power2.inOut" }, 0.2 * DUR);
-    await delay(1.2 * 1000 * DUR);
+    stepTl.to(claim, { rotation: 90, duration: 0.45 * DUR, ease: "power2.inOut" }, 0.2 * DUR)
+      .to(claim, { rotation: 0, duration: 0.45 * DUR, ease: "power2.inOut" }, 0.7 * DUR);
+    await delay(1.5 * 1000 * DUR);
   }
 
   var STEPS = [stepShare, stepMap, stepDecks, stepFirst, stepHand, stepOrient];
@@ -1509,29 +1511,44 @@
     clearStage();
     caption("<strong>Claim</strong> — cover an unoccupied tile and its land card turns to <strong>face that player</strong>. Defend your land.");
     var hexes = buildBoard();
-    var home = FLOWER[3]; /* top hex */
+    var home = FLOWER[4]; /* upper-left hex holds your land card */
+    var path = [FLOWER[1], FLOWER[2], FLOWER[3]]; /* start + the two prior tiles it hops across */
 
     /* land card created first so the covering creature card paints on top */
     var land = makeCard("land", 36, 50);
     put(land, home.x - 5, home.y - 2, 0, 0);
     var foe = makeCard("foe", 32, 46);
-    put(foe, home.x + 5, -50, 180, 0);
+    put(foe, path[0].x, path[0].y, 60, 0); /* 60° seat — a turn you can actually see */
 
     stepTl = gsap.timeline();
     revealBoard(stepTl, hexes);
     stepTl.to(land, { scale: 1, duration: 0.35 * DUR, ease: "back.out(1.7)" }, 0.5 * DUR);
-    /* the enemy creature slides in and covers the tile, on top of the land card */
-    stepTl.to(foe, { scale: 1, duration: 0.3 * DUR, ease: "back.out(1.7)" }, 1.1 * DUR);
-    stepTl.to(foe, { y: home.y + 3, duration: 0.7 * DUR, ease: "power2.inOut" }, 1.4 * DUR);
-    /* the land card turns to face the enemy */
-    stepTl.to(land, { rotation: 180, duration: 0.7 * DUR, ease: "power2.inOut" }, 2.4 * DUR);
-    await delay(3.5 * 1000 * DUR);
+    stepTl.to(foe, { scale: 1, duration: 0.35 * DUR, ease: "back.out(1.7)" }, 0.9 * DUR);
+
+    /* hop across the two prior tiles, then onto the land card's tile */
+    var t = 1.5 * DUR;
+    var from = path[0];
+    [path[1], path[2], { x: home.x + 5, y: home.y + 3 }].forEach(function (stop) {
+      stepTl.to(foe, { x: stop.x, duration: 0.5 * DUR, ease: "power1.inOut" }, t);
+      stepTl.to(foe, {
+        keyframes: [
+          { y: (from.y + stop.y) / 2 - 18, duration: 0.25 * DUR, ease: "power2.out" },
+          { y: stop.y, duration: 0.25 * DUR, ease: "power2.in" }
+        ]
+      }, t);
+      from = stop;
+      t += 0.65 * DUR;
+    });
+
+    /* the land card turns 60° to face the claiming player's seat */
+    stepTl.to(land, { rotation: 60, duration: 0.6 * DUR, ease: "power2.inOut" }, t + 0.15 * DUR);
+    await delay((t / DUR + 1.2) * 1000 * DUR);
   }
 
   /* ============ SCENE 3 — Battle (teaser) ============ */
   async function actBattle(token) {
     clearStage();
-    caption("<strong>Battle</strong> — attack an enemy creature on an adjacent tile. Strength plus a die roll decides it — broken down blow by blow <strong>below</strong>.");
+    caption("<strong>Battle</strong> — attack an enemy creature on an adjacent tile. Strength plus a die roll decides it — and there is more to it than that: advances, retreats and deadlocks are all broken down in the full battle walkthrough <strong>below</strong>.");
     badge("battle");
     var hexes = buildBoard();
     var home = FLOWER[0], foe = FLOWER[1];
