@@ -442,19 +442,26 @@
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
 }
 
-/* ---------- card back (single symmetric file — PPF §4.3) ---------- */
+/* ---------- card back (single symmetric file — PPF §4.3) ----------
+   Radiant-sun tarot frame (first frame of the gold tarot EPS set) in
+   gold-deep linework on the ivory ground. The tarot frame's own ornate
+   border is the edge — the standard hairline border + inner frame line
+   are removed on backs. */
 .mcard--back .mcard__inner {
   align-items: center;
   justify-content: center;
+  border: none;
   background:
     radial-gradient(circle at 50% 42%, rgba(201, 162, 75, 0.16), transparent 58%),
     linear-gradient(160deg, var(--face) 0%, var(--face-edge) 130%);
 }
-.mcard--back img {
-  width: 46%;
-  opacity: 0.9;
-  filter: drop-shadow(0 4px 10px rgba(138, 106, 37, 0.35));
+.mcard--back .mcard__inner::before { content: none; }
+.mcard__backframe {
+  position: absolute;
+  inset: 2.5%;
+  color: var(--gold-deep);
 }
+.mcard__backframe svg { width: 100%; height: 100%; display: block; }
 
 /* ---------- land tile (hexagonal board piece) ---------- */
 .mtile {
@@ -713,10 +720,12 @@
 .deck__stage {
   display: grid;
   place-items: center;
-  min-height: 300px;
+  min-height: 350px; /* the card's rendered height — the first draw can't grow the div */
   perspective: 900px;
 }
-.deck__stage .mcard { --card-w: 250px; }
+/* incoming + outgoing cards share the single grid cell while the old one
+   animates out — the stage height never changes mid-draw */
+.deck__stage .mcard { --card-w: 250px; grid-area: 1 / 1; }
 .deck__meta {
   text-align: center;
   color: var(--muted);

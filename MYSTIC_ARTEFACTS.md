@@ -79,6 +79,11 @@ Design notes (current iteration):
   chevrons (spells keep the shield on the right edge). Both are designated
   **hot-foil (烫金) spot elements**: at export they become a named "Foil Gold"
   separation flagged overprint per Premium-Print-Formats §1.8 / Part 6.
+- **Card back** — the **radiant-sun tarot frame** (first frame of the gold tarot EPS
+  set) in gold-deep linework on the ivory ground; the design stands alone (no hex
+  symbol) and its own ornate border is the edge — the standard hairline border and
+  inner frame line are removed on backs. `currentColor` linework = one foil
+  separation; print master at `site/assets/frames/back.svg`.
 - **Annotation pattern** — the explainer panels are unified diagrams: numbered labels flank
   the artefact (vanlent.dev-style `01.` numerals fused with the text) and dashed connector
   lines, measured from the live DOM, point to each element's edge. No markers sit on the

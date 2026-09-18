@@ -308,8 +308,10 @@ window.MysticCards = (function () {
 
   /* ---------- card back (deck pile) — single symmetric design -------------- */
   function back() {
+    /* radiant-sun tarot frame (first frame of the gold tarot EPS set) —
+       the design stands alone on the ivory ground, no hex symbol */
     var card = shell("back");
-    img(ART.hexSymbol, "", card.firstChild);
+    el("span", "mcard__backframe", card.firstChild).innerHTML = window.MYSTIC_ICONS.backFrame;
     return card;
   }
 
